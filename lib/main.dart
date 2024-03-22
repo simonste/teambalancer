@@ -1,3 +1,4 @@
+import 'package:teambalancer/common/localization.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -10,6 +11,8 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(
         body: Center(
           child: Text('Hello World!'),

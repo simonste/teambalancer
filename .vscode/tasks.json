@@ -1,0 +1,12 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Generate Localization",
+      "type": "flutter",
+      "command": "flutter",
+      "args": ["gen-l10n"],
+      "problemMatcher": []
+    }
+  ]
+}
