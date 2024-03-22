@@ -7,6 +7,13 @@
       "command": "flutter",
       "args": ["gen-l10n"],
       "problemMatcher": []
+    },
+    {
+      "label": "Generate Code",
+      "type": "shell",
+      "command": "dart",
+      "args": ["run", "build_runner", "build"],
+      "problemMatcher": []
     }
   ]
 }
