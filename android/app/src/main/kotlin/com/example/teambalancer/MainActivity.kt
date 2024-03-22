@@ -1,4 +1,4 @@
-package com.example.teambalancer
+package ch.simonste.teambalancer
 
 import io.flutter.embedding.android.FlutterActivity
 
