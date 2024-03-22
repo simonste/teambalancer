@@ -11,6 +11,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  calc: ^0.2.1
   intl: ^0.18.1
   json_annotation: ^4.8.1
   shared_preferences: ^2.2.1

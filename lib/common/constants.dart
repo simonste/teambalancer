@@ -1,3 +1,17 @@
 enum Sport { football, floorball, basketball }
 
-enum Skill { physical, technical, tactical }
+enum Skill { tactical, physical, technical }
+
+class Constants {
+  static double weightMin = 1;
+  static double weightMax = 3;
+  static int weightDivisions = (weightMax - weightMin).toInt();
+  static int defaultWeight = 1;
+
+  static double skillMin = 1;
+  static double skillMax = 5;
+  static int defaultSkill = (skillMin + skillMax) ~/ 2;
+  static int skillDivisions = (skillMax - skillMin).toInt();
+
+  static int maxGroups = 4;
+}

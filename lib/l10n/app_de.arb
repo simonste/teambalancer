@@ -1,3 +1,11 @@
 {
-  "appName": "TeamBalancer"
+  "appName": "TeamBalancer",
+  "ok": "Ok",
+  "createTeam": "Team erstellen",
+  "teamName": "Teamname",
+  "createPlayer": "Spieler erstellen",
+  "playerName": "Spielername",
+  "shuffle": "Auslosen",
+  "separateTagged": "Getaggte Spieler trennen",
+  "noOfGroups": "Anzahl Gruppen:"
 }

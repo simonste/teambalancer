@@ -1,5 +1,6 @@
 import 'package:teambalancer/common/localization.dart';
 import 'package:flutter/material.dart';
+import 'package:teambalancer/screens/main_screen.dart';
 
 void main() {
   runApp(const MainApp());
@@ -13,11 +14,7 @@ class MainApp extends StatelessWidget {
     return const MaterialApp(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
+      home: MainScreen(),
     );
   }
 }

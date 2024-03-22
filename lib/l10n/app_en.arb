@@ -1,3 +1,11 @@
 {
-  "appName": "TeamBalancer"
+  "appName": "TeamBalancer",
+  "ok": "Ok",
+  "createTeam": "Create team",
+  "teamName": "Team name",
+  "createPlayer": "Create player",
+  "playerName": "Player name",
+  "shuffle": "Shuffle groups",
+  "separateTagged": "Separate tagged players",
+  "noOfGroups": "No of groups:"
 }
