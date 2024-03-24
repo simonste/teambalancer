@@ -11,10 +11,15 @@ class TeamData {
 
   Sport sport;
   Map<String, PlayerData> players;
-  Map<Skill, int> factors;
+  Map<Skill, int> weights;
   List<String> tags;
 
-  TeamData(this.sport, this.players, this.factors, this.tags);
+  TeamData(this.sport, this.players, this.weights, this.tags);
+
+  TeamData.init(this.sport, List<String> players)
+      : players = {for (var key in players) key: PlayerData.init()},
+        weights = {for (var key in Skill.values) key: Constants.defaultWeight},
+        tags = [];
 }
 
 @JsonSerializable()

@@ -24,10 +24,13 @@ class Shuffle {
         growable: false);
 
     for (var skill in Skill.values) {
-      team.players.forEach((name, d) {
-        totalSkills[skill] =
-            (totalSkills[skill] ?? 0) + _weightedSkill(name, skill);
-      });
+      totalSkills[skill] = team.players.keys
+          .toList()
+          .fold(0, (prev, name) => prev + _weightedSkill(name, skill));
+
+      for (var group in _groups) {
+        group.skills[skill] = 0;
+      }
     }
     developer.log(
         'Possible Groups: ${possibleGroups(team.players.length, parameter.noOfGroups)}',
@@ -58,16 +61,17 @@ class Shuffle {
   }
 
   int _weightedSkill(String name, Skill skill) {
-    final factor = team.factors[skill]!;
-    return team.players[name]!.skills[skill]! * factor;
+    if (parameter.available[name]!) {
+      return team.players[name]!.skills[skill]! * team.weights[skill]!;
+    }
+    return 0;
   }
 
   void _addToGroup(String name, int groupNo) {
     var group = _groups[groupNo];
     group.members.add(name);
     for (var skill in Skill.values) {
-      group.skills[skill] =
-          (group.skills[skill] ?? 0) + _weightedSkill(name, skill);
+      group.skills[skill] = group.skills[skill]! + _weightedSkill(name, skill);
     }
   }
 

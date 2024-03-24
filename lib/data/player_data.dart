@@ -12,4 +12,8 @@ class PlayerData {
   List<String> tags;
 
   PlayerData(this.skills, this.tags);
+
+  PlayerData.init()
+      : skills = {for (var key in Skill.values) key: Constants.defaultSkill},
+        tags = [];
 }

@@ -39,15 +39,15 @@ class _TeamScreenState extends State<TeamScreen> {
               min: Constants.weightMin,
               max: Constants.weightMax,
               divisions: Constants.weightDivisions,
-              value: (team.factors[skill]!).toDouble(),
+              value: (team.weights[skill]!).toDouble(),
               onChanged: (double value) {
                 setState(() {
-                  team.factors[skill] = value.toInt();
+                  team.weights[skill] = value.toInt();
                   widget.data.save();
                 });
               },
             )),
-            Text((team.factors[skill]!).toStringAsFixed(0))
+            Text((team.weights[skill]!).toStringAsFixed(0))
           ],
         ));
       }
@@ -137,8 +137,7 @@ class _TeamScreenState extends State<TeamScreen> {
       team.players[input] = team.players[defaultText]!;
       team.players.remove(defaultText);
     } else {
-      team.players[input] = PlayerData(
-          {for (var key in Skill.values) key: Constants.defaultSkill}, []);
+      team.players[input] = PlayerData.init();
     }
     widget.data.save();
     setState(() {});

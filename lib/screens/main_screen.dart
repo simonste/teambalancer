@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:teambalancer/common/constants.dart';
 import 'package:teambalancer/common/localization.dart';
 import 'package:teambalancer/common/utils.dart';
 import 'package:teambalancer/data/team_data.dart';
@@ -96,8 +95,7 @@ class _MainScreenState extends State<MainScreen> {
         data.get().teams.remove(defaultData.name);
       }
     } else {
-      data.get().teams[input.name] = TeamData(input.sport, {},
-          {for (var key in Skill.values) key: Constants.defaultWeight}, []);
+      data.get().teams[input.name] = TeamData.init(input.sport, []);
     }
     data.save();
     setState(() {});

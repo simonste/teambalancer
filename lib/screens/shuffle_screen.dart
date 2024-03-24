@@ -19,6 +19,9 @@ class ShuffleParameter {
   bool separateTagged = true;
   int noOfGroups = 2;
   Map<String, bool> available = {};
+
+  void allAvailable(List<String> players) =>
+      available = {for (var key in players) key: true};
 }
 
 class _ShuffleScreenState extends State<ShuffleScreen> {
@@ -29,7 +32,7 @@ class _ShuffleScreenState extends State<ShuffleScreen> {
     final team = widget.data.get().teams[widget.teamName]!;
     final players = team.players;
     if (parameter.available.isEmpty) {
-      parameter.available = {for (var key in players.keys) key: true};
+      parameter.allAvailable(players.keys.toList());
     }
 
     var listView = ListView.builder(
