@@ -4,6 +4,7 @@ import 'package:teambalancer/common/localization.dart';
 import 'package:teambalancer/common/shuffle.dart';
 import 'package:teambalancer/common/utils.dart';
 import 'package:teambalancer/data/data.dart';
+import 'package:teambalancer/data/player_data.dart';
 import 'package:teambalancer/screens/groups_screen.dart';
 
 class ShuffleScreen extends StatefulWidget {
@@ -15,24 +16,24 @@ class ShuffleScreen extends StatefulWidget {
   State<ShuffleScreen> createState() => _ShuffleScreenState();
 }
 
-class ShuffleParameter {
-  bool separateTagged = true;
-  int noOfGroups = 2;
-  Map<String, bool> available = {};
-
-  void allAvailable(List<String> players) =>
-      available = {for (var key in players) key: true};
-}
-
 class _ShuffleScreenState extends State<ShuffleScreen> {
   var parameter = ShuffleParameter();
+
+  void toggle(String player, PlayerData data) {
+    if (parameter.players.containsKey(player)) {
+      parameter.players.remove(player);
+    } else {
+      parameter.players[player] = data;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final team = widget.data.get().teams[widget.teamName]!;
     final players = team.players;
-    if (parameter.available.isEmpty) {
-      parameter.allAvailable(players.keys.toList());
+    if (parameter.weights.isEmpty) {
+      parameter.weights = team.weights;
+      parameter.players = Map<String, PlayerData>.from(team.players);
     }
 
     var listView = ListView.builder(
@@ -44,14 +45,14 @@ class _ShuffleScreenState extends State<ShuffleScreen> {
           child: ListTile(
             title: Text(name),
             leading: Checkbox(
-              value: parameter.available[name],
+              value: parameter.players.containsKey(name),
               onChanged: (bool? value) {
-                parameter.available[name] = value!;
+                toggle(name, players[name]!);
                 setState(() {});
               },
             ),
             onTap: () {
-              parameter.available[name] = !parameter.available[name]!;
+              toggle(name, players[name]!);
               setState(() {});
             },
           ),
@@ -95,7 +96,7 @@ class _ShuffleScreenState extends State<ShuffleScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          final groups = Shuffle(team: team, parameter: parameter).shuffle();
+          final groups = Shuffle(parameter: parameter).shuffle();
           navigateTo(
               context,
               GroupScreen(
