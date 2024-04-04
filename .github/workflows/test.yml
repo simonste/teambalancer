@@ -27,8 +27,8 @@ jobs:
 
       - name: Get dependencies
         run: flutter/bin/flutter pub get
-      # - name: Generate icons
-      #   run: flutter/bin/flutter pub run flutter_launcher_icons
+      - name: Generate icons
+        run: flutter/bin/flutter pub run flutter_launcher_icons
       - name: Generate translations
         run: flutter/bin/flutter gen-l10n
       - name: Generate sources
@@ -86,8 +86,8 @@ jobs:
 
       - name: Get dependencies
         run: flutter/bin/flutter pub get
-      # - name: Generate icons
-      #   run: flutter/bin/flutter pub run flutter_launcher_icons
+      - name: Generate icons
+        run: flutter/bin/flutter pub run flutter_launcher_icons
       - name: Generate translations
         run: flutter/bin/flutter gen-l10n
       - name: Generate sources

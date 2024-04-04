@@ -21,6 +21,7 @@ dev_dependencies:
     sdk: flutter
   integration_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.13.1
   flutter_lints: ^2.0.0
   build_runner: ^2.4.5
   json_serializable: ^6.7.0
@@ -28,3 +29,13 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/ICON-1.png"
+  adaptive_icon_background: "#ffffff"
+  adaptive_icon_foreground: "assets/ICON-1.png"
+  web:
+    generate: true
+    image_path: "assets/ICON-1.jpg"
