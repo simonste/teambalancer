@@ -30,7 +30,9 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     final teams = data.get().teams;
     return Scaffold(
-      appBar: AppBar(title: Text(context.l10n.appName)),
+      appBar: AppBar(
+          title: Text(context.l10n.appName),
+          leading: const Image(image: AssetImage("assets/ICON-1.png"))),
       body: ListView.builder(
         itemCount: teams.length,
         itemBuilder: (context, index) {
