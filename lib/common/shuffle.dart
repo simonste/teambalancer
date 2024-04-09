@@ -33,21 +33,14 @@ class Group {
   }
 }
 
-class Shuffle {
+class ShuffleWeighted {
   final ShuffleParameter parameter;
-  final List<Group> _groups;
-  Map<Skill, int> totalSkills = {};
-  int totalSkill = 0;
+  Map<Skill, double> avgSkills = {};
+  double bestError = double.maxFinite;
 
-  Shuffle({required this.parameter})
-      : _groups = List<Group>.generate(
-            parameter.noOfGroups,
-            (i) => Group("Group ${i + 1}",
-                parameter.players.length ~/ parameter.noOfGroups),
-            growable: false) {
+  ShuffleWeighted({required this.parameter}) {
     for (var skill in Skill.values) {
-      totalSkills[skill] = parameter.totalSkill(skill);
-      totalSkill += totalSkills[skill]!;
+      avgSkills[skill] = parameter.totalSkill(skill) / parameter.noOfGroups;
     }
 
     developer.log(
@@ -78,35 +71,66 @@ class Shuffle {
     return factor ~/ factorial(equalSizedGroups);
   }
 
+  // https://en.wikipedia.org/wiki/Alias_method  ??
+  // https://de.wikipedia.org/wiki/MCMC-Verfahren
+
+  List<Group> shuffle() {
+    int draws = 4;
+
+    List<Group> bestGroups = [];
+
+    for (int i = 0; i < draws; i++) {
+      final groups = ShuffleBase(parameter: parameter).shuffle();
+      double error = 0;
+      for (var group in groups) {
+        for (var skill in Skill.values) {
+          error += (group.skills[skill]! - avgSkills[skill]!).abs();
+        }
+      }
+
+      if (error < bestError) {
+        developer.log('Groups at Iter $i are better: $error < $bestError',
+            name: 'shuffle');
+        bestGroups = groups;
+        bestError = error;
+      }
+    }
+    return bestGroups;
+  }
+}
+
+class ShuffleBase {
+  final ShuffleParameter parameter;
+  final List<Group> _groups;
+
+  ShuffleBase({required this.parameter})
+      : _groups = List<Group>.generate(
+            parameter.noOfGroups,
+            (i) => Group("Group ${i + 1}",
+                parameter.players.length ~/ parameter.noOfGroups),
+            growable: false);
+
   void _addToGroup(String name, int groupNo) {
     var group = _groups[groupNo];
     group.members.add(name);
+
     for (var skill in Skill.values) {
       group.skills[skill] =
           group.skills[skill]! + parameter.weightedSkill(name, skill);
     }
   }
 
-  // https://en.wikipedia.org/wiki/Alias_method  ??
-  // https://de.wikipedia.org/wiki/MCMC-Verfahren
-
   List<Group> shuffle() {
     Random random = Random();
     final playerNames = parameter.players.keys.toList()..shuffle(random);
 
-    for (var p = 0; p < parameter.players.length; p++) {
+    for (var p = 0; p < playerNames.length; p++) {
       final playerName = playerNames[p];
-      if (!_groups[0].isComplete()) {
-        // for (var skill in Skill.values) {
-        //   final randomNumber = random.nextDouble();
-        //   if (randomNumber * totalSkills[skill]! <
-        //       parameter.weightedSkill(playerName, skill)) {
-        _addToGroup(playerName, 0);
-        //     break;
-        //   }
-        // }
-      } else {
-        _addToGroup(playerName, 1);
+      for (var g = 0; g < _groups.length; g++) {
+        if (!_groups[g].isComplete()) {
+          _addToGroup(playerName, g);
+          break;
+        }
       }
     }
     return _groups;

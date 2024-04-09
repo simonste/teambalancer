@@ -96,7 +96,7 @@ class _ShuffleScreenState extends State<ShuffleScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          final groups = Shuffle(parameter: parameter).shuffle();
+          final groups = ShuffleWeighted(parameter: parameter).shuffle();
           navigateTo(
               context,
               GroupScreen(

@@ -17,22 +17,22 @@ void main() {
   }
 
   test('possible groups', () {
-    expect(Shuffle.possibleGroups(4, 1), 1);
-    expect(Shuffle.possibleGroups(4, 2), 3);
-    expect(Shuffle.possibleGroups(6, 2), 10);
-    expect(Shuffle.possibleGroups(6, 3), 15);
-    expect(Shuffle.possibleGroups(8, 2), 35);
-    expect(Shuffle.possibleGroups(10, 2), 126);
-    expect(Shuffle.possibleGroups(12, 2), 462);
-    expect(Shuffle.possibleGroups(5, 2), 10);
-    expect(Shuffle.possibleGroups(4, 3), 6);
+    expect(ShuffleWeighted.possibleGroups(4, 1), 1);
+    expect(ShuffleWeighted.possibleGroups(4, 2), 3);
+    expect(ShuffleWeighted.possibleGroups(6, 2), 10);
+    expect(ShuffleWeighted.possibleGroups(6, 3), 15);
+    expect(ShuffleWeighted.possibleGroups(8, 2), 35);
+    expect(ShuffleWeighted.possibleGroups(10, 2), 126);
+    expect(ShuffleWeighted.possibleGroups(12, 2), 462);
+    expect(ShuffleWeighted.possibleGroups(5, 2), 10);
+    expect(ShuffleWeighted.possibleGroups(4, 3), 6);
   });
 
   test('draw groups', () {
     var shuffleParameter = prepareShuffle(4);
 
     for (var i = 0; i < 4; i++) {
-      var groups = Shuffle(parameter: shuffleParameter).shuffle();
+      var groups = ShuffleWeighted(parameter: shuffleParameter).shuffle();
 
       expect(groups.length, 2);
       expect(groups[0].members.length, 2);
@@ -48,7 +48,7 @@ void main() {
     shuffleParameter.players['P4']!.skills[Skill.physical] = 5;
 
     for (var i = 0; i < 4; i++) {
-      var groups = Shuffle(parameter: shuffleParameter).shuffle();
+      var groups = ShuffleWeighted(parameter: shuffleParameter).shuffle();
 
       expect(groups.length, 2);
       var m0 = groups[0].members;
