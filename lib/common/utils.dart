@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:teambalancer/common/constants.dart';
 
 void navigateTo(BuildContext context, Widget widget, {Function? callback}) {
@@ -14,21 +15,47 @@ void navigateTo(BuildContext context, Widget widget, {Function? callback}) {
   });
 }
 
-Icon getSportIcon(Sport sport, {Color? color}) {
-  switch (sport) {
-    case Sport.football:
-      return Icon(Icons.sports_soccer, color: color);
-    case Sport.floorball:
-      return Icon(Icons.sports_hockey, color: color);
-    case Sport.basketball:
-      return Icon(Icons.sports_basketball, color: color);
+Tactics getTactics(int value) {
+  if (value < Constants.defaultSkill) {
+    return Tactics.defense;
+  } else if (value == Constants.defaultSkill) {
+    return Tactics.neutral;
+  } else {
+    return Tactics.offense;
   }
 }
 
-Icon getSkillIcon(Skill skill, int value, Sport sport) {
+String getAsset(var type) {
+  switch (type) {
+    case Sport.football:
+      return "assets/sports/football.svg";
+    case Sport.floorball:
+      return "assets/sports/floorball.svg";
+    case Sport.basketball:
+      return "assets/sports/basketball.svg";
+    case Tactics.defense:
+      return "assets/skills/defense.svg";
+    case Tactics.neutral:
+      return "assets/skills/neutral.svg";
+    case Tactics.offense:
+      return "assets/skills/offense.svg";
+    case Skill.physical:
+      return "assets/skills/physical.svg";
+  }
+  return "";
+}
+
+Widget getSportIcon(Sport sport, {Color? color}) {
+  ColorFilter? colorFilter =
+      color != null ? ColorFilter.mode(color, BlendMode.srcIn) : null;
+
+  return SvgPicture.asset(getAsset(sport), width: 24, colorFilter: colorFilter);
+}
+
+Widget getSkillIcon(Skill skill, int value, Sport sport) {
   switch (skill) {
     case Skill.physical:
-      return const Icon(Icons.directions_run_rounded);
+      return SvgPicture.asset(getAsset(Skill.physical), width: 24);
     case Skill.technical:
       return getSportIcon(sport);
     case Skill.tactical:
@@ -36,12 +63,9 @@ Icon getSkillIcon(Skill skill, int value, Sport sport) {
   }
 }
 
-Icon getTacticsIcon(int value, {Color? color}) {
-  if (value < Constants.defaultSkill) {
-    return Icon(Icons.shield, color: color);
-  } else if (value == Constants.defaultSkill) {
-    return Icon(Icons.circle_outlined, color: color);
-  } else {
-    return Icon(Icons.arrow_outward, color: color);
-  }
+Widget getTacticsIcon(int value, {Color? color}) {
+  ColorFilter? colorFilter =
+      color != null ? ColorFilter.mode(color, BlendMode.srcIn) : null;
+  return SvgPicture.asset(getAsset(getTactics(value)),
+      width: 24, colorFilter: colorFilter);
 }

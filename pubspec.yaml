@@ -12,9 +12,11 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   calc: ^0.2.1
+  flutter_svg: ^2.0.7
   intl: ^0.18.1
   json_annotation: ^4.8.1
   shared_preferences: ^2.2.1
+  flutter_svg_test: ^1.0.1
 
 dev_dependencies:
   flutter_test:
@@ -31,6 +33,8 @@ flutter:
   generate: true
   assets:
     - assets/
+    - assets/skills/
+    - assets/sports/
 
 flutter_launcher_icons:
   android: true

@@ -2,6 +2,8 @@ enum Sport { football, floorball, basketball }
 
 enum Skill { tactical, physical, technical }
 
+enum Tactics { defense, neutral, offense }
+
 class Constants {
   static double weightMin = 1;
   static double weightMax = 3;

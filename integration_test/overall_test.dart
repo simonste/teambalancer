@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg_test/flutter_svg_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:teambalancer/common/constants.dart';
+import 'package:teambalancer/common/utils.dart';
 import 'package:teambalancer/main.dart' as app;
 
 String? text(Key key, {int? elementNo}) {
@@ -44,12 +46,12 @@ extension AppHelper on WidgetTester {
     expect((slider.evaluate().single.widget as Slider).value, value);
   }
 
-  Future<void> addTeam(String teamName, IconData sport) async {
+  Future<void> addTeam(String teamName, Sport sport) async {
     await tap(find.byType(FloatingActionButton));
     await pumpAndSettle();
     expect(find.byType(TextField), findsOneWidget);
     await enterText(find.byType(TextField), teamName);
-    await tap(find.byIcon(sport));
+    await tap(find.svgAssetWithPath(getAsset(sport)));
     await pump();
     await tap(find.text('Ok'));
     await pumpAndSettle();
@@ -76,9 +78,9 @@ void main() {
   testWidgets('create team', (tester) async {
     await tester.launchApp();
 
-    await tester.addTeam("Team", Icons.sports_hockey);
+    await tester.addTeam("Team", Sport.floorball);
 
-    expect(find.byIcon(Icons.sports_hockey), findsOneWidget);
+    expect(find.svgAssetWithPath(getAsset(Sport.floorball)), findsOneWidget);
     expect(find.text("Team"), findsOneWidget);
 
     await tester.tap(find.byIcon(Icons.settings));
@@ -92,7 +94,7 @@ void main() {
     await tester.tap(find.text("Player one"));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byIcon(Icons.shield));
+    await tester.tap(find.svgAssetWithPath(getAsset(Tactics.defense)));
     await tester.slideTo(Skill.physical, 4);
     await tester.slideTo(Skill.technical, 1);
     await tester.pumpAndSettle();
@@ -100,7 +102,7 @@ void main() {
     await tester.tap(find.byTooltip("Back"));
     await tester.pumpAndSettle();
 
-    expect(find.byIcon(Icons.shield), findsOneWidget);
+    expect(find.svgAssetWithPath(getAsset(Tactics.defense)), findsOneWidget);
 
     await tester.tap(find.byTooltip("Back"));
     await tester.pumpAndSettle();

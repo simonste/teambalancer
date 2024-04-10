@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:teambalancer/common/constants.dart';
 
 import 'overall_test.dart';
 
@@ -44,7 +45,7 @@ void main() {
   testWidgets('screenshot', (tester) async {
     await tester.prepare(binding);
 
-    await tester.addTeam("Football team", Icons.sports_soccer);
+    await tester.addTeam("Football team", Sport.football);
 
     await tester.takeScreenshot(binding, 'screenshot1');
   });
