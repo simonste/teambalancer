@@ -5,6 +5,7 @@ on:
       - "*"
     branches:
       - flutter_ci
+      - flutter_cd
 
 # cspell:disable
 jobs:
@@ -70,7 +71,7 @@ jobs:
           releaseFiles: outputs/bundle/release/app-release-signed.aab
           mappingFile: outputs/mapping/release/mapping.txt
           debugSymbols: intermediates/merged_native_libs/release/out/lib
-          track: beta
+          track: internal
 
   build-ios:
     runs-on: macos-latest

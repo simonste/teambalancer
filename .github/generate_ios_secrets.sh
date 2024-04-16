@@ -51,7 +51,7 @@ fi
 
 if [ ! -f "teambalancer_distribution.mobileprovision" ]; then
     echo "FAIL: App Store Provision profile missing"
-    echo "Create Profile of type App Store @ https://developer.apple.com/account/resources/profiles/list"
+    echo "Create Profile of type App Store Connect @ https://developer.apple.com/account/resources/profiles/list"
     echo "Name it 'teambalancer_distribution and Download it to teambalancer_distribution.mobileprovision"
     exit
 fi

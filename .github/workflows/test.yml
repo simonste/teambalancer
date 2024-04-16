@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - "**"
+      - "!flutter_cd"
 
 # cspell:disable
 jobs:
