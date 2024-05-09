@@ -33,7 +33,7 @@ class _TeamScreenState extends State<TeamScreen> {
       if (skill != Skill.tactical) {
         skills.add(Row(
           children: [
-            getSkillIcon(skill, 0, team.sport),
+            getSkillIcon(skill, 0, Sport.values[team.sport]),
             Expanded(
                 child: Slider(
               min: Constants.weightMin,
@@ -63,7 +63,7 @@ class _TeamScreenState extends State<TeamScreen> {
         List<Widget> factors = [];
         for (var skillType in Skill.values) {
           final skill = player.skills[skillType]!;
-          factors.add(getSkillIcon(skillType, skill, team.sport));
+          factors.add(getSkillIcon(skillType, skill, Sport.values[team.sport]));
           if (skillType != Skill.tactical) {
             factors.add(Text("$skill"));
           }

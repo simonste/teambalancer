@@ -9,7 +9,7 @@ class TeamData {
   factory TeamData.fromJson(Map<String, dynamic> json) =>
       _$TeamDataFromJson(json);
 
-  Sport sport;
+  int sport;
   Map<String, PlayerData> players;
   Map<Skill, int> weights;
   List<String> tags;

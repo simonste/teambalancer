@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:teambalancer/common/constants.dart';
 import 'package:teambalancer/common/localization.dart';
 import 'package:teambalancer/common/utils.dart';
 import 'package:teambalancer/data/team_data.dart';
@@ -41,7 +42,8 @@ class _MainScreenState extends State<MainScreen> {
           return Card(
             child: ListTile(
               title: Text(name),
-              leading: getSportIcon(data.get().teams[name]!.sport),
+              leading:
+                  getSportIcon(Sport.values[data.get().teams[name]!.sport]),
               trailing: IconButton(
                 icon: const Icon(Icons.settings),
                 onPressed: () => navigateTo(
@@ -59,8 +61,8 @@ class _MainScreenState extends State<MainScreen> {
                       data: data,
                     ));
               },
-              onLongPress: () =>
-                  dialog(TeamDialogData(name, data.get().teams[name]!.sport)),
+              onLongPress: () => dialog(TeamDialogData(
+                  name, Sport.values[data.get().teams[name]!.sport])),
             ),
           );
         },
@@ -91,13 +93,13 @@ class _MainScreenState extends State<MainScreen> {
     }
     if (input == null) return; // empty name not allowed
     if (defaultData != null) {
-      data.get().teams[defaultData.name]!.sport = input.sport;
+      data.get().teams[defaultData.name]!.sport = input.sport.index;
       if (!data.get().teams.containsKey(input.name)) {
         data.get().teams[input.name] = data.get().teams[defaultData.name]!;
         data.get().teams.remove(defaultData.name);
       }
     } else {
-      data.get().teams[input.name] = TeamData.init(input.sport, []);
+      data.get().teams[input.name] = TeamData.init(input.sport.index, []);
     }
     data.save();
     setState(() {});
