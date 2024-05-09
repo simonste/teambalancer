@@ -3,7 +3,6 @@ import 'package:teambalancer/common/constants.dart';
 import 'package:teambalancer/common/localization.dart';
 import 'package:teambalancer/common/utils.dart';
 import 'package:teambalancer/data/data.dart';
-import 'package:teambalancer/data/player_data.dart';
 import 'package:teambalancer/dialog/string_dialog.dart';
 import 'package:teambalancer/screens/player_screen.dart';
 import 'package:teambalancer/widgets/tag_text.dart';
@@ -42,8 +41,7 @@ class _TeamScreenState extends State<TeamScreen> {
               value: (team.weights[skill]!).toDouble(),
               onChanged: (double value) {
                 setState(() {
-                  team.weights[skill] = value.toInt();
-                  widget.data.save();
+                  team.setWeight(skill, value.toInt());
                 });
               },
             )),
@@ -120,8 +118,7 @@ class _TeamScreenState extends State<TeamScreen> {
         title: context.l10n.playerName,
         defaultText: defaultText,
         deleteFunction: () {
-          team.players.remove(defaultText);
-          widget.data.save();
+          team.removePlayer(defaultText);
           setState(() {});
         },
       );
@@ -134,12 +131,10 @@ class _TeamScreenState extends State<TeamScreen> {
       if (team.players.containsKey(input)) {
         return;
       }
-      team.players[input] = team.players[defaultText]!;
-      team.players.remove(defaultText);
+      team.renamePlayer(defaultText, input);
     } else {
-      team.players[input] = PlayerData.init();
+      await team.addPlayer(input);
     }
-    widget.data.save();
     setState(() {});
   }
 }

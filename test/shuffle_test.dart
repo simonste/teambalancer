@@ -8,7 +8,7 @@ void main() {
     var players = List.generate(noOfPlayers, (i) => "P${i + 1}");
     var shuffleParameter = ShuffleParameter();
     shuffleParameter.players = {
-      for (var key in players) key: PlayerData.init()
+      for (var key in players) key: PlayerData.init(0)
     };
     shuffleParameter.weights = {
       for (var key in Skill.values) key: Constants.defaultWeight

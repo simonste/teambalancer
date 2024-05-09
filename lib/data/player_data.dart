@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:json_annotation/json_annotation.dart';
 import 'package:teambalancer/common/constants.dart';
+import 'package:teambalancer/data/backend.dart';
 part 'player_data.g.dart';
 
 @JsonSerializable()
@@ -10,10 +13,28 @@ class PlayerData {
 
   Map<Skill, int> skills;
   List<String> tags;
+  int id;
 
-  PlayerData(this.skills, this.tags);
+  PlayerData(this.skills, this.tags, this.id);
 
-  PlayerData.init()
+  PlayerData.init(this.id)
       : skills = {for (var key in Skill.values) key: Constants.defaultSkill},
         tags = [];
+
+  Future<void> setSkill(Skill skill, int value, String team) async {
+    skills[skill] = value;
+
+    var json = toJson();
+    json['team'] = team;
+    await Backend.updatePlayer(jsonEncode(json));
+  }
+
+  Future<void> toggleTag(String tag) async {
+    if (tags.contains(tag)) {
+      tags.remove(tag);
+    } else {
+      tags.add(tag);
+    }
+    throw Exception('Backend not implemented');
+  }
 }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:teambalancer/common/constants.dart';
 import 'package:teambalancer/common/localization.dart';
 import 'package:teambalancer/common/utils.dart';
-import 'package:teambalancer/data/team_data.dart';
 import 'package:teambalancer/dialog/create_team_dialog.dart';
 import 'package:teambalancer/screens/shuffle_screen.dart';
 import 'package:teambalancer/screens/team_screen.dart';
@@ -42,8 +41,7 @@ class _MainScreenState extends State<MainScreen> {
           return Card(
             child: ListTile(
               title: Text(name),
-              leading:
-                  getSportIcon(Sport.values[data.get().teams[name]!.sport]),
+              leading: getSportIcon(Sport.values[teams[name]!.sport]),
               trailing: IconButton(
                 icon: const Icon(Icons.settings),
                 onPressed: () => navigateTo(
@@ -61,8 +59,8 @@ class _MainScreenState extends State<MainScreen> {
                       data: data,
                     ));
               },
-              onLongPress: () => dialog(TeamDialogData(
-                  name, Sport.values[data.get().teams[name]!.sport])),
+              onLongPress: () => dialog(
+                  TeamDialogData(name, Sport.values[teams[name]!.sport])),
             ),
           );
         },
@@ -82,8 +80,7 @@ class _MainScreenState extends State<MainScreen> {
         title: context.l10n.teamName,
         defaultData: defaultData,
         deleteFunction: () {
-          data.get().teams.remove(defaultData.name);
-          data.save();
+          data.removeTeam(defaultData.name);
           setState(() {});
         },
       );
@@ -93,15 +90,10 @@ class _MainScreenState extends State<MainScreen> {
     }
     if (input == null) return; // empty name not allowed
     if (defaultData != null) {
-      data.get().teams[defaultData.name]!.sport = input.sport.index;
-      if (!data.get().teams.containsKey(input.name)) {
-        data.get().teams[input.name] = data.get().teams[defaultData.name]!;
-        data.get().teams.remove(defaultData.name);
-      }
+      data.renameTeam(defaultData.name, input.name, input.sport);
     } else {
-      data.get().teams[input.name] = TeamData.init(input.sport.index, []);
+      await data.addTeam(input.name, input.sport);
     }
-    data.save();
     setState(() {});
   }
 }

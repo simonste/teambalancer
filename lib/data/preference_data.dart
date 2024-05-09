@@ -8,8 +8,9 @@ class PreferenceTeamData {
       _$PreferenceTeamDataFromJson(json);
 
   String key;
+  String adminKey;
 
-  PreferenceTeamData(this.key);
+  PreferenceTeamData(this.key, {this.adminKey = ''});
 }
 
 @JsonSerializable()
