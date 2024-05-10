@@ -1,11 +1,21 @@
 {
   "appName": "TeamBalancer",
   "ok": "Ok",
+  "cancel": "Cancel",
   "createTeam": "Create team",
   "teamName": "Team name",
   "createPlayer": "Create player",
   "playerName": "Player name",
   "shuffle": "Shuffle groups",
   "separateTagged": "Separate tagged players",
-  "noOfGroups": "No of groups:"
+  "noOfGroups": "No of groups:",
+  "deleteTeam": "Delete {team}",
+  "@deleteTeam": {
+    "placeholders": {
+      "team": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteTeamAdmin": "You are the creator of this team. If you delete it, it will be removed for anyone"
 }

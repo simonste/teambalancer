@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:teambalancer/common/constants.dart';
 import 'package:teambalancer/common/localization.dart';
 import 'package:teambalancer/common/utils.dart';
+import 'package:teambalancer/dialog/confirm_dialog.dart';
 import 'package:teambalancer/dialog/create_team_dialog.dart';
 import 'package:teambalancer/screens/shuffle_screen.dart';
 import 'package:teambalancer/screens/team_screen.dart';
@@ -79,9 +80,25 @@ class _MainScreenState extends State<MainScreen> {
         context,
         title: context.l10n.teamName,
         defaultData: defaultData,
-        deleteFunction: () {
-          data.removeTeam(defaultData.name);
-          setState(() {});
+        deleteFunction: () async {
+          if (data.isAdmin(defaultData.name)) {
+            await confirmDialog(
+                context: context,
+                title: context.l10n.deleteTeam(defaultData.name),
+                subtitle: context.l10n.deleteTeamAdmin,
+                actions: [
+                  DialogAction(
+                      text: context.l10n.ok,
+                      action: () async {
+                        await data.removeTeam(defaultData.name, admin: true);
+                        setState(() {});
+                      })
+                ]);
+          } else {
+            setState(() {
+              data.removeTeam(defaultData.name);
+            });
+          }
         },
       );
     } else {

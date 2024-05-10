@@ -1,11 +1,14 @@
 {
   "appName": "TeamBalancer",
   "ok": "Ok",
+  "cancel": "Abbrechen",
   "createTeam": "Team erstellen",
   "teamName": "Teamname",
   "createPlayer": "Spieler erstellen",
   "playerName": "Spielername",
   "shuffle": "Auslosen",
   "separateTagged": "Getaggte Spieler trennen",
-  "noOfGroups": "Anzahl Gruppen:"
+  "noOfGroups": "Anzahl Gruppen:",
+  "deleteTeam": "{team} löschen",
+  "deleteTeamAdmin": "Sie haben dieses Team erstellt. Durch das Löschen wird es auch für alle anderen gelöscht."
 }

@@ -45,8 +45,8 @@ Future<TeamDialogData?> createTeamDialog(BuildContext context,
                         child: IconButton(
                       icon: const Icon(Icons.delete),
                       onPressed: () {
-                        deleteFunction();
                         Navigator.of(context).pop();
+                        deleteFunction();
                       },
                     ))
                   ]));
