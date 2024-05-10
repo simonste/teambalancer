@@ -73,7 +73,7 @@ class _TeamScreenState extends State<TeamScreen> {
         return Card(
           child: ListTile(
             title: Text(name),
-            subtitle: Row(children: factors),
+            trailing: SizedBox(width: 100, child: Row(children: factors)),
             onTap: () {
               navigateTo(
                   context,

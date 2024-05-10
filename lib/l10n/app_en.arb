@@ -9,6 +9,14 @@
   "shuffle": "Shuffle groups",
   "separateTagged": "Separate tagged players",
   "noOfGroups": "No of groups:",
+  "noOfPlayers": "{players} players",
+  "@noOfPlayers": {
+    "placeholders": {
+      "players": {
+        "type": "int"
+      }
+    }
+  },
   "deleteTeam": "Delete {team}",
   "@deleteTeam": {
     "placeholders": {

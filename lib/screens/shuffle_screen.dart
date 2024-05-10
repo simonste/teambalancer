@@ -83,14 +83,17 @@ class _ShuffleScreenState extends State<ShuffleScreen> {
       appBar: AppBar(title: Text(context.l10n.shuffle)),
       body: Column(
         children: [
-          Wrap(children: [
-            Row(
-              children: [
-                Text(context.l10n.noOfGroups),
-                Expanded(child: ButtonBar(children: groupButtons)),
-              ],
-            )
-          ]),
+          Container(
+              margin: const EdgeInsets.symmetric(horizontal: 10),
+              child: Wrap(
+                children: [
+                  Row(children: [
+                    Text(context.l10n.noOfGroups),
+                    Expanded(child: ButtonBar(children: groupButtons)),
+                  ]),
+                  Text(context.l10n.noOfPlayers(parameter.players.length))
+                ],
+              )),
           Expanded(child: listView)
         ],
       ),

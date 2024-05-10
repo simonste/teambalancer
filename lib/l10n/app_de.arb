@@ -9,6 +9,7 @@
   "shuffle": "Auslosen",
   "separateTagged": "Getaggte Spieler trennen",
   "noOfGroups": "Anzahl Gruppen:",
+  "noOfPlayers": "{players} Spieler",
   "deleteTeam": "{team} löschen",
   "deleteTeamAdmin": "Sie haben dieses Team erstellt. Durch das Löschen wird es auch für alle anderen gelöscht."
 }
