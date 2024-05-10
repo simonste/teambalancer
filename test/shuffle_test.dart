@@ -61,4 +61,15 @@ void main() {
       expect(m0.contains("P3") && m0.contains("P4"), false);
     }
   });
+
+  test('draw uneven', () {
+    var shuffleParameter = prepareShuffle(5);
+
+    for (var i = 0; i < 4; i++) {
+      var groups = ShuffleWeighted(parameter: shuffleParameter).shuffle();
+
+      expect(groups.length, 2);
+      expect(groups[0].members.length + groups[1].members.length, 5);
+    }
+  });
 }

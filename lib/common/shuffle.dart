@@ -107,7 +107,7 @@ class ShuffleBase {
       : _groups = List<Group>.generate(
             parameter.noOfGroups,
             (i) => Group("Group ${i + 1}",
-                parameter.players.length ~/ parameter.noOfGroups),
+                (parameter.players.length / parameter.noOfGroups).ceil()),
             growable: false);
 
   void _addToGroup(String name, int groupNo) {
