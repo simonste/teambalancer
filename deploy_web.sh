@@ -12,7 +12,6 @@ flutter build web
 sed -i 's/<base href="\/">//' build/web/index.html
 
 if [ $? == 0 ]; then
-    echo "replace content on server"
-    rm /run/user/1000/gvfs/ftp:host=simonste.ch/httpdocs/teambalancer/* -r
-    cp build/web/* /run/user/1000/gvfs/ftp:host=simonste.ch/httpdocs/teambalancer/ -r
+    remote_dir="/run/user/1000/gvfs/ftp:host=simonste.ch/teambalancer.simonste.ch/"
+    rsync -rv --delete --exclude='.git/' --exclude='api/' build/web/ $remote_dir
 fi
