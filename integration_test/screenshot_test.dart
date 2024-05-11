@@ -23,6 +23,7 @@ extension AppHelper on WidgetTester {
     }
     await pumpAndSettle();
     await binding?.takeScreenshot(name);
+    await pumpAndSettle();
   }
 }
 
@@ -48,5 +49,7 @@ void main() {
     await tester.addTeam("Football team", Sport.football);
 
     await tester.takeScreenshot(binding, 'screenshot1');
+
+    await tester.deleteTeam("Football team");
   });
 }
