@@ -9,7 +9,9 @@ import 'package:teambalancer/screens/team_screen.dart';
 import 'package:teambalancer/data/data.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+  final String addTeamKey;
+
+  const MainScreen(this.addTeamKey, {super.key});
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -22,9 +24,11 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
 
-    data.restoreData(() {
-      setState(() {});
-    });
+    data.restoreData(
+        updateCallback: () {
+          setState(() {});
+        },
+        addTeamKey: widget.addTeamKey);
   }
 
   @override

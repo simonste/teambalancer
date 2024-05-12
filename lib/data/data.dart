@@ -5,6 +5,7 @@ import 'package:teambalancer/common/constants.dart';
 import 'package:teambalancer/data/backend.dart';
 import 'package:teambalancer/data/preference_data.dart';
 import 'package:teambalancer/data/team_data.dart';
+import 'dart:developer' as developer;
 
 Future<Map<String, TeamData>> getTeamData(String key) async {
   final json = await Backend.getTeam(key);
@@ -21,39 +22,44 @@ class Data {
   PreferenceData preferenceData = PreferenceData({});
   TeamsData data = TeamsData({});
 
-  void restoreData(notify) async {
+  void restoreData(
+      {required updateCallback, required String addTeamKey}) async {
     final preferences = await SharedPreferences.getInstance();
 
-    var defaultStr = '{}';
+    const defaultStr = '{"teams": {}, "data_version": 0.2}';
     final str = preferences.getString(_key) ?? defaultStr;
-    if (str.length > 2) {
-      Map<String, dynamic> json = jsonDecode(str);
-      if (json['data_version'] == _dataVersion) {
-        preferenceData = PreferenceData.fromJson(json);
+    Map<String, dynamic> json = jsonDecode(str);
+    if (json['data_version'] != _dataVersion) {
+      developer.log('reset preference data', name: 'teambalancer data');
+      json = jsonDecode(defaultStr);
+    }
+    developer.log('preference $json', name: 'teambalancer data');
 
-        for (var teamKey in preferenceData.teams.keys) {
-          var teamData = await getTeamData(teamKey);
-          if (teamData.isEmpty) {
-            preferenceData.teams.remove(teamKey);
-            _save();
-          } else {
-            data.teams.addAll(teamData);
-          }
-        }
+    preferenceData = PreferenceData.fromJson(json);
+    if (addTeamKey.length == 6 &&
+        !preferenceData.teams.containsKey(addTeamKey)) {
+      developer.log('add team $addTeamKey', name: 'teambalancer data');
+      preferenceData.teams[addTeamKey] = PreferenceTeamData();
+    }
 
-        String? teamKey;
-        // teamKey = "A4GH49";
-        if (teamKey != null && teamKey.length == 6) {
-          preferenceData.teams[teamKey] = PreferenceTeamData();
-          _save();
-        }
-
-        notify();
+    for (var teamKey in preferenceData.teams.keys) {
+      developer.log('check $teamKey', name: 'teambalancer data');
+      var teamData = await getTeamData(teamKey);
+      if (teamData.isEmpty) {
+        developer.log('remove obsolete team $teamKey',
+            name: 'teambalancer data');
+        preferenceData.teams.remove(teamKey);
+      } else {
+        developer.log('loaded team $teamKey', name: 'teambalancer data');
+        data.teams.addAll(teamData);
       }
     }
+
+    await _save();
+    updateCallback();
   }
 
-  void _save() async {
+  Future<void> _save() async {
     var json = preferenceData.toJson();
     json['data_version'] = _dataVersion;
     final str = jsonEncode(json);
