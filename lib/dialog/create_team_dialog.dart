@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:teambalancer/common/constants.dart';
 import 'package:teambalancer/common/localization.dart';
 import 'package:teambalancer/common/utils.dart';
+import 'package:teambalancer/data/team_key.dart';
 
 class TeamDialogData {
-  TeamDialogData(this.name, this.sport);
+  TeamDialogData(this.name, this.sport, this.key);
 
   String name;
   Sport sport;
+  TeamKey key;
 }
 
 Future<TeamDialogData?> createTeamDialog(BuildContext context,
@@ -29,8 +31,8 @@ Future<TeamDialogData?> createTeamDialog(BuildContext context,
               if (controller.text.isEmpty) {
                 Navigator.of(context).pop();
               } else {
-                Navigator.of(context)
-                    .pop(TeamDialogData(controller.text, selectedSport));
+                Navigator.of(context).pop(TeamDialogData(
+                    controller.text, selectedSport, TeamKey("")));
               }
             }
 

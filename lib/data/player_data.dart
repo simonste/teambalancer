@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:teambalancer/common/constants.dart';
 import 'package:teambalancer/data/backend.dart';
+import 'package:teambalancer/data/team_key.dart';
 part 'player_data.g.dart';
 
 @JsonSerializable()
@@ -21,11 +22,11 @@ class PlayerData {
       : skills = {for (var key in Skill.values) key: Constants.defaultSkill},
         tags = [];
 
-  Future<void> setSkill(Skill skill, int value, String team) async {
+  Future<void> setSkill(Skill skill, int value, TeamKey teamKey) async {
     skills[skill] = value;
 
     var json = toJson();
-    json['team'] = team;
+    json['team'] = teamKey.key;
     await Backend.updatePlayer(jsonEncode(json));
   }
 

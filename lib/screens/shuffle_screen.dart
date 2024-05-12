@@ -5,12 +5,13 @@ import 'package:teambalancer/common/shuffle.dart';
 import 'package:teambalancer/common/utils.dart';
 import 'package:teambalancer/data/data.dart';
 import 'package:teambalancer/data/player_data.dart';
+import 'package:teambalancer/data/team_key.dart';
 import 'package:teambalancer/screens/groups_screen.dart';
 
 class ShuffleScreen extends StatefulWidget {
-  const ShuffleScreen({required this.teamName, required this.data, super.key});
+  const ShuffleScreen({required this.teamKey, required this.data, super.key});
 
-  final String teamName;
+  final TeamKey teamKey;
   final Data data;
   @override
   State<ShuffleScreen> createState() => _ShuffleScreenState();
@@ -29,7 +30,7 @@ class _ShuffleScreenState extends State<ShuffleScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final team = widget.data.get().teams[widget.teamName]!;
+    final team = widget.data.get().teams[widget.teamKey.key]!;
     final players = team.players;
     if (parameter.weights.isEmpty) {
       parameter.weights = team.weights;
@@ -103,9 +104,7 @@ class _ShuffleScreenState extends State<ShuffleScreen> {
           navigateTo(
               context,
               GroupScreen(
-                  teamName: widget.teamName,
-                  data: widget.data,
-                  groups: groups));
+                  teamKey: widget.teamKey, data: widget.data, groups: groups));
         },
         child: const Icon(Icons.shuffle),
       ),

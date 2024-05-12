@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:teambalancer/common/localization.dart';
 import 'package:flutter/material.dart';
+import 'package:teambalancer/data/team_key.dart';
 import 'package:teambalancer/screens/main_screen.dart';
 import 'package:app_links/app_links.dart';
 
@@ -55,9 +56,9 @@ class MainAppState extends State<MainApp> {
       supportedLocales: AppLocalizations.supportedLocales,
       navigatorKey: _navigatorKey,
       onGenerateRoute: (RouteSettings settings) {
-        final routeName = settings.name;
+        final routeName = TeamKey(settings.name ?? "");
         return MaterialPageRoute(
-          builder: (context) => MainScreen(routeName ?? ""),
+          builder: (context) => MainScreen(routeName),
           settings: settings,
         );
       },

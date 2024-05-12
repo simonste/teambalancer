@@ -2,16 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:teambalancer/common/constants.dart';
 import 'package:teambalancer/common/utils.dart';
 import 'package:teambalancer/data/data.dart';
+import 'package:teambalancer/data/team_key.dart';
 import 'package:teambalancer/widgets/tag_text.dart';
 
 class PlayerScreen extends StatefulWidget {
   const PlayerScreen(
-      {required this.teamName,
+      {required this.teamKey,
       required this.playerName,
       required this.data,
       super.key});
 
-  final String teamName;
+  final TeamKey teamKey;
   final String playerName;
   final Data data;
   @override
@@ -21,7 +22,7 @@ class PlayerScreen extends StatefulWidget {
 class _PlayerScreenState extends State<PlayerScreen> {
   @override
   Widget build(BuildContext context) {
-    final team = widget.data.get().teams[widget.teamName]!;
+    final team = widget.data.get().teams[widget.teamKey.key]!;
     final player = team.players[widget.playerName]!;
     final skills = player.skills;
 
@@ -43,7 +44,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                           Theme.of(context).colorScheme.primary))
                   : null,
               onPressed: () => setState(() {
-                player.setSkill(skillType, no, team.key);
+                player.setSkill(skillType, no, widget.teamKey);
               }),
               icon: getTacticsIcon(no,
                   color: selected
@@ -70,7 +71,8 @@ class _PlayerScreenState extends State<PlayerScreen> {
                     value: skill.toDouble(),
                     onChanged: (double value) {
                       setState(() {
-                        player.setSkill(skillType, value.toInt(), team.key);
+                        player.setSkill(
+                            skillType, value.toInt(), widget.teamKey);
                       });
                     },
                   )),

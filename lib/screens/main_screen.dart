@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:teambalancer/common/constants.dart';
 import 'package:teambalancer/common/localization.dart';
 import 'package:teambalancer/common/utils.dart';
+import 'package:teambalancer/data/team_data.dart';
+import 'package:teambalancer/data/team_key.dart';
 import 'package:teambalancer/dialog/confirm_dialog.dart';
 import 'package:teambalancer/dialog/create_team_dialog.dart';
 import 'package:teambalancer/screens/shuffle_screen.dart';
@@ -9,7 +11,7 @@ import 'package:teambalancer/screens/team_screen.dart';
 import 'package:teambalancer/data/data.dart';
 
 class MainScreen extends StatefulWidget {
-  final String addTeamKey;
+  final TeamKey addTeamKey;
 
   const MainScreen(this.addTeamKey, {super.key});
 
@@ -34,6 +36,9 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     final teams = data.get().teams;
+    List<MapEntry<String, TeamData>> sortedEntries = teams.entries.toList();
+    sortedEntries.sort((a, b) => a.value.name.compareTo(b.value.name));
+    final sortedKeys = Map.fromEntries(sortedEntries).keys.toList();
     return Scaffold(
       appBar: AppBar(
           title: Text(context.l10n.appName),
@@ -41,18 +46,19 @@ class _MainScreenState extends State<MainScreen> {
       body: ListView.builder(
         itemCount: teams.length,
         itemBuilder: (context, index) {
-          final sorted = teams.keys.toList()..sort();
-          final name = sorted[index];
+          final teamKey = TeamKey(sortedKeys[index]);
+          final team = teams[teamKey.key]!;
+          final name = team.name;
           return Card(
             child: ListTile(
               title: Text(name),
-              leading: getSportIcon(Sport.values[teams[name]!.sport]),
+              leading: getSportIcon(Sport.values[team.sport]),
               trailing: IconButton(
                 icon: const Icon(Icons.settings),
                 onPressed: () => navigateTo(
                     context,
                     TeamScreen(
-                      teamName: name,
+                      teamKey: teamKey,
                       data: data,
                     )),
               ),
@@ -60,12 +66,12 @@ class _MainScreenState extends State<MainScreen> {
                 navigateTo(
                     context,
                     ShuffleScreen(
-                      teamName: name,
+                      teamKey: teamKey,
                       data: data,
                     ));
               },
               onLongPress: () => dialog(
-                  TeamDialogData(name, Sport.values[teams[name]!.sport])),
+                  TeamDialogData(name, Sport.values[team.sport], teamKey)),
             ),
           );
         },
@@ -85,7 +91,7 @@ class _MainScreenState extends State<MainScreen> {
         title: context.l10n.teamName,
         defaultData: defaultData,
         deleteFunction: () async {
-          if (data.isAdmin(defaultData.name)) {
+          if (data.isAdmin(defaultData.key)) {
             await confirmDialog(
                 context: context,
                 title: context.l10n.deleteTeam(defaultData.name),
@@ -94,13 +100,13 @@ class _MainScreenState extends State<MainScreen> {
                   DialogAction(
                       text: context.l10n.ok,
                       action: () async {
-                        await data.removeTeam(defaultData.name, admin: true);
+                        await data.removeTeam(defaultData.key, admin: true);
                         setState(() {});
                       })
                 ]);
           } else {
             setState(() {
-              data.removeTeam(defaultData.name);
+              data.removeTeam(defaultData.key);
             });
           }
         },
@@ -111,7 +117,7 @@ class _MainScreenState extends State<MainScreen> {
     }
     if (input == null) return; // empty name not allowed
     if (defaultData != null) {
-      data.renameTeam(defaultData.name, input.name, input.sport);
+      data.renameTeam(defaultData.key, input.name, input.sport);
     } else {
       await data.addTeam(input.name, input.sport);
     }

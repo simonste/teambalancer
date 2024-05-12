@@ -3,14 +3,15 @@ import 'package:teambalancer/common/constants.dart';
 import 'package:teambalancer/common/localization.dart';
 import 'package:teambalancer/common/utils.dart';
 import 'package:teambalancer/data/data.dart';
+import 'package:teambalancer/data/team_key.dart';
 import 'package:teambalancer/dialog/string_dialog.dart';
 import 'package:teambalancer/screens/player_screen.dart';
 import 'package:teambalancer/widgets/tag_text.dart';
 
 class TeamScreen extends StatefulWidget {
-  const TeamScreen({required this.teamName, required this.data, super.key});
+  const TeamScreen({required this.teamKey, required this.data, super.key});
 
-  final String teamName;
+  final TeamKey teamKey;
   final Data data;
   @override
   State<TeamScreen> createState() => _TeamScreenState();
@@ -19,7 +20,7 @@ class TeamScreen extends StatefulWidget {
 class _TeamScreenState extends State<TeamScreen> {
   @override
   Widget build(BuildContext context) {
-    final team = widget.data.get().teams[widget.teamName]!;
+    final team = widget.data.get().teams[widget.teamKey.key]!;
     final players = team.players;
 
     List<Widget> tags = [];
@@ -79,7 +80,7 @@ class _TeamScreenState extends State<TeamScreen> {
                   context,
                   PlayerScreen(
                     playerName: name,
-                    teamName: widget.teamName,
+                    teamKey: widget.teamKey,
                     data: widget.data,
                   ), callback: () {
                 setState(() {});
@@ -92,7 +93,7 @@ class _TeamScreenState extends State<TeamScreen> {
     );
 
     return Scaffold(
-      appBar: AppBar(title: Text(widget.teamName)),
+      appBar: AppBar(title: Text(team.name)),
       body: Column(
         children: [
           Wrap(children: [
@@ -110,7 +111,7 @@ class _TeamScreenState extends State<TeamScreen> {
   }
 
   void dialog(String? defaultText) async {
-    final team = widget.data.get().teams[widget.teamName]!;
+    final team = widget.data.get().teams[widget.teamKey.key]!;
     String? input;
     if (defaultText != null) {
       input = await stringDialog(

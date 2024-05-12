@@ -12,13 +12,21 @@ class TeamData {
   factory TeamData.fromJson(Map<String, dynamic> json) =>
       _$TeamDataFromJson(json);
 
+  String name;
   int sport;
   Map<String, PlayerData> players;
   Map<Skill, int> weights;
   List<String> tags;
   String key;
 
-  TeamData(this.sport, this.players, this.weights, this.tags, this.key);
+  TeamData(
+    this.name,
+    this.sport,
+    this.players,
+    this.weights,
+    this.tags,
+    this.key,
+  );
 
   Future<void> addPlayer(String name) async {
     Map<String, dynamic> body = {'name': name, 'team': key};
@@ -27,8 +35,8 @@ class TeamData {
   }
 
   Future<void> removePlayer(String name) async {
+    Map<String, dynamic> body = {'id': players[name]!.id, 'team': key};
     players.remove(name);
-    Map<String, dynamic> body = {'name': name, 'team': key};
     await Backend.removePlayer(jsonEncode(body));
   }
 
