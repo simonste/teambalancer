@@ -18,7 +18,7 @@ Future<Map<String, TeamData>> getTeamData(String key) async {
 class Data {
   final _dataVersion = 0.2;
   final _key = "data";
-  PreferenceData preferenceData = PreferenceData([]);
+  PreferenceData preferenceData = PreferenceData({});
   TeamsData data = TeamsData({});
 
   void restoreData(notify) async {
@@ -31,23 +31,23 @@ class Data {
       if (json['data_version'] == _dataVersion) {
         preferenceData = PreferenceData.fromJson(json);
 
-        List<PreferenceTeamData> obsoleteTeams = [];
-        for (var team in preferenceData.teams) {
-          var teamData = await getTeamData(team.key);
+        for (var teamKey in preferenceData.teams.keys) {
+          var teamData = await getTeamData(teamKey);
           if (teamData.isEmpty) {
-            obsoleteTeams.add(team);
+            preferenceData.teams.remove(teamKey);
+            _save();
           } else {
             data.teams.addAll(teamData);
           }
         }
-        for (var team in obsoleteTeams) {
-          // teams deleted from server
-          preferenceData.teams.remove(team);
+
+        String? teamKey;
+        // teamKey = "A4GH49";
+        if (teamKey != null && teamKey.length == 6) {
+          preferenceData.teams[teamKey] = PreferenceTeamData();
+          _save();
         }
-        notify();
-      } else {
-        preferenceData.teams.add(PreferenceTeamData('A4GH4902'));
-        _save();
+
         notify();
       }
     }
@@ -69,31 +69,27 @@ class Data {
     Map<String, dynamic> body = {'name': name, 'sport': sport.index};
     final json = await Backend.addTeam(jsonEncode(body));
     data.teams[name] = TeamData.fromJson(json);
-    preferenceData.teams
-        .add(PreferenceTeamData(json['key'], adminKey: json['admin_key']));
+    preferenceData.teams[json['key']] =
+        PreferenceTeamData(adminKey: json['admin_key']);
     _save();
   }
 
   bool isAdmin(String name) {
     final team = data.teams[name]!;
-    return preferenceData.teams
-        .firstWhere((el) => el.key == team.key)
-        .adminKey
-        .isNotEmpty;
+    return preferenceData.teams[team.key]!.adminKey.isNotEmpty;
   }
 
   Future<void> removeTeam(String name, {bool admin = false}) async {
+    final team = data.teams[name]!;
     if (admin) {
-      final team = data.teams[name]!;
       Map<String, dynamic> body = {
         'key': team.key,
-        'admin_key': preferenceData.teams
-            .firstWhere((el) => el.key == team.key)
-            .adminKey,
+        'admin_key': preferenceData.teams[team.key]!.adminKey
       };
       await Backend.removeTeam(jsonEncode(body));
     }
     data.teams.remove(name);
+    preferenceData.teams.remove(team.key);
     _save();
   }
 

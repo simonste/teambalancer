@@ -7,10 +7,9 @@ class PreferenceTeamData {
   factory PreferenceTeamData.fromJson(Map<String, dynamic> json) =>
       _$PreferenceTeamDataFromJson(json);
 
-  String key;
   String adminKey;
 
-  PreferenceTeamData(this.key, {this.adminKey = ''});
+  PreferenceTeamData({this.adminKey = ''});
 }
 
 @JsonSerializable()
@@ -19,7 +18,7 @@ class PreferenceData {
   factory PreferenceData.fromJson(Map<String, dynamic> json) =>
       _$PreferenceDataFromJson(json);
 
-  List<PreferenceTeamData> teams;
+  Map<String, PreferenceTeamData> teams;
 
   PreferenceData(this.teams);
 }
