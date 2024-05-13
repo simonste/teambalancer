@@ -49,7 +49,7 @@ void main() {
     await tester.addTeam("Football team", Sport.football);
 
     await tester.takeScreenshot(binding, 'screenshot1');
-
+    await tester.pump(const Duration(seconds: 1));
     await tester.deleteTeam("Football team");
   });
 }
