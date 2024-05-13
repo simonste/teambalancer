@@ -17,6 +17,7 @@ dependencies:
   intl: ^0.18.1
   json_annotation: ^4.8.1
   shared_preferences: ^2.2.1
+  share_plus: ^9.0.0
   flutter_svg_test: ^1.0.1
   http: ^1.2.1
 

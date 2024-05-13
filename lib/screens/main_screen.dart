@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:teambalancer/common/constants.dart';
 import 'package:teambalancer/common/localization.dart';
 import 'package:teambalancer/common/utils.dart';
@@ -53,15 +54,25 @@ class _MainScreenState extends State<MainScreen> {
             child: ListTile(
               title: Text(name),
               leading: getSportIcon(Sport.values[team.sport]),
-              trailing: IconButton(
-                icon: const Icon(Icons.settings),
-                onPressed: () => navigateTo(
-                    context,
-                    TeamScreen(
-                      teamKey: teamKey,
-                      data: data,
-                    )),
-              ),
+              trailing: SizedBox(
+                  width: 100,
+                  child: Row(children: [
+                    IconButton(
+                      icon: const Icon(Icons.settings),
+                      onPressed: () => navigateTo(
+                          context,
+                          TeamScreen(
+                            teamKey: teamKey,
+                            data: data,
+                          )),
+                    ),
+                    IconButton(
+                        icon: const Icon(Icons.share),
+                        onPressed: () {
+                          Share.share(
+                              'https://teambalancer.simonste.ch/#${teamKey.key}');
+                        })
+                  ])),
               onTap: () {
                 navigateTo(
                     context,
