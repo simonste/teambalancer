@@ -20,7 +20,7 @@ class TeamScreen extends StatefulWidget {
 class _TeamScreenState extends State<TeamScreen> {
   @override
   Widget build(BuildContext context) {
-    final team = widget.data.get().teams[widget.teamKey.key]!;
+    final team = widget.data.get().team(widget.teamKey);
     final players = team.players;
 
     List<Widget> tags = [];
@@ -111,7 +111,7 @@ class _TeamScreenState extends State<TeamScreen> {
   }
 
   void dialog(String? defaultText) async {
-    final team = widget.data.get().teams[widget.teamKey.key]!;
+    final team = widget.data.get().team(widget.teamKey);
     String? input;
     if (defaultText != null) {
       input = await stringDialog(

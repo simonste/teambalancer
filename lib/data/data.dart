@@ -9,13 +9,13 @@ import 'package:teambalancer/data/team_key.dart';
 
 import 'dart:developer' as developer;
 
-Future<Map<String, TeamData>> getTeamData(TeamKey teamKey) async {
+Future<TeamData?> getTeamData(TeamKey teamKey) async {
   final json = await Backend.getTeam(teamKey.key);
   if (json.isEmpty) {
     // e.g. team removed from server
-    return {};
+    return null;
   }
-  return {json['key']: TeamData.fromJson(json)};
+  return TeamData.fromJson(json);
 }
 
 class Data {
@@ -48,13 +48,13 @@ class Data {
       final teamKey = TeamKey(key);
       developer.log('check $teamKey', name: 'teambalancer data');
       var teamData = await getTeamData(teamKey);
-      if (teamData.isEmpty) {
+      if (teamData == null) {
         developer.log('remove obsolete team $teamKey',
             name: 'teambalancer data');
         preferenceData.teams.remove(teamKey);
       } else {
         developer.log('loaded team $teamKey', name: 'teambalancer data');
-        data.teams.addAll(teamData);
+        data.addTeam(teamData);
       }
     }
 
@@ -78,7 +78,7 @@ class Data {
     Map<String, dynamic> body = {'name': name, 'sport': sport.index};
     final json = await Backend.addTeam(jsonEncode(body));
 
-    data.teams[json['key']] = TeamData.fromJson(json);
+    data.addTeam(TeamData.fromJson(json));
     preferenceData.teams[json['key']] =
         PreferenceTeamData(adminKey: json['admin_key']);
     _save();
@@ -96,13 +96,13 @@ class Data {
       };
       await Backend.removeTeam(jsonEncode(body));
     }
-    data.teams.remove(teamKey.key);
+    data.removeTeam(teamKey);
     preferenceData.teams.remove(teamKey.key);
     await _save();
   }
 
   Future<void> renameTeam(TeamKey teamKey, String name, Sport sport) async {
-    final team = data.teams[teamKey.key]!;
+    final team = data.team(teamKey);
     team.name = name;
     team.sport = sport.index;
     Map<String, dynamic> body = {

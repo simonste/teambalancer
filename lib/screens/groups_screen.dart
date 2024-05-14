@@ -23,7 +23,7 @@ class _GroupScreenState extends State<GroupScreen> {
   Widget skill(String name) {
     return getTacticsIcon(widget.data
             .get()
-            .teams[widget.teamKey.key]!
+            .team(widget.teamKey)
             .players[name]!
             .skills[Skill.tactical] ??
         1);
@@ -56,8 +56,7 @@ class _GroupScreenState extends State<GroupScreen> {
     );
 
     return Scaffold(
-      appBar: AppBar(
-          title: Text(widget.data.get().teams[widget.teamKey.key]!.name)),
+      appBar: AppBar(title: Text(widget.data.get().team(widget.teamKey).name)),
       body: listView,
     );
   }

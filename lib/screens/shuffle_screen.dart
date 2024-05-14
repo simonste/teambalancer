@@ -30,7 +30,7 @@ class _ShuffleScreenState extends State<ShuffleScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final team = widget.data.get().teams[widget.teamKey.key]!;
+    final team = widget.data.get().team(widget.teamKey);
     final players = team.players;
     if (parameter.weights.isEmpty) {
       parameter.weights = team.weights;

@@ -22,7 +22,7 @@ class PlayerScreen extends StatefulWidget {
 class _PlayerScreenState extends State<PlayerScreen> {
   @override
   Widget build(BuildContext context) {
-    final team = widget.data.get().teams[widget.teamKey.key]!;
+    final team = widget.data.get().team(widget.teamKey);
     final player = team.players[widget.playerName]!;
     final skills = player.skills;
 

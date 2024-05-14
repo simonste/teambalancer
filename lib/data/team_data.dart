@@ -4,6 +4,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:teambalancer/common/constants.dart';
 import 'package:teambalancer/data/backend.dart';
 import 'package:teambalancer/data/player_data.dart';
+import 'package:teambalancer/data/team_key.dart';
 part 'team_data.g.dart';
 
 @JsonSerializable()
@@ -61,13 +62,26 @@ class TeamData {
   }
 }
 
-@JsonSerializable()
 class TeamsData {
-  Map<String, dynamic> toJson() => _$TeamsDataToJson(this);
-  factory TeamsData.fromJson(Map<String, dynamic> json) =>
-      _$TeamsDataFromJson(json);
+  final Map<String, TeamData> _teams;
 
-  Map<String, TeamData> teams;
+  TeamsData(this._teams);
 
-  TeamsData(this.teams);
+  TeamData team(TeamKey teamKey) {
+    return _teams[teamKey.key]!;
+  }
+
+  void addTeam(TeamData team) {
+    _teams[team.key] = team;
+  }
+
+  void removeTeam(TeamKey teamKey) {
+    _teams.remove(teamKey);
+  }
+
+  List<TeamKey> getKeysSortedByName() {
+    List<MapEntry<String, TeamData>> sortedEntries = _teams.entries.toList();
+    sortedEntries.sort((a, b) => a.value.name.compareTo(b.value.name));
+    return sortedEntries.map((e) => TeamKey(e.key)).toList();
+  }
 }

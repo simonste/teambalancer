@@ -3,7 +3,6 @@ import 'package:share_plus/share_plus.dart';
 import 'package:teambalancer/common/constants.dart';
 import 'package:teambalancer/common/localization.dart';
 import 'package:teambalancer/common/utils.dart';
-import 'package:teambalancer/data/team_data.dart';
 import 'package:teambalancer/data/team_key.dart';
 import 'package:teambalancer/dialog/confirm_dialog.dart';
 import 'package:teambalancer/dialog/create_team_dialog.dart';
@@ -36,19 +35,16 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final teams = data.get().teams;
-    List<MapEntry<String, TeamData>> sortedEntries = teams.entries.toList();
-    sortedEntries.sort((a, b) => a.value.name.compareTo(b.value.name));
-    final sortedKeys = Map.fromEntries(sortedEntries).keys.toList();
+    final sortedKeys = data.get().getKeysSortedByName();
     return Scaffold(
       appBar: AppBar(
           title: Text(context.l10n.appName),
           leading: const Image(image: AssetImage("assets/ICON-1.png"))),
       body: ListView.builder(
-        itemCount: teams.length,
+        itemCount: sortedKeys.length,
         itemBuilder: (context, index) {
-          final teamKey = TeamKey(sortedKeys[index]);
-          final team = teams[teamKey.key]!;
+          final teamKey = sortedKeys[index];
+          final team = data.get().team(teamKey);
           final name = team.name;
           return Card(
             child: ListTile(
@@ -70,7 +66,7 @@ class _MainScreenState extends State<MainScreen> {
                         icon: const Icon(Icons.share),
                         onPressed: () {
                           Share.share(
-                              'https://teambalancer.simonste.ch/#${teamKey.key}');
+                              'https://teambalancer.simonste.ch/#${team.key}');
                         })
                   ])),
               onTap: () {
