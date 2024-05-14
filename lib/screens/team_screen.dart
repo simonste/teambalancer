@@ -28,7 +28,7 @@ class _TeamScreenState extends State<TeamScreen> {
       tags.add(TagText.tag(tag));
     }
 
-    List<Widget> skills = [];
+    List<Widget> skills = [Text(context.l10n.skillWeights)];
     for (var skill in Skill.values) {
       if (skill != Skill.tactical) {
         skills.add(Row(
@@ -51,6 +51,7 @@ class _TeamScreenState extends State<TeamScreen> {
         ));
       }
     }
+    skills.add(Text(context.l10n.players));
 
     var listView = ListView.builder(
       itemCount: players.length,
