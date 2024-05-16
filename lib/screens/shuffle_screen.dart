@@ -28,6 +28,26 @@ class _ShuffleScreenState extends State<ShuffleScreen> {
     }
   }
 
+  Color? cardColor(selected) {
+    return selected
+        ? Theme.of(context).colorScheme.primary
+        : Theme.of(context).cardColor;
+  }
+
+  ButtonStyle? buttonStyle(selected) {
+    return selected
+        ? ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(
+                Theme.of(context).colorScheme.primary))
+        : null;
+  }
+
+  TextStyle? textStyle(selected) {
+    return selected
+        ? TextStyle(color: Theme.of(context).colorScheme.onPrimary)
+        : null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final team = widget.data.get().team(widget.teamKey);
@@ -36,47 +56,40 @@ class _ShuffleScreenState extends State<ShuffleScreen> {
       parameter.weights = team.weights;
       parameter.players = Map<String, PlayerData>.from(team.players);
     }
+    final sorted = players.keys.toList()..sort();
 
-    var listView = ListView.builder(
-      itemCount: players.length,
-      itemBuilder: (context, index) {
-        final sorted = players.keys.toList()..sort();
-        final name = sorted[index];
-        return Card(
-          child: ListTile(
-            title: Text(name),
-            leading: Checkbox(
-              value: parameter.players.containsKey(name),
-              onChanged: (bool? value) {
-                toggle(name, players[name]!);
-                setState(() {});
-              },
-            ),
+    var gridView = GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          mainAxisSpacing: 8.0,
+          crossAxisSpacing: 8.0,
+          childAspectRatio: 3 / 1,
+        ),
+        itemCount: players.length,
+        itemBuilder: (context, index) {
+          final name = sorted[index];
+          final selected = parameter.players.containsKey(name);
+          return GestureDetector(
             onTap: () {
               toggle(name, players[name]!);
               setState(() {});
             },
-          ),
-        );
-      },
-    );
+            child: Card(
+              color: cardColor(selected),
+              child: Center(child: Text(name, style: textStyle(selected))),
+            ),
+          );
+        });
 
     var groupButtons = List<Widget>.generate(Constants.maxGroups - 1, (i) {
       final no = i + 2;
       final selected = (parameter.noOfGroups == no);
       return TextButton(
-        style: selected
-            ? ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(
-                    Theme.of(context).colorScheme.primary))
-            : null,
+        style: buttonStyle(selected),
         onPressed: () => setState(() {
           parameter.noOfGroups = no;
         }),
-        child: Text("$no",
-            style: selected
-                ? TextStyle(color: Theme.of(context).colorScheme.onPrimary)
-                : null),
+        child: Text("$no", style: textStyle(selected)),
       );
     });
 
@@ -95,7 +108,7 @@ class _ShuffleScreenState extends State<ShuffleScreen> {
                   Text(context.l10n.noOfPlayers(parameter.players.length))
                 ],
               )),
-          Expanded(child: listView)
+          Expanded(child: gridView)
         ],
       ),
       floatingActionButton: FloatingActionButton(

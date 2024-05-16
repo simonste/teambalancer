@@ -55,6 +55,9 @@ class MainAppState extends State<MainApp> {
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       navigatorKey: _navigatorKey,
+      theme: ThemeData(
+          colorScheme: const ColorScheme.light(
+              primary: Color.fromARGB(255, 0, 52, 154))),
       onGenerateRoute: (RouteSettings settings) {
         final routeName = TeamKey(settings.name ?? "");
         return MaterialPageRoute(
