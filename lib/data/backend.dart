@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class Backend {
-  static const baseUrl = 'https://teambalancer.simonste.ch/api/';
+  static const baseUrl = 'https://teambalancer.simonste.ch/api-test/';
 
   static Future<dynamic> get(url) async {
     final response = await http.get(Uri.parse("$baseUrl$url"));

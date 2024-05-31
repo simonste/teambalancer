@@ -7,11 +7,13 @@ fi
 
 rm build/web -r
 
+sed -i 's|teambalancer.simonste.ch/api-test|teambalancer.simonste.ch/api|' lib/data/backend.dart
 flutter build web
+sed -i 's|teambalancer.simonste.ch/api|teambalancer.simonste.ch/api-test|' lib/data/backend.dart
 
 sed -i 's/<base href="\/">//' build/web/index.html
 
 if [ $? == 0 ]; then
     remote_dir="/run/user/1000/gvfs/ftp:host=simonste.ch/teambalancer.simonste.ch/"
-    rsync -rv --delete --exclude='.git/' --exclude='api/' build/web/ $remote_dir
+    rsync -rv --delete --exclude='.git/' --exclude='api/' --exclude='api-test/' build/web/ $remote_dir
 fi

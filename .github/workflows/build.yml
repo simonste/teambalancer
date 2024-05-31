@@ -32,6 +32,8 @@ jobs:
         run: flutter/bin/flutter gen-l10n
       - name: Generate sources
         run: flutter/bin/flutter packages pub run build_runner build --delete-conflicting-outputs
+      - name: Use main api
+        run: sed -i '' -e 's|teambalancer.simonste.ch/api-test|teambalancer.simonste.ch/api|' lib/data/backend.dart
 
       - name: Build
         run: flutter/bin/flutter build appbundle
@@ -95,6 +97,8 @@ jobs:
         run: flutter/bin/flutter gen-l10n
       - name: Generate sources
         run: flutter/bin/flutter packages pub run build_runner build --delete-conflicting-outputs
+      - name: Use main api
+        run: sed -i '' -e 's|teambalancer.simonste.ch/api-test|teambalancer.simonste.ch/api|' lib/data/backend.dart
 
       - name: Install the Apple certificate
         uses: apple-actions/import-codesign-certs@master
