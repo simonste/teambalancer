@@ -74,6 +74,22 @@ extension AppHelper on WidgetTester {
     await tap(find.text('Ok'));
     await pumpAndSettle();
   }
+
+  Future<void> renamePlayer(String currentName, String newName) async {
+    await longPress(find.text(currentName));
+    await pumpAndSettle();
+    await enterText(find.byType(TextField), newName);
+    await pump();
+    await tap(find.text('Ok'));
+    await pumpAndSettle();
+  }
+
+  Future<void> deletePlayer(String playerName) async {
+    await longPress(find.text(playerName));
+    await pumpAndSettle();
+    await tap(find.byIcon(Icons.delete));
+    await pumpAndSettle();
+  }
 }
 
 void main() {
@@ -110,8 +126,13 @@ void main() {
 
     await tester.tap(find.byTooltip("Back"));
     await tester.pumpAndSettle();
-
     expect(find.svgAssetWithPath(getAsset(Tactics.defense)), findsOneWidget);
+
+    await tester.addPlayer("Player six");
+    await tester.renamePlayer("Player six", "Player five");
+    expect(find.text("Player five"), findsOneWidget);
+    await tester.deletePlayer("Player five");
+    expect(find.text("Player five"), findsNothing);
 
     await tester.tap(find.byTooltip("Back"));
     await tester.pumpAndSettle();

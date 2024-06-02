@@ -14,11 +14,11 @@ class PlayerData {
 
   Map<Skill, int> skills;
   List<String> tags;
-  int id;
+  int playerId;
 
-  PlayerData(this.skills, this.tags, this.id);
+  PlayerData(this.skills, this.tags, this.playerId);
 
-  PlayerData.init(this.id)
+  PlayerData.init(this.playerId)
       : skills = {for (var key in Skill.values) key: Constants.defaultSkill},
         tags = [];
 
@@ -26,7 +26,7 @@ class PlayerData {
     skills[skill] = value;
 
     var json = toJson();
-    json['team'] = teamKey.key;
+    json['teamKey'] = teamKey.key;
     await Backend.updatePlayer(jsonEncode(json));
   }
 

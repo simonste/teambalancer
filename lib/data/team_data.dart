@@ -18,7 +18,7 @@ class TeamData {
   Map<String, PlayerData> players;
   Map<Skill, int> weights;
   List<String> tags;
-  String key;
+  String teamKey;
 
   TeamData(
     this.name,
@@ -26,17 +26,20 @@ class TeamData {
     this.players,
     this.weights,
     this.tags,
-    this.key,
+    this.teamKey,
   );
 
   Future<void> addPlayer(String name) async {
-    Map<String, dynamic> body = {'name': name, 'team': key};
+    Map<String, dynamic> body = {'name': name, 'teamKey': teamKey};
     final json = await Backend.addPlayer(jsonEncode(body));
     players[name] = PlayerData.fromJson(json);
   }
 
   Future<void> removePlayer(String name) async {
-    Map<String, dynamic> body = {'id': players[name]!.id, 'team': key};
+    Map<String, dynamic> body = {
+      'playerId': players[name]!.playerId,
+      'teamKey': teamKey
+    };
     players.remove(name);
     await Backend.removePlayer(jsonEncode(body));
   }
@@ -45,8 +48,8 @@ class TeamData {
     players[to] = players[from]!;
     players.remove(from);
     Map<String, dynamic> body = {
-      'team': key,
-      'id': players[to]!.id,
+      'teamKey': teamKey,
+      'playerId': players[to]!.playerId,
       'name': to
     };
     await Backend.renamePlayer(jsonEncode(body));
@@ -57,7 +60,7 @@ class TeamData {
 
     var json = toJson();
     json.remove('players');
-    json['key'] = key;
+    json['teamKey'] = teamKey;
     await Backend.updateTeam(jsonEncode(json));
   }
 }
@@ -72,7 +75,7 @@ class TeamsData {
   }
 
   void addTeam(TeamData team) {
-    _teams[team.key] = team;
+    _teams[team.teamKey] = team;
   }
 
   void removeTeam(TeamKey teamKey) {

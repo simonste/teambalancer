@@ -79,8 +79,8 @@ class Data {
     final json = await Backend.addTeam(jsonEncode(body));
 
     data.addTeam(TeamData.fromJson(json));
-    preferenceData.teams[json['key']] =
-        PreferenceTeamData(adminKey: json['admin_key']);
+    preferenceData.teams[json['teamKey']] =
+        PreferenceTeamData(adminKey: json['adminKey']);
     _save();
   }
 
@@ -91,8 +91,8 @@ class Data {
   Future<void> removeTeam(TeamKey teamKey, {bool admin = false}) async {
     if (admin) {
       Map<String, dynamic> body = {
-        'key': teamKey.key,
-        'admin_key': preferenceData.teams[teamKey.key]!.adminKey,
+        'teamKey': teamKey.key,
+        'adminKey': preferenceData.teams[teamKey.key]!.adminKey,
       };
       await Backend.removeTeam(jsonEncode(body));
     }
@@ -106,7 +106,7 @@ class Data {
     team.name = name;
     team.sport = sport.index;
     Map<String, dynamic> body = {
-      'key': teamKey.key,
+      'teamKey': teamKey.key,
       'name': name,
       'sport': sport.index
     };

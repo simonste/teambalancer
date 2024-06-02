@@ -66,7 +66,7 @@ class _MainScreenState extends State<MainScreen> {
                         icon: const Icon(Icons.share),
                         onPressed: () {
                           Share.share(
-                              'https://teambalancer.simonste.ch/#${team.key}');
+                              'https://teambalancer.simonste.ch/#${team.teamKey}');
                         })
                   ])),
               onTap: () {
