@@ -76,7 +76,7 @@ class TeamsData {
   }
 
   void removeTeam(TeamKey teamKey) {
-    _teams.remove(teamKey);
+    _teams.remove(teamKey.key);
   }
 
   List<TeamKey> getKeysSortedByName() {

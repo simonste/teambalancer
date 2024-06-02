@@ -133,5 +133,7 @@ void main() {
     await tester.tap(find.byTooltip("Back"));
     await tester.pumpAndSettle();
     await tester.deleteTeam("Team");
+
+    expect(find.text("Team"), findsNothing);
   });
 }
