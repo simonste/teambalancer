@@ -1,7 +1,7 @@
 import 'package:teambalancer/common/constants.dart';
 import 'package:calc/calc.dart';
+import 'package:teambalancer/data/group_data.dart';
 import 'dart:developer' as developer;
-
 import 'package:teambalancer/data/player_data.dart';
 
 class ShuffleParameter {
@@ -17,20 +17,6 @@ class ShuffleParameter {
   int totalSkill(Skill skill) => players.keys
       .toList()
       .fold(0, (prev, name) => prev + weightedSkill(name, skill));
-}
-
-class Group {
-  final String name;
-  final int capacity;
-  List<String> members = [];
-  Map<Skill, int> skills = {};
-
-  Group(this.name, this.capacity)
-      : skills = {for (var key in Skill.values) key: 0};
-
-  bool isComplete() {
-    return members.length >= capacity;
-  }
 }
 
 class ShuffleWeighted {
@@ -74,10 +60,10 @@ class ShuffleWeighted {
   // https://en.wikipedia.org/wiki/Alias_method  ??
   // https://de.wikipedia.org/wiki/MCMC-Verfahren
 
-  List<Group> shuffle() {
+  List<GroupData> shuffle() {
     int draws = 4;
 
-    List<Group> bestGroups = [];
+    List<GroupData> bestGroups = [];
 
     for (int i = 0; i < draws; i++) {
       final groups = ShuffleBase(parameter: parameter).shuffle();
@@ -101,26 +87,26 @@ class ShuffleWeighted {
 
 class ShuffleBase {
   final ShuffleParameter parameter;
-  final List<Group> _groups;
+  final List<GroupData> _groups;
 
   ShuffleBase({required this.parameter})
-      : _groups = List<Group>.generate(
+      : _groups = List<GroupData>.generate(
             parameter.noOfGroups,
-            (i) => Group("Group ${i + 1}",
+            (i) => GroupData("Group ${i + 1}",
                 (parameter.players.length / parameter.noOfGroups).ceil()),
             growable: false);
 
-  void _addToGroup(String name, int groupNo) {
+  void _addToGroup(String playerName, int groupNo) {
     var group = _groups[groupNo];
-    group.members.add(name);
+    group.members[playerName] = parameter.players[playerName]!.playerId;
 
     for (var skill in Skill.values) {
       group.skills[skill] =
-          group.skills[skill]! + parameter.weightedSkill(name, skill);
+          group.skills[skill]! + parameter.weightedSkill(playerName, skill);
     }
   }
 
-  List<Group> shuffle() {
+  List<GroupData> shuffle() {
     Random random = Random();
     final playerNames = parameter.players.keys.toList()..shuffle(random);
 

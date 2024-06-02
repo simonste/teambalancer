@@ -57,8 +57,8 @@ void main() {
       expect(m1.length, 2);
 
       // two two better players should not be in the same group
-      expect(m0.contains("P1") && m0.contains("P2"), false);
-      expect(m0.contains("P3") && m0.contains("P4"), false);
+      expect(m0.keys.contains("P1") && m0.keys.contains("P2"), false);
+      expect(m0.keys.contains("P3") && m0.keys.contains("P4"), false);
     }
   });
 

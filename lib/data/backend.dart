@@ -78,4 +78,8 @@ class Backend {
   static Future<dynamic> updatePlayer(body) async {
     return put('player.php/update', body);
   }
+
+  static Future<dynamic> addGame(body) async {
+    return post('history.php/add', body);
+  }
 }

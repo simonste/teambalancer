@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:teambalancer/common/constants.dart';
-import 'package:teambalancer/common/shuffle.dart';
 import 'package:teambalancer/common/utils.dart';
+import 'package:teambalancer/data/backend.dart';
 import 'package:teambalancer/data/data.dart';
+import 'package:teambalancer/data/group_data.dart';
 import 'package:teambalancer/data/team_key.dart';
 
 class GroupScreen extends StatefulWidget {
@@ -12,7 +15,7 @@ class GroupScreen extends StatefulWidget {
       required this.data,
       super.key});
 
-  final List<Group> groups;
+  final List<GroupData> groups;
   final TeamKey teamKey;
   final Data data;
   @override
@@ -45,7 +48,7 @@ class _GroupScreenState extends State<GroupScreen> {
           child: ListTile(
             title: Row(children: [Text(group.name)]),
             subtitle: Column(
-                children: group.members
+                children: group.members.keys
                     .map((element) =>
                         Row(children: [skill(element), Text(element)]))
                     .toList()),
@@ -56,8 +59,21 @@ class _GroupScreenState extends State<GroupScreen> {
     );
 
     return Scaffold(
-      appBar: AppBar(title: Text(widget.data.get().team(widget.teamKey).name)),
+      appBar: AppBar(
+        title: Text(widget.data.get().team(widget.teamKey).name),
+        actions: [
+          IconButton(icon: const Icon(Icons.save), onPressed: saveGroups)
+        ],
+      ),
       body: listView,
     );
+  }
+
+  void saveGroups() {
+    Map<String, dynamic> body = {
+      'teamKey': widget.teamKey.key,
+      'groups': widget.groups
+    };
+    Backend.addGame(jsonEncode(body));
   }
 }
