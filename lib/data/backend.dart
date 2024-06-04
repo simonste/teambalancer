@@ -82,4 +82,16 @@ class Backend {
   static Future<dynamic> addGame(body) async {
     return post('history.php/add', body);
   }
+
+  static Future<dynamic> getHistory(key) async {
+    return get('history.php/list/$key');
+  }
+
+  static Future<dynamic> removeGame(body) async {
+    return delete('history.php/remove', body);
+  }
+
+  static Future<dynamic> updateGame(body) async {
+    return put('history.php/update', body);
+  }
 }

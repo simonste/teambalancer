@@ -6,6 +6,7 @@ import 'package:teambalancer/common/utils.dart';
 import 'package:teambalancer/data/team_key.dart';
 import 'package:teambalancer/dialog/confirm_dialog.dart';
 import 'package:teambalancer/dialog/create_team_dialog.dart';
+import 'package:teambalancer/screens/history_screen.dart';
 import 'package:teambalancer/screens/shuffle_screen.dart';
 import 'package:teambalancer/screens/team_screen.dart';
 import 'package:teambalancer/data/data.dart';
@@ -51,7 +52,7 @@ class _MainScreenState extends State<MainScreen> {
               title: Text(name),
               leading: getSportIcon(Sport.values[team.sport]),
               trailing: SizedBox(
-                  width: 100,
+                  width: 150,
                   child: Row(children: [
                     IconButton(
                       icon: const Icon(Icons.settings),
@@ -60,6 +61,14 @@ class _MainScreenState extends State<MainScreen> {
                           TeamScreen(
                             teamKey: teamKey,
                             data: data,
+                          )),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.history),
+                      onPressed: () => navigateTo(
+                          context,
+                          HistoryScreen(
+                            teamData: data.data.team(teamKey),
                           )),
                     ),
                     IconButton(
