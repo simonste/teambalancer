@@ -61,7 +61,9 @@ class ShuffleWeighted {
   // https://de.wikipedia.org/wiki/MCMC-Verfahren
 
   List<GroupData> shuffle() {
-    int draws = 4;
+    int draws =
+        pow(possibleGroups(parameter.players.length, parameter.noOfGroups), 0.8)
+            .floor();
 
     List<GroupData> bestGroups = [];
 
