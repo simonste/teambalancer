@@ -27,5 +27,6 @@
   },
   "deleteTeamAdmin": "You are the creator of this team. If you delete it, it will be removed for anyone.",
   "skillWeights": "Skill-Weights",
-  "players": "Players"
+  "players": "Players",
+  "result": "Result"
 }

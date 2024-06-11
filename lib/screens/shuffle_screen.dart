@@ -7,6 +7,7 @@ import 'package:teambalancer/data/data.dart';
 import 'package:teambalancer/data/player_data.dart';
 import 'package:teambalancer/data/team_key.dart';
 import 'package:teambalancer/screens/groups_screen.dart';
+import 'package:teambalancer/widgets/player_card.dart';
 
 class ShuffleScreen extends StatefulWidget {
   const ShuffleScreen({required this.teamKey, required this.data, super.key});
@@ -26,12 +27,6 @@ class _ShuffleScreenState extends State<ShuffleScreen> {
     } else {
       parameter.players[player] = data;
     }
-  }
-
-  Color? cardColor(selected) {
-    return selected
-        ? Theme.of(context).colorScheme.primary
-        : Theme.of(context).cardColor;
   }
 
   ButtonStyle? buttonStyle(selected) {
@@ -74,9 +69,10 @@ class _ShuffleScreenState extends State<ShuffleScreen> {
               toggle(name, players[name]!);
               setState(() {});
             },
-            child: Card(
-              color: cardColor(selected),
-              child: Center(child: Text(name, style: textStyle(selected))),
+            child: PlayerCard.select(
+              name,
+              selected: selected,
+              theme: Theme.of(context),
             ),
           );
         });
