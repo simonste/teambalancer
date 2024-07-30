@@ -20,6 +20,7 @@ class TeamScreen extends StatefulWidget {
 class _TeamScreenState extends State<TeamScreen> {
   @override
   Widget build(BuildContext context) {
+    final isAdmin = widget.data.isAdmin(widget.teamKey);
     final team = widget.data.get().team(widget.teamKey);
     final players = team.players;
 
@@ -40,11 +41,13 @@ class _TeamScreenState extends State<TeamScreen> {
               max: Constants.weightMax,
               divisions: Constants.weightDivisions,
               value: (team.weights[skill]!).toDouble(),
-              onChanged: (double value) {
-                setState(() {
-                  team.setWeight(skill, value.toInt());
-                });
-              },
+              onChanged: isAdmin
+                  ? (double value) {
+                      setState(() {
+                        team.setWeight(skill, value.toInt());
+                      });
+                    }
+                  : null,
             )),
             Text((team.weights[skill]!).toStringAsFixed(0))
           ],
@@ -72,24 +75,33 @@ class _TeamScreenState extends State<TeamScreen> {
           factors.add(TagText.tag(tag));
         }
 
-        return Card(
-          child: ListTile(
-            title: Text(name),
-            trailing: SizedBox(width: 100, child: Row(children: factors)),
-            onTap: () {
-              navigateTo(
-                  context,
-                  PlayerScreen(
-                    playerName: name,
-                    teamKey: widget.teamKey,
-                    data: widget.data,
-                  ), callback: () {
-                setState(() {});
-              });
-            },
-            onLongPress: () => dialog(name),
-          ),
-        );
+        if (isAdmin) {
+          return Card(
+            child: ListTile(
+              title: Text(name),
+              trailing: SizedBox(width: 100, child: Row(children: factors)),
+              onTap: () {
+                navigateTo(
+                    context,
+                    PlayerScreen(
+                      playerName: name,
+                      teamKey: widget.teamKey,
+                      data: widget.data,
+                    ), callback: () {
+                  setState(() {});
+                });
+              },
+              onLongPress: () => dialog(name),
+            ),
+          );
+        } else {
+          return Card(
+            child: ListTile(
+              title: Text(name),
+              trailing: SizedBox(width: 100, child: Row(children: factors)),
+            ),
+          );
+        }
       },
     );
 
@@ -104,10 +116,12 @@ class _TeamScreenState extends State<TeamScreen> {
           Expanded(child: listView)
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => dialog(null),
-        child: const Icon(Icons.person_add),
-      ),
+      floatingActionButton: (isAdmin)
+          ? FloatingActionButton(
+              onPressed: () => dialog(null),
+              child: const Icon(Icons.person_add),
+            )
+          : null,
     );
   }
 

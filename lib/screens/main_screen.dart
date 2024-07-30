@@ -46,6 +46,7 @@ class _MainScreenState extends State<MainScreen> {
         itemBuilder: (context, index) {
           final teamKey = sortedKeys[index];
           final team = data.get().team(teamKey);
+          final isAdmin = data.isAdmin(teamKey);
           final name = team.name;
           return Card(
             child: ListTile(
@@ -55,7 +56,7 @@ class _MainScreenState extends State<MainScreen> {
                   width: 150,
                   child: Row(children: [
                     IconButton(
-                      icon: const Icon(Icons.settings),
+                      icon: Icon(isAdmin ? Icons.settings : Icons.info_outline),
                       onPressed: () => navigateTo(
                           context,
                           TeamScreen(
@@ -86,8 +87,10 @@ class _MainScreenState extends State<MainScreen> {
                       data: data,
                     ));
               },
-              onLongPress: () => dialog(
-                  TeamDialogData(name, Sport.values[team.sport], teamKey)),
+              onLongPress: isAdmin
+                  ? () => dialog(
+                      TeamDialogData(name, Sport.values[team.sport], teamKey))
+                  : () {},
             ),
           );
         },

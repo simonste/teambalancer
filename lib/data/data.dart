@@ -108,7 +108,8 @@ class Data {
     Map<String, dynamic> body = {
       'teamKey': teamKey.key,
       'name': name,
-      'sport': sport.index
+      'sport': sport.index,
+      'adminKey': preferenceData.teams[teamKey.key]!.adminKey,
     };
     await Backend.renameTeam(jsonEncode(body));
   }
