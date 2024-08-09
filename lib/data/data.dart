@@ -11,7 +11,7 @@ import 'dart:developer' as developer;
 
 Future<TeamData?> getTeamData(TeamKey teamKey) async {
   final json = await Backend.getTeam(teamKey.key);
-  if (json.isEmpty) {
+  if (json == null || json.isEmpty) {
     // e.g. team removed from server
     return null;
   }

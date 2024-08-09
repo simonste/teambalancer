@@ -30,6 +30,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
     final json = await Backend.getHistory(widget.teamData.teamKey);
     final players = widget.teamData.players;
 
+    if (json == null) {
+      return;
+    }
     for (var game in json) {
       List<List<String>> groups = [];
       for (var group in game['groups']) {
@@ -89,7 +92,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
       appBar: AppBar(
         title: Text(widget.teamData.name),
       ),
-      body: listView,
+      body: games.isNotEmpty
+          ? listView
+          : Center(
+              child: Text(context.l10n.noGamesPlayedYet),
+            ),
     );
   }
 }

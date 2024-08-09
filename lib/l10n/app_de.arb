@@ -14,5 +14,6 @@
   "deleteTeamAdmin": "Sie haben dieses Team erstellt. Durch das Löschen wird es auch für alle anderen gelöscht.",
   "skillWeights": "Gewichtung der Fähigkeiten",
   "players": "Spieler",
-  "result": "Resultat"
+  "result": "Resultat",
+  "noGamesPlayedYet": "Noch keine Spiele gespielt."
 }

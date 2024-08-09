@@ -11,7 +11,7 @@ class Backend {
       if (response.body.isNotEmpty) {
         return jsonDecode(response.body);
       } else {
-        return {};
+        return null;
       }
     } else {
       throw Exception('Failed to get $url');
