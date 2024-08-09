@@ -47,7 +47,7 @@ class _GameScreenState extends State<GameScreen> {
 
     cols.add(InkWell(
         onTap: () => dialog(widget.game.result),
-        child: Text(context.l10n.result + ": " + widget.game.result)));
+        child: Text("${context.l10n.result}: ${widget.game.result}")));
     cols.add(Expanded(child: gridView));
 
     return Scaffold(

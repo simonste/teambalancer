@@ -32,7 +32,7 @@ class _ShuffleScreenState extends State<ShuffleScreen> {
   ButtonStyle? buttonStyle(selected) {
     return selected
         ? ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(
+            backgroundColor: WidgetStateProperty.all<Color>(
                 Theme.of(context).colorScheme.primary))
         : null;
   }

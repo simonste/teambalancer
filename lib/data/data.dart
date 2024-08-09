@@ -39,23 +39,25 @@ class Data {
 
     preferenceData = PreferenceData.fromJson(json);
     if (addTeamKey.key.length == 6 &&
-        !preferenceData.teams.containsKey(addTeamKey)) {
-      developer.log('add team $addTeamKey', name: 'teambalancer data');
+        !preferenceData.teams.containsKey(addTeamKey.key)) {
+      developer.log('add team ${addTeamKey.key}', name: 'teambalancer data');
       preferenceData.teams[addTeamKey.key] = PreferenceTeamData();
     }
 
+    var obsoleteTeams = [];
     for (var key in preferenceData.teams.keys) {
       final teamKey = TeamKey(key);
-      developer.log('check $teamKey', name: 'teambalancer data');
       var teamData = await getTeamData(teamKey);
       if (teamData == null) {
-        developer.log('remove obsolete team $teamKey',
-            name: 'teambalancer data');
-        preferenceData.teams.remove(teamKey);
+        developer.log('remove obsolete team $key', name: 'teambalancer data');
+        obsoleteTeams.add(key);
       } else {
-        developer.log('loaded team $teamKey', name: 'teambalancer data');
+        developer.log('loaded team $key', name: 'teambalancer data');
         data.addTeam(teamData);
       }
+    }
+    for (var key in obsoleteTeams) {
+      preferenceData.teams.remove(key);
     }
 
     await _save();

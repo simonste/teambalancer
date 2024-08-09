@@ -40,7 +40,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                 child: (IconButton(
               style: selected
                   ? ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(
+                      backgroundColor: WidgetStateProperty.all<Color>(
                           Theme.of(context).colorScheme.primary))
                   : null,
               onPressed: () => setState(() {
