@@ -49,7 +49,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
               icon: getTacticsIcon(no,
                   color: selected
                       ? Theme.of(context).colorScheme.onPrimary
-                      : null),
+                      : Theme.of(context).iconTheme.color),
             )));
           });
 

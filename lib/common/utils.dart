@@ -45,27 +45,41 @@ String getAsset(var type) {
   return "";
 }
 
-Widget getSportIcon(Sport sport, {Color? color}) {
+Widget getSportIcon(Sport sport, {required Color? color}) {
   ColorFilter? colorFilter =
       color != null ? ColorFilter.mode(color, BlendMode.srcIn) : null;
 
-  return SvgPicture.asset(getAsset(sport), width: 24, colorFilter: colorFilter);
+  return SvgPicture.asset(
+    getAsset(sport),
+    width: 24,
+    colorFilter: colorFilter,
+  );
 }
 
-Widget getSkillIcon(Skill skill, int value, Sport sport) {
+Widget getSkillIcon(Skill skill, int value, Sport sport,
+    {required Color? color}) {
   switch (skill) {
     case Skill.physical:
-      return SvgPicture.asset(getAsset(Skill.physical), width: 24);
+      ColorFilter? colorFilter =
+          color != null ? ColorFilter.mode(color, BlendMode.srcIn) : null;
+      return SvgPicture.asset(
+        getAsset(Skill.physical),
+        width: 24,
+        colorFilter: colorFilter,
+      );
     case Skill.technical:
-      return getSportIcon(sport);
+      return getSportIcon(sport, color: color);
     case Skill.tactical:
-      return getTacticsIcon(value);
+      return getTacticsIcon(value, color: color);
   }
 }
 
-Widget getTacticsIcon(int value, {Color? color}) {
+Widget getTacticsIcon(int value, {required Color? color}) {
   ColorFilter? colorFilter =
       color != null ? ColorFilter.mode(color, BlendMode.srcIn) : null;
-  return SvgPicture.asset(getAsset(getTactics(value)),
-      width: 24, colorFilter: colorFilter);
+  return SvgPicture.asset(
+    getAsset(getTactics(value)),
+    width: 24,
+    colorFilter: colorFilter,
+  );
 }

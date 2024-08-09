@@ -70,7 +70,7 @@ Future<TeamDialogData?> createTeamDialog(BuildContext context,
                   icon: getSportIcon(sport,
                       color: selected
                           ? Theme.of(context).colorScheme.onPrimary
-                          : null),
+                          : Theme.of(context).iconTheme.color),
                 )),
               ));
             }

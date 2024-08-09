@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:teambalancer/common/constants.dart';
 import 'package:teambalancer/common/localization.dart';
@@ -39,8 +40,14 @@ class _MainScreenState extends State<MainScreen> {
     final sortedKeys = data.get().getKeysSortedByName();
     return Scaffold(
       appBar: AppBar(
-          title: Text(context.l10n.appName),
-          leading: const Image(image: AssetImage("assets/ICON-1.png"))),
+        title: Text(context.l10n.appName),
+        leading: SvgPicture.asset(
+          "assets/ICON.svg",
+          width: 24,
+          colorFilter: ColorFilter.mode(
+              Theme.of(context).colorScheme.primary, BlendMode.srcIn),
+        ),
+      ),
       body: ListView.builder(
         itemCount: sortedKeys.length,
         itemBuilder: (context, index) {
@@ -51,7 +58,8 @@ class _MainScreenState extends State<MainScreen> {
           return Card(
             child: ListTile(
               title: Text(name),
-              leading: getSportIcon(Sport.values[team.sport]),
+              leading: getSportIcon(Sport.values[team.sport],
+                  color: Theme.of(context).iconTheme.color),
               trailing: SizedBox(
                   width: 150,
                   child: Row(children: [

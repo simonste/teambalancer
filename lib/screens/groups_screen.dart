@@ -24,12 +24,14 @@ class GroupScreen extends StatefulWidget {
 
 class _GroupScreenState extends State<GroupScreen> {
   Widget skill(String name) {
-    return getTacticsIcon(widget.data
-            .get()
-            .team(widget.teamKey)
-            .players[name]!
-            .skills[Skill.tactical] ??
-        1);
+    return getTacticsIcon(
+        widget.data
+                .get()
+                .team(widget.teamKey)
+                .players[name]!
+                .skills[Skill.tactical] ??
+            1,
+        color: Theme.of(context).iconTheme.color);
   }
 
   @override

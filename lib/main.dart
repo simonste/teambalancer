@@ -6,6 +6,8 @@ import 'package:teambalancer/data/team_key.dart';
 import 'package:teambalancer/screens/main_screen.dart';
 import 'package:app_links/app_links.dart';
 
+// cspell:ignore ARGB
+
 void main() {
   runApp(const MainApp());
 }
@@ -55,9 +57,13 @@ class MainAppState extends State<MainApp> {
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       navigatorKey: _navigatorKey,
+      themeMode: ThemeMode.system,
       theme: ThemeData(
           colorScheme: const ColorScheme.light(
               primary: Color.fromARGB(255, 0, 52, 154))),
+      darkTheme: ThemeData(
+          colorScheme: const ColorScheme.dark(
+              primary: Color.fromARGB(255, 63, 169, 245))),
       onGenerateRoute: (RouteSettings settings) {
         final routeName = TeamKey(settings.name ?? "");
         return MaterialPageRoute(
