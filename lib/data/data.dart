@@ -38,10 +38,15 @@ class Data {
     developer.log('preference $json', name: 'teambalancer data');
 
     preferenceData = PreferenceData.fromJson(json);
-    if (addTeamKey.key.length == 6 &&
-        !preferenceData.teams.containsKey(addTeamKey.key)) {
-      developer.log('add team ${addTeamKey.key}', name: 'teambalancer data');
-      preferenceData.teams[addTeamKey.key] = PreferenceTeamData();
+
+    if (addTeamKey.key.length >= 6) {
+      final teamKey = addTeamKey.key.substring(0, 6);
+      final adminKey =
+          (addTeamKey.key.length == 12) ? addTeamKey.key.substring(6) : '';
+      developer.log('add team $teamKey ($adminKey)', name: 'teambalancer data');
+      if (!preferenceData.teams.containsKey(teamKey) || (adminKey != '')) {
+        preferenceData.teams[teamKey] = PreferenceTeamData(adminKey: adminKey);
+      }
     }
 
     var obsoleteTeams = [];
