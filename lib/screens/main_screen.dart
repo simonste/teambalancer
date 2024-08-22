@@ -125,9 +125,15 @@ class _MainScreenState extends State<MainScreen> {
                 subtitle: context.l10n.deleteTeamAdmin,
                 actions: [
                   DialogAction(
-                      text: context.l10n.ok,
+                      text: context.l10n.deleteForAll,
                       action: () async {
                         await data.removeTeam(defaultData.key, admin: true);
+                        setState(() {});
+                      }),
+                  DialogAction(
+                      text: context.l10n.deleteForMe,
+                      action: () async {
+                        await data.removeTeam(defaultData.key);
                         setState(() {});
                       })
                 ]);

@@ -62,7 +62,7 @@ extension AppHelper on WidgetTester {
     await pumpAndSettle();
     await tap(find.byIcon(Icons.delete));
     await pumpAndSettle();
-    await tap(find.text('Ok'));
+    await tap(find.text('Delete for everyone'));
     await pumpAndSettle();
   }
 

@@ -25,7 +25,9 @@
       }
     }
   },
-  "deleteTeamAdmin": "You are the admin of this team. If you delete it, it will be removed for anyone.",
+  "deleteTeamAdmin": "You are the admin of this team. You can delete this team for everyone.",
+  "deleteForAll": "Delete for everyone",
+  "deleteForMe": "Delete only for me",
   "skillWeights": "Skill-Weights",
   "players": "Players",
   "result": "Result",
