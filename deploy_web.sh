@@ -15,5 +15,5 @@ sed -i 's/<base href="\/">//' build/web/index.html
 
 if [ $? == 0 ]; then
     remote_dir="/run/user/1000/gvfs/ftp:host=simonste.ch/teambalancer.simonste.ch/"
-    rsync -rv --delete --exclude='.git/' --exclude='api/' --exclude='api-test/' build/web/ $remote_dir
+    rsync -rv --delete --exclude='.git/' --exclude='api/' --exclude='.well-known/' --exclude='api-test/' build/web/ $remote_dir
 fi
