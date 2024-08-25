@@ -65,9 +65,12 @@ class MainAppState extends State<MainApp> {
           colorScheme: const ColorScheme.dark(
               primary: Color.fromARGB(255, 63, 169, 245))),
       onGenerateRoute: (RouteSettings settings) {
-        final routeName = TeamKey(settings.name ?? "");
+        final importTeamKey = TeamKey(
+            (settings.name != null && settings.name!.length >= 6)
+                ? settings.name!
+                : "");
         return MaterialPageRoute(
-          builder: (context) => MainScreen(routeName),
+          builder: (context) => MainScreen(importTeamKey),
           settings: settings,
         );
       },

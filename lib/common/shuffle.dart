@@ -17,6 +17,29 @@ class ShuffleParameter {
   int totalSkill(Skill skill) => players.keys
       .toList()
       .fold(0, (prev, name) => prev + weightedSkill(name, skill));
+
+  int groupSize({required int groupNo}) {
+    var p = players.length;
+    for (var i = 0; i < groupNo; i++) {
+      p -= groupSize(groupNo: i);
+    }
+    return (p / (noOfGroups - groupNo)).ceil();
+  }
+
+  int possibleGroups() {
+    int factor = 1;
+    int freePlayers = players.length;
+    int equalSizedGroups = 1;
+    for (var i = 0; i < noOfGroups; i++) {
+      final currentGroupSize = groupSize(groupNo: i);
+      factor *= binomialCoefficient(freePlayers, currentGroupSize);
+      freePlayers -= currentGroupSize;
+      if (i > 0 && groupSize(groupNo: i - 1) == currentGroupSize) {
+        equalSizedGroups++;
+      }
+    }
+    return factor ~/ factorial(equalSizedGroups);
+  }
 }
 
 class ShuffleWeighted {
@@ -29,41 +52,15 @@ class ShuffleWeighted {
       avgSkills[skill] = parameter.totalSkill(skill) / parameter.noOfGroups;
     }
 
-    developer.log(
-        'Possible Groups: ${possibleGroups(parameter.players.length, parameter.noOfGroups)}',
+    developer.log('Possible Groups: ${parameter.possibleGroups()}',
         name: 'shuffle');
-  }
-
-  static int possibleGroups(int players, int noOfGroups) {
-    int groupSize(int groupNo) {
-      var p = players;
-      for (var i = 0; i < groupNo; i++) {
-        p -= groupSize(i);
-      }
-      return (p ~/ (noOfGroups - groupNo));
-    }
-
-    int factor = 1;
-    int freePlayers = players;
-    int equalSizedGroups = 1;
-    for (var i = 0; i < noOfGroups; i++) {
-      final currentGroupSize = groupSize(i);
-      factor *= binomialCoefficient(freePlayers, currentGroupSize);
-      freePlayers -= currentGroupSize;
-      if (i > 0 && groupSize(i - i) == currentGroupSize) {
-        equalSizedGroups++;
-      }
-    }
-    return factor ~/ factorial(equalSizedGroups);
   }
 
   // https://en.wikipedia.org/wiki/Alias_method  ??
   // https://de.wikipedia.org/wiki/MCMC-Verfahren
 
   List<GroupData> shuffle() {
-    int draws =
-        pow(possibleGroups(parameter.players.length, parameter.noOfGroups), 0.8)
-            .floor();
+    int draws = max(pow(parameter.possibleGroups(), 0.8).floor(), 5);
 
     List<GroupData> bestGroups = [];
 
@@ -92,10 +89,8 @@ class ShuffleBase {
   final List<GroupData> _groups;
 
   ShuffleBase({required this.parameter})
-      : _groups = List<GroupData>.generate(
-            parameter.noOfGroups,
-            (i) => GroupData("Group ${i + 1}",
-                (parameter.players.length / parameter.noOfGroups).ceil()),
+      : _groups = List<GroupData>.generate(parameter.noOfGroups,
+            (i) => GroupData("Group ${i + 1}", parameter.groupSize(groupNo: i)),
             growable: false);
 
   void _addToGroup(String playerName, int groupNo) {

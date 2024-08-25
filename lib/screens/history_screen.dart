@@ -70,11 +70,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
             ]),
             subtitle: Row(
                 children: game.groups
-                    .map((group) => Column(
-                        children: group
-                            .map((name) =>
-                                SizedBox(width: 100, child: Text(name)))
-                            .toList()))
+                    .map((group) => Expanded(
+                        child: Column(
+                            children: group
+                                .map((name) => SizedBox(child: Text(name)))
+                                .toList())))
                     .toList()),
             onTap: () => navigateTo(
               context,

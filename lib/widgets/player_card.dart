@@ -7,6 +7,10 @@ class PlayerCard extends Card {
         return theme.colorScheme.primary;
       case 2:
         return theme.colorScheme.secondary;
+      case 3:
+        return Colors.deepPurple;
+      case 4:
+        return Colors.amber;
       default:
         return theme.cardColor;
     }
@@ -15,8 +19,13 @@ class PlayerCard extends Card {
   static TextStyle? textStyle(groupNo, ThemeData theme) {
     switch (groupNo) {
       case 1:
-      case 2:
         return TextStyle(color: theme.colorScheme.onPrimary);
+      case 2:
+        return TextStyle(color: theme.colorScheme.onSecondary);
+      case 3:
+        return const TextStyle(color: Colors.white);
+      case 4:
+        return const TextStyle(color: Colors.black);
       default:
         return null;
     }
