@@ -34,20 +34,12 @@ class _HistoryScreenState extends State<HistoryScreen> {
       return;
     }
     for (var game in json) {
-      List<List<String>> groups = [];
-      for (var group in game['groups']) {
-        List<String> g = [];
-        for (var member in group) {
-          g.add(players.keys.firstWhere((k) => players[k]!.playerId == member));
-        }
-        groups.add(g..sort());
-      }
-
       games.add(Game(
         DateTime.parse(game['date']),
-        groups,
+        game['groups'],
         game['result'],
         game['historyId'],
+        players,
       ));
     }
 
@@ -56,7 +48,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final dateFormatter = getDateFormatter(context);
+    final dateFormatter = getDateTimeFormatter(context);
 
     var listView = ListView.builder(
       itemCount: games.length,

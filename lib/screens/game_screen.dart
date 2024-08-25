@@ -1,3 +1,4 @@
+import 'package:calc/calc.dart';
 import 'package:flutter/material.dart';
 import 'package:teambalancer/common/localization.dart';
 import 'package:teambalancer/data/game_data.dart';
@@ -17,19 +18,33 @@ class GameScreen extends StatefulWidget {
 class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
-    final dateFormatter = getDateFormatter(context);
-
-    List<Widget> cols = [Text(dateFormatter.format(widget.game.date))];
-    cols.add(IconButton(
-        icon: const Icon(Icons.delete),
-        onPressed: () {
-          widget.game.remove(widget.teamData.teamKey);
-          Navigator.of(context).pop();
-        }));
+    List<Widget> cols = [
+      Row(children: [
+        Expanded(
+            child: TextButton(
+                onPressed: () => dateDialog(widget.game.date),
+                child:
+                    Text(getDateFormatter(context).format(widget.game.date)))),
+        Expanded(
+            child: TextButton(
+                onPressed: () => timeDialog(widget.game.date),
+                child:
+                    Text(getTimeFormatter(context).format(widget.game.date)))),
+        IconButton(
+            icon: const Icon(Icons.delete),
+            onPressed: () {
+              widget.game.remove(widget.teamData.teamKey);
+              Navigator.of(context).pop();
+            })
+      ]),
+    ];
+    cols.add(InkWell(
+        onTap: () => resultDialog(widget.game.result),
+        child: Text("${context.l10n.result}: ${widget.game.result}")));
 
     final noOfGroups = widget.game.groups.length;
-    var noOfPlayers =
-        widget.game.groups.fold(0, (s, group) => s + group.length);
+    final largestGroup =
+        widget.game.groups.fold(0, (s, group) => max(s, group.length));
     var gridView = GridView.builder(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: noOfGroups,
@@ -37,17 +52,23 @@ class _GameScreenState extends State<GameScreen> {
           crossAxisSpacing: 8.0,
           childAspectRatio: 3 / 1,
         ),
-        itemCount: noOfPlayers,
+        itemCount: noOfGroups * largestGroup,
         itemBuilder: (context, index) {
           final groupNo = index % noOfGroups;
           final playerIdx = (index / noOfGroups).floor();
+          if (widget.game.groups[groupNo].length <= playerIdx) {
+            return const SizedBox();
+          }
           final name = widget.game.groups[groupNo][playerIdx];
-          return PlayerCard(name, no: groupNo, theme: Theme.of(context));
+          return GestureDetector(
+              onLongPress: () {
+                widget.game.moveToNextGroup(name);
+                widget.game.save();
+                setState(() {});
+              },
+              child:
+                  PlayerCard(name, no: groupNo + 1, theme: Theme.of(context)));
         });
-
-    cols.add(InkWell(
-        onTap: () => dialog(widget.game.result),
-        child: Text("${context.l10n.result}: ${widget.game.result}")));
     cols.add(Expanded(child: gridView));
 
     return Scaffold(
@@ -58,7 +79,32 @@ class _GameScreenState extends State<GameScreen> {
     );
   }
 
-  void dialog(String? defaultText) async {
+  void dateDialog(DateTime time) async {
+    var date = await showDatePicker(
+        context: context,
+        initialDate: time,
+        firstDate: DateTime(2020),
+        lastDate: DateTime(2049));
+
+    if (date == null) return; // cancelled
+    widget.game.date =
+        DateTime(date.year, date.month, date.day, time.hour, time.minute);
+    widget.game.save();
+    setState(() {});
+  }
+
+  void timeDialog(DateTime time) async {
+    var timeOfDay = await showTimePicker(
+        context: context, initialTime: TimeOfDay.fromDateTime(time));
+
+    if (timeOfDay == null) return; // cancelled
+    widget.game.date = DateTime(
+        time.year, time.month, time.day, timeOfDay.hour, timeOfDay.minute);
+    widget.game.save();
+    setState(() {});
+  }
+
+  void resultDialog(String? defaultText) async {
     String? input;
     if (defaultText != null) {
       input = await stringDialog(
@@ -71,16 +117,8 @@ class _GameScreenState extends State<GameScreen> {
           title: context.l10n.createPlayer, hintText: context.l10n.playerName);
     }
     if (input == null) return; // empty name not allowed
-    // if (defaultText != null) {
-    //   if (team.players.containsKey(input)) {
-    //     return;
-    //   }
-    //   team.renamePlayer(defaultText, input);
-    // } else {
-    //   await team.addPlayer(input);
-    // }
     widget.game.result = input;
-    widget.game.setResult(widget.game.result);
+    widget.game.save();
     setState(() {});
   }
 }
