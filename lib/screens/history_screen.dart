@@ -7,9 +7,11 @@ import 'package:teambalancer/data/team_data.dart';
 import 'package:teambalancer/screens/game_screen.dart';
 
 class HistoryScreen extends StatefulWidget {
-  const HistoryScreen({required this.teamData, super.key});
+  const HistoryScreen(
+      {required this.teamData, required this.isAdmin, super.key});
 
   final TeamData teamData;
+  final bool isAdmin;
   @override
   State<HistoryScreen> createState() => _HistoryScreenState();
 }
@@ -73,6 +75,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
               GameScreen(
                 game: game,
                 teamData: widget.teamData,
+                isAdmin: widget.isAdmin,
               ),
             ),
           ),

@@ -7,10 +7,15 @@ import 'package:teambalancer/dialog/string_dialog.dart';
 import 'package:teambalancer/widgets/player_card.dart';
 
 class GameScreen extends StatefulWidget {
-  const GameScreen({required this.game, required this.teamData, super.key});
+  const GameScreen(
+      {required this.game,
+      required this.teamData,
+      required this.isAdmin,
+      super.key});
 
   final Game game;
   final TeamData teamData;
+  final bool isAdmin;
   @override
   State<GameScreen> createState() => _GameScreenState();
 }
@@ -30,12 +35,14 @@ class _GameScreenState extends State<GameScreen> {
                 onPressed: () => timeDialog(widget.game.date),
                 child:
                     Text(getTimeFormatter(context).format(widget.game.date)))),
-        IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () {
-              widget.game.remove(widget.teamData.teamKey);
-              Navigator.of(context).pop();
-            })
+        widget.isAdmin
+            ? IconButton(
+                icon: const Icon(Icons.delete),
+                onPressed: () {
+                  widget.game.remove(widget.teamData.teamKey);
+                  Navigator.of(context).pop();
+                })
+            : const SizedBox()
       ]),
     ];
     cols.add(InkWell(

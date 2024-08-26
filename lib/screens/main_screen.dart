@@ -78,6 +78,7 @@ class _MainScreenState extends State<MainScreen> {
                           context,
                           HistoryScreen(
                             teamData: data.data.team(teamKey),
+                            isAdmin: isAdmin,
                           )),
                     ),
                     IconButton(
