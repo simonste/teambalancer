@@ -21,10 +21,12 @@ String? text(Key key, {int? elementNo}) {
 extension AppHelper on WidgetTester {
   Future<void> launchApp() async {
     app.main();
-    // pump three times to assure android app is launched
+    // pump and wait for AppBar to assure app is launched
     await pumpAndSettle();
-    await pumpAndSettle();
-    await pumpAndSettle();
+    while (find.byType(AppBar).evaluate().isEmpty) {
+      await Future.delayed(const Duration(seconds: 1));
+      await pumpAndSettle();
+    }
   }
 
   Future<void> slideTo(Skill skill, int value) async {
@@ -51,6 +53,7 @@ extension AppHelper on WidgetTester {
     await pumpAndSettle();
     expect(find.byType(TextField), findsOneWidget);
     await enterText(find.byType(TextField), teamName);
+    await pumpAndSettle();
     await tap(find.svgAssetWithPath(getAsset(sport)));
     await pump();
     await tap(find.text('Ok'));

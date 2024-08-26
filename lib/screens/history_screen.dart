@@ -77,6 +77,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 teamData: widget.teamData,
                 isAdmin: widget.isAdmin,
               ),
+              callback: (toRemove) {
+                if (toRemove != null) {
+                  games.removeWhere((game) {
+                    return game.historyId == toRemove;
+                  });
+                }
+                setState(() {});
+              },
             ),
           ),
         );

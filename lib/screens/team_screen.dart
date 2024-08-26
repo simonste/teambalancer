@@ -89,7 +89,7 @@ class _TeamScreenState extends State<TeamScreen> {
                       playerName: name,
                       teamKey: widget.teamKey,
                       data: widget.data,
-                    ), callback: () {
+                    ), callback: (value) {
                   setState(() {});
                 });
               },

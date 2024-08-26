@@ -21,6 +21,11 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
+  void save() {
+    widget.game.save();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     List<Widget> cols = [
@@ -40,7 +45,7 @@ class _GameScreenState extends State<GameScreen> {
                 icon: const Icon(Icons.delete),
                 onPressed: () {
                   widget.game.remove(widget.teamData.teamKey);
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pop(widget.game.historyId);
                 })
             : const SizedBox()
       ]),
@@ -70,8 +75,7 @@ class _GameScreenState extends State<GameScreen> {
           return GestureDetector(
               onLongPress: () {
                 widget.game.moveToNextGroup(name);
-                widget.game.save();
-                setState(() {});
+                save();
               },
               child:
                   PlayerCard(name, no: groupNo + 1, theme: Theme.of(context)));
@@ -96,8 +100,7 @@ class _GameScreenState extends State<GameScreen> {
     if (date == null) return; // cancelled
     widget.game.date =
         DateTime(date.year, date.month, date.day, time.hour, time.minute);
-    widget.game.save();
-    setState(() {});
+    save();
   }
 
   void timeDialog(DateTime time) async {
@@ -107,8 +110,7 @@ class _GameScreenState extends State<GameScreen> {
     if (timeOfDay == null) return; // cancelled
     widget.game.date = DateTime(
         time.year, time.month, time.day, timeOfDay.hour, timeOfDay.minute);
-    widget.game.save();
-    setState(() {});
+    save();
   }
 
   void resultDialog(String? defaultText) async {
@@ -125,7 +127,6 @@ class _GameScreenState extends State<GameScreen> {
     }
     if (input == null) return; // empty name not allowed
     widget.game.result = input;
-    widget.game.save();
-    setState(() {});
+    save();
   }
 }

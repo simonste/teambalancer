@@ -10,7 +10,7 @@ void navigateTo(BuildContext context, Widget widget, {Function? callback}) {
     ),
   ).then((value) {
     if (callback != null) {
-      callback();
+      callback(value);
     }
   });
 }
