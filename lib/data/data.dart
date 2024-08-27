@@ -19,20 +19,21 @@ Future<TeamData?> getTeamData(TeamKey teamKey) async {
 }
 
 class Data {
-  final _dataVersion = 0.1;
+  final _dataVersion = 0.2;
   final _key = "data";
   PreferenceData preferenceData = PreferenceData({});
   TeamsData data = TeamsData({});
 
-  void restoreData(
+  Future<void> restoreData(
       {required updateCallback, required TeamKey? addTeamKey}) async {
     final preferences = await SharedPreferences.getInstance();
 
-    const defaultStr = '{"teams": {}, "data_version": 0.2}';
+    final defaultStr = '{"teams": {}, "data_version": $_dataVersion}';
     final str = preferences.getString(_key) ?? defaultStr;
     Map<String, dynamic> json = jsonDecode(str);
     if (json['data_version'] != _dataVersion) {
-      developer.log('reset preference data', name: 'teambalancer data');
+      developer.log('reset preference data ${json['data_version']}',
+          name: 'teambalancer data');
       json = jsonDecode(defaultStr);
     }
     developer.log('preference $json', name: 'teambalancer data');

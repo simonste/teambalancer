@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_test/flutter_svg_test.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -5,6 +7,10 @@ import 'package:integration_test/integration_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:teambalancer/common/constants.dart';
 import 'package:teambalancer/common/utils.dart';
+import 'package:teambalancer/data/backend.dart';
+import 'package:teambalancer/data/data.dart';
+import 'package:teambalancer/data/team_data.dart';
+import 'package:teambalancer/data/team_key.dart';
 import 'package:teambalancer/main.dart' as app;
 
 String? text(Key key, {int? elementNo}) {
@@ -18,6 +24,14 @@ String? text(Key key, {int? elementNo}) {
   return textWidget.data;
 }
 
+List<String> testTeams = [];
+Future<void> tearDownTest() async {
+  for (var testTeam in testTeams) {
+    await Backend.removeTeam(testTeam);
+  }
+  testTeams.clear();
+}
+
 extension AppHelper on WidgetTester {
   Future<void> launchApp() async {
     app.main();
@@ -27,6 +41,8 @@ extension AppHelper on WidgetTester {
       await Future.delayed(const Duration(seconds: 1));
       await pumpAndSettle();
     }
+    // one more pump to load preferences
+    await pumpAndSettle();
   }
 
   Future<void> slideTo(Skill skill, int value) async {
@@ -92,6 +108,37 @@ extension AppHelper on WidgetTester {
     await pumpAndSettle();
     await tap(find.byIcon(Icons.delete));
     await pumpAndSettle();
+  }
+
+  Future<void> quickSetup(
+    String teamName,
+    Sport sport, {
+    required List<String> players,
+    bool admin = false,
+  }) async {
+    Map<String, dynamic> body = {'name': teamName, 'sport': sport.index};
+    final json = await Backend.addTeam(jsonEncode(body));
+    final teamData = TeamData.fromJson(json);
+    for (var p in players) {
+      await teamData.addPlayer(p);
+    }
+    expect(teamData.players.length, players.length);
+
+    await Data().restoreData(
+      updateCallback: () {},
+      addTeamKey: admin
+          ? TeamKey(json['teamKey'] + json['adminKey'])
+          : TeamKey(json['teamKey']),
+    );
+    testTeams.add(
+        jsonEncode({'teamKey': json['teamKey'], 'adminKey': json['adminKey']}));
+  }
+
+  Future<void> loadDemoTeam({bool admin = false}) async {
+    await Data().restoreData(
+      updateCallback: () {},
+      addTeamKey: admin ? TeamKey("DEMO99DEMO99") : TeamKey("DEMO99"),
+    );
   }
 }
 

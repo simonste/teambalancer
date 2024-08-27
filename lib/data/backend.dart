@@ -7,33 +7,30 @@ class Backend {
 
   static Future<dynamic> get(url) async {
     final response = await http.get(Uri.parse("$baseUrl$url"));
-    if (response.statusCode == 200) {
-      if (response.body.isNotEmpty) {
-        return jsonDecode(response.body);
-      } else {
-        return null;
-      }
-    } else {
+    if (response.statusCode != 200) {
       throw Exception('Failed to get $url');
+    }
+    if (response.body.isNotEmpty) {
+      return jsonDecode(response.body);
+    } else {
+      return null;
     }
   }
 
   static Future<dynamic> put(url, body) async {
     final response = await http.put(Uri.parse("$baseUrl$url"), body: body);
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    } else {
+    if (response.statusCode != 200) {
       throw Exception('Failed to put $url');
     }
+    return jsonDecode(response.body);
   }
 
   static Future<dynamic> post(url, body) async {
     final response = await http.post(Uri.parse("$baseUrl$url"), body: body);
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    } else {
+    if (response.statusCode != 200) {
       throw Exception('Failed to post $url');
     }
+    return jsonDecode(response.body);
   }
 
   static Future<dynamic> delete(url, body) async {
@@ -41,6 +38,7 @@ class Backend {
     if (response.statusCode != 200) {
       throw Exception('Failed to delete $url');
     }
+    return response;
   }
 
   static Future<dynamic> getTeam(key) async {
