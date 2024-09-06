@@ -13,9 +13,9 @@ import 'package:teambalancer/screens/team_screen.dart';
 import 'package:teambalancer/data/data.dart';
 
 class MainScreen extends StatefulWidget {
-  final TeamKey addTeamKey;
+  final TeamKey? addTeamKey;
 
-  const MainScreen(this.addTeamKey, {super.key});
+  const MainScreen({this.addTeamKey, super.key});
 
   @override
   State<MainScreen> createState() => _MainScreenState();

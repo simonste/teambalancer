@@ -25,7 +25,7 @@ class Data {
   TeamsData data = TeamsData({});
 
   void restoreData(
-      {required updateCallback, required TeamKey addTeamKey}) async {
+      {required updateCallback, required TeamKey? addTeamKey}) async {
     final preferences = await SharedPreferences.getInstance();
 
     const defaultStr = '{"teams": {}, "data_version": 0.2}';
@@ -39,7 +39,7 @@ class Data {
 
     preferenceData = PreferenceData.fromJson(json);
 
-    if (addTeamKey.key.length >= 6) {
+    if (addTeamKey != null) {
       final teamKey = addTeamKey.key.substring(0, 6);
       final adminKey =
           (addTeamKey.key.length == 12) ? addTeamKey.key.substring(6) : '';
