@@ -99,7 +99,18 @@ class _MainScreenState extends State<MainScreen> {
               onLongPress: isAdmin
                   ? () => dialog(
                       TeamDialogData(name, Sport.values[team.sport], teamKey))
-                  : () {},
+                  : () => confirmDialog(
+                          context: context,
+                          title: context.l10n.deleteTeam(name),
+                          subtitle: "",
+                          actions: [
+                            DialogAction(
+                                text: context.l10n.ok,
+                                action: () async {
+                                  await data.removeTeam(teamKey, admin: true);
+                                  setState(() {});
+                                })
+                          ]),
             ),
           );
         },
