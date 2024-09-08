@@ -99,7 +99,7 @@ class _ShuffleScreenState extends State<ShuffleScreen> {
                 children: [
                   Row(children: [
                     Text(context.l10n.noOfGroups),
-                    Expanded(child: ButtonBar(children: groupButtons)),
+                    Expanded(child: OverflowBar(children: groupButtons)),
                   ]),
                   Text(context.l10n.noOfPlayers(parameter.players.length))
                 ],
