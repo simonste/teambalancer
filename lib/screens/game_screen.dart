@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:teambalancer/common/localization.dart';
 import 'package:teambalancer/data/game_data.dart';
 import 'package:teambalancer/data/team_data.dart';
-import 'package:teambalancer/dialog/string_dialog.dart';
+import 'package:teambalancer/dialog/result_dialog.dart';
 import 'package:teambalancer/widgets/player_card.dart';
 
 class GameScreen extends StatefulWidget {
@@ -51,7 +51,7 @@ class _GameScreenState extends State<GameScreen> {
       ]),
     ];
     cols.add(InkWell(
-        onTap: () => resultDialog(widget.game.result),
+        onTap: () => _resultDialog(widget.game.result),
         child: Text("${context.l10n.result}: ${widget.game.result}")));
 
     final noOfGroups = widget.game.groups.length;
@@ -113,17 +113,14 @@ class _GameScreenState extends State<GameScreen> {
     save();
   }
 
-  void resultDialog(String? defaultText) async {
+  void _resultDialog(String? result) async {
     String? input;
-    if (defaultText != null) {
-      input = await stringDialog(
+    if (result != null) {
+      input = await resultDialog(
         context,
-        title: context.l10n.result,
-        defaultText: defaultText,
+        noOfGroups: widget.game.groups.length,
+        result: result,
       );
-    } else {
-      input = await stringDialog(context,
-          title: context.l10n.createPlayer, hintText: context.l10n.playerName);
     }
     if (input == null) return; // empty name not allowed
     widget.game.result = input;
