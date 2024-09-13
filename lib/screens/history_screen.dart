@@ -59,22 +59,25 @@ class _HistoryScreenState extends State<HistoryScreen> {
         final game = games[index];
 
         var groups = <Widget>[];
-        final result = game.result.split(":");
-        final maxGroupSize = game.groups.fold(0, (maxLength, list) {
-          return list.length > maxLength ? list.length : maxLength;
+        final maxGroupSize = game.groups.fold(0, (maxLength, group) {
+          return group.members.length > maxLength
+              ? group.members.length
+              : maxLength;
         });
         for (var i = 0; i < game.groups.length; i++) {
           var column = <Widget>[];
-          if (game.result.isNotEmpty) {
+          if (game.groups[i].score != null) {
             column.add(SizedBox(
                 child: Text(
-              result[i],
+              "${game.groups[i].score}",
               style: const TextStyle(fontWeight: FontWeight.w100),
               textScaler: const TextScaler.linear(1.8),
             )));
           }
           for (var j = 0; j < maxGroupSize; j++) {
-            var name = game.groups[i].length > j ? game.groups[i][j] : "";
+            var name = game.groups[i].members.length > j
+                ? game.groups[i].members[j]
+                : "";
             column.add(SizedBox(child: Text(name)));
           }
           groups.add(Expanded(child: Column(children: column)));

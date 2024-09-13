@@ -51,12 +51,12 @@ class _GameScreenState extends State<GameScreen> {
       ]),
     ];
     cols.add(InkWell(
-        onTap: () => _resultDialog(widget.game.result),
-        child: Text("${context.l10n.result}: ${widget.game.result}")));
+        onTap: () => _resultDialog(widget.game.result()),
+        child: Text("${context.l10n.result}: ${widget.game.result()}")));
 
     final noOfGroups = widget.game.groups.length;
     final largestGroup =
-        widget.game.groups.fold(0, (s, group) => max(s, group.length));
+        widget.game.groups.fold(0, (s, group) => max(s, group.members.length));
     var gridView = GridView.builder(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: noOfGroups,
@@ -68,10 +68,10 @@ class _GameScreenState extends State<GameScreen> {
         itemBuilder: (context, index) {
           final groupNo = index % noOfGroups;
           final playerIdx = (index / noOfGroups).floor();
-          if (widget.game.groups[groupNo].length <= playerIdx) {
+          if (widget.game.groups[groupNo].members.length <= playerIdx) {
             return const SizedBox();
           }
-          final name = widget.game.groups[groupNo][playerIdx];
+          final name = widget.game.groups[groupNo].members[playerIdx];
           return GestureDetector(
               onLongPress: () {
                 widget.game.moveToNextGroup(name);
@@ -123,7 +123,7 @@ class _GameScreenState extends State<GameScreen> {
       );
     }
     if (input == null) return; // empty name not allowed
-    widget.game.result = input;
+    widget.game.setResult(input);
     save();
   }
 }
