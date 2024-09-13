@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:teambalancer/common/constants.dart';
 import 'package:teambalancer/data/backend.dart';
+import 'package:teambalancer/data/game_data.dart';
 import 'package:teambalancer/data/player_data.dart';
 import 'package:teambalancer/data/team_key.dart';
 part 'team_data.g.dart';
@@ -20,6 +21,8 @@ class TeamData {
   List<String> tags;
   String teamKey;
 
+  final List<Game> games = [];
+
   TeamData(
     this.name,
     this.sport,
@@ -28,6 +31,18 @@ class TeamData {
     this.tags,
     this.teamKey,
   );
+
+  void loadGames(gamesHistory) {
+    for (var game in gamesHistory) {
+      games.add(Game(
+        DateTime.parse(game['date']),
+        game['groups'],
+        game['result'],
+        game['historyId'],
+        players,
+      ));
+    }
+  }
 
   Future<void> addPlayer(String name) async {
     Map<String, dynamic> body = {'name': name, 'teamKey': teamKey};

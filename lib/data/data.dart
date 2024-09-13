@@ -10,12 +10,18 @@ import 'package:teambalancer/data/team_key.dart';
 import 'dart:developer' as developer;
 
 Future<TeamData?> getTeamData(TeamKey teamKey) async {
+  final futureGames = Backend.getHistory(teamKey.key);
   final json = await Backend.getTeam(teamKey.key);
   if (json == null || json.isEmpty) {
     // e.g. team removed from server
     return null;
   }
-  return TeamData.fromJson(json);
+  var teamData = TeamData.fromJson(json);
+  final games = await futureGames;
+  if (await games != null) {
+    teamData.loadGames(games);
+  }
+  return teamData;
 }
 
 class Data {
