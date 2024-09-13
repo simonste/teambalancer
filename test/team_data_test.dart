@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:teambalancer/data/game_data.dart';
 import 'package:teambalancer/data/player_data.dart';
 import 'package:teambalancer/data/team_data.dart';
 
@@ -91,5 +92,83 @@ void main() {
 
     team.games[0].setResult("22"); // ignored
     expect(team.games[0].result(), "6:2");
+  });
+
+  test('player history', () {
+    var team = createTeam("Team", 4);
+
+    team.loadGames([
+      {
+        "historyId": 1,
+        "date": "2000-01-01 12:00:00",
+        "groups": [
+          [1, 2],
+          [3, 4]
+        ],
+        "result": "4:3",
+      },
+      {
+        "historyId": 2,
+        "date": "2000-01-01 14:00:00",
+        "groups": [
+          [1, 3],
+          [2, 4]
+        ],
+        "result": "2:3",
+      },
+      {
+        "historyId": 3,
+        "date": "2000-01-01 13:00:00",
+        "groups": [
+          [1, 3],
+          [2, 4]
+        ],
+        "result": "2:0",
+      },
+      {
+        "historyId": 4,
+        "date": "2000-01-01 15:00:00",
+        "groups": [
+          [2],
+          [4]
+        ],
+        "result": "2:2",
+      },
+      {
+        "historyId": 5,
+        "date": "2000-01-01 16:00:00",
+        "groups": [
+          [1, 2],
+          [4]
+        ],
+        "result": "",
+      }
+    ]);
+
+    // sorted correctly?
+    expect(team.games.map((e) => e.historyId).toList(), [1, 3, 2, 4, 5]);
+
+    final p1 = team.players["P1"]!;
+    final p2 = team.players["P2"]!;
+
+    expect(p1.history, [
+      GameResult.won,
+      GameResult.won,
+      GameResult.lost,
+      GameResult.miss,
+      GameResult.noScore
+    ]);
+    expect(p1.getWinPercentage(), 2 / 3);
+    expect(p1.getForm(), closeTo(0.7 + 0.6, 0.01));
+
+    expect(p2.history, [
+      GameResult.won,
+      GameResult.lost,
+      GameResult.won,
+      GameResult.draw,
+      GameResult.noScore
+    ]);
+    expect(p2.getWinPercentage(), 2 / 3);
+    expect(p2.getForm(), closeTo(0.45 + 0.8 + 0.6, 0.01));
   });
 }

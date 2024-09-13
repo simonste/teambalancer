@@ -42,6 +42,23 @@ class TeamData {
         players,
       ));
     }
+    games.sort((a, b) => a.date.compareTo(b.date));
+
+    for (var game in games) {
+      players.forEach((player, data) {
+        bool played = false;
+        for (var group in game.groups) {
+          if (group.members.contains(player)) {
+            played = true;
+            data.history.add(group.gameResult);
+            break;
+          }
+        }
+        if (!played) {
+          data.history.add(GameResult.miss);
+        }
+      });
+    }
   }
 
   Future<void> addPlayer(String name) async {

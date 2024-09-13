@@ -3,10 +3,13 @@ import 'dart:convert';
 import 'package:teambalancer/data/backend.dart';
 import 'package:teambalancer/data/player_data.dart';
 
+enum GameResult { noScore, won, lost, draw, miss }
+
 class Group {
   Group(this.members, {this.score});
 
   int? score;
+  var gameResult = GameResult.noScore;
   List<String> members;
 }
 
@@ -81,10 +84,21 @@ class Game {
   }
 
   void setResult(String result) {
-    var scores = result.split(":");
+    var scores =
+        result.isEmpty ? [] : result.split(":").map(int.parse).toList();
     if (scores.length == groups.length) {
+      var sortedScores = List.from(scores);
+      sortedScores.sort((a, b) => b.compareTo(a));
+
       for (int i = 0; i < scores.length; i++) {
-        groups[i].score = int.parse(scores[i]);
+        if (scores[i] < sortedScores[0]) {
+          groups[i].gameResult = GameResult.lost;
+        } else if (sortedScores[0] == sortedScores[1]) {
+          groups[i].gameResult = GameResult.draw;
+        } else {
+          groups[i].gameResult = GameResult.won;
+        }
+        groups[i].score = scores[i];
       }
     }
   }
