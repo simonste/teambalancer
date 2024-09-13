@@ -50,26 +50,46 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final dateFormatter = getDateTimeFormatter(context);
+    final dateFormatter = getDateFormatter(context);
+    final timeFormatter = getTimeFormatter(context);
 
     var listView = ListView.builder(
       itemCount: games.length,
       itemBuilder: (context, index) {
         final game = games[index];
 
+        var groups = <Widget>[];
+        final result = game.result.split(":");
+        final maxGroupSize = game.groups.fold(0, (maxLength, list) {
+          return list.length > maxLength ? list.length : maxLength;
+        });
+        for (var i = 0; i < game.groups.length; i++) {
+          var column = <Widget>[];
+          if (game.result.isNotEmpty) {
+            column.add(SizedBox(
+                child: Text(
+              result[i],
+              style: const TextStyle(fontWeight: FontWeight.w100),
+              textScaler: const TextScaler.linear(1.8),
+            )));
+          }
+          for (var j = 0; j < maxGroupSize; j++) {
+            var name = game.groups[i].length > j ? game.groups[i][j] : "";
+            column.add(SizedBox(child: Text(name)));
+          }
+          groups.add(Expanded(child: Column(children: column)));
+        }
+
         return Card(
           child: ListTile(
             title: Row(children: [
-              Text("${dateFormatter.format(game.date)} ${game.result}")
+              Text(dateFormatter.format(game.date)),
+              const Expanded(child: SizedBox()),
+              Text(timeFormatter.format(game.date))
             ]),
             subtitle: Row(
-                children: game.groups
-                    .map((group) => Expanded(
-                        child: Column(
-                            children: group
-                                .map((name) => SizedBox(child: Text(name)))
-                                .toList())))
-                    .toList()),
+              children: groups,
+            ),
             onTap: () => navigateTo(
               context,
               GameScreen(
