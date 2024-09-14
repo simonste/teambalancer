@@ -26,7 +26,7 @@ void main() {
       admin: true,
     );
 
-    await tester.launchApp();
+    await tester.launchAndWaitTeam("Team X");
     expect(find.text("Team X"), findsOneWidget);
     expect(find.byIcon(Icons.settings), findsOneWidget);
     expect(find.byIcon(Icons.info_outline), findsNothing);
@@ -35,7 +35,7 @@ void main() {
   testWidgets('test admin demo', (tester) async {
     await tester.loadDemoTeam(admin: true);
 
-    await tester.launchApp();
+    await tester.launchAndWaitTeam("Demo Team");
     expect(find.text("Demo Team"), findsOneWidget);
     await tester.tap(find.byIcon(Icons.history));
     await tester.pumpAndSettle();

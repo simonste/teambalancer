@@ -11,6 +11,7 @@ import 'package:teambalancer/screens/history_screen.dart';
 import 'package:teambalancer/screens/shuffle_screen.dart';
 import 'package:teambalancer/screens/team_screen.dart';
 import 'package:teambalancer/data/data.dart';
+import 'dart:developer' as developer;
 
 class MainScreen extends StatefulWidget {
   final TeamKey? addTeamKey;
@@ -38,6 +39,8 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     final sortedKeys = data.get().getKeysSortedByName();
+    developer.log('build main screen ${sortedKeys.length} teams',
+        name: 'teambalancer data');
     return Scaffold(
       appBar: AppBar(
         title: Text(context.l10n.appName),
@@ -150,9 +153,8 @@ class _MainScreenState extends State<MainScreen> {
                       })
                 ]);
           } else {
-            setState(() {
-              data.removeTeam(defaultData.key);
-            });
+            await data.removeTeam(defaultData.key);
+            setState(() {});
           }
         },
       );

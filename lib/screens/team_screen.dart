@@ -8,6 +8,7 @@ import 'package:teambalancer/data/team_key.dart';
 import 'package:teambalancer/dialog/string_dialog.dart';
 import 'package:teambalancer/screens/player_screen.dart';
 import 'package:teambalancer/widgets/tag_text.dart';
+import 'dart:developer' as developer;
 
 class TeamScreen extends StatefulWidget {
   const TeamScreen({required this.teamKey, required this.data, super.key});
@@ -82,6 +83,8 @@ class _TeamScreenState extends State<TeamScreen> {
     final isAdmin = widget.data.isAdmin(widget.teamKey);
     final team = widget.data.get().team(widget.teamKey);
     final players = team.players;
+    developer.log('build team screen ${players.length} players',
+        name: 'teambalancer data');
 
     List<Widget> tags = [];
     for (var tag in team.tags) {

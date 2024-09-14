@@ -25,7 +25,7 @@ void main() {
       players: ["P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8"],
     );
 
-    await tester.launchApp();
+    await tester.launchAndWaitTeam("Team X");
     expect(find.text("Team X"), findsOneWidget);
     expect(find.byIcon(Icons.settings), findsNothing);
     expect(find.byIcon(Icons.info_outline), findsOneWidget);
@@ -34,7 +34,7 @@ void main() {
   testWidgets('test user demo', (tester) async {
     await tester.loadDemoTeam();
 
-    await tester.launchApp();
+    await tester.launchAndWaitTeam("Demo Team");
     expect(find.text("Demo Team"), findsOneWidget);
     await tester.tap(find.byIcon(Icons.history));
     await tester.pumpAndSettle();

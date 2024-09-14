@@ -41,8 +41,14 @@ extension AppHelper on WidgetTester {
       await Future.delayed(const Duration(seconds: 1));
       await pumpAndSettle();
     }
-    // one more pump to load preferences
-    await pumpAndSettle();
+  }
+
+  Future<void> launchAndWaitTeam(team) async {
+    await launchApp();
+    while (find.text(team).evaluate().isEmpty) {
+      await Future.delayed(const Duration(seconds: 1));
+      await pumpAndSettle();
+    }
   }
 
   Future<void> slideTo(Skill skill, int value) async {
@@ -74,6 +80,10 @@ extension AppHelper on WidgetTester {
     await pump();
     await tap(find.text('Ok'));
     await pumpAndSettle();
+    while (find.text(teamName).evaluate().isEmpty) {
+      await Future.delayed(const Duration(seconds: 1));
+      await pumpAndSettle();
+    }
   }
 
   Future<void> deleteTeam(String teamName) async {
@@ -83,6 +93,10 @@ extension AppHelper on WidgetTester {
     await pumpAndSettle();
     await tap(find.text('Delete for everyone'));
     await pumpAndSettle();
+    while (find.text(teamName).evaluate().isNotEmpty) {
+      await Future.delayed(const Duration(seconds: 1));
+      await pumpAndSettle();
+    }
   }
 
   Future<void> addPlayer(String playerName) async {
@@ -92,6 +106,10 @@ extension AppHelper on WidgetTester {
     await pump();
     await tap(find.text('Ok'));
     await pumpAndSettle();
+    while (find.text(playerName).evaluate().isEmpty) {
+      await Future.delayed(const Duration(seconds: 1));
+      await pumpAndSettle();
+    }
   }
 
   Future<void> renamePlayer(String currentName, String newName) async {
@@ -155,8 +173,8 @@ void main() {
 
     await tester.addTeam("Team", Sport.floorball);
 
-    expect(find.svgAssetWithPath(getAsset(Sport.floorball)), findsOneWidget);
     expect(find.text("Team"), findsOneWidget);
+    expect(find.svgAssetWithPath(getAsset(Sport.floorball)), findsOneWidget);
 
     await tester.tap(find.byIcon(Icons.settings));
     await tester.pumpAndSettle();
