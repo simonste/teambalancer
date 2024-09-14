@@ -62,7 +62,7 @@ class PlayerData {
         }
       }
     }
-    skills[Skill.form] = (form * 10).roundToDouble() / 10;
+    skills[Skill.form] = form;
   }
 
   double getWinPercentage() {

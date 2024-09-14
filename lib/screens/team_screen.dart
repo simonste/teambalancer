@@ -104,12 +104,29 @@ class _TeamScreenState extends State<TeamScreen> {
 
         List<Widget> factors = [];
         for (var skillType in Skill.values) {
-          final skill = player.skills[skillType]!;
-          factors.add(getSkillIcon(skillType, skill, Sport.values[team.sport],
-              color: Theme.of(context).iconTheme.color));
-          if (skillType != Skill.tactical) {
-            factors.add(Text("$skill"));
+          final skillValue = player.skills[skillType]!;
+          final icon = getSkillIcon(
+              skillType, skillValue, Sport.values[team.sport],
+              color: Theme.of(context).iconTheme.color);
+
+          skillText() {
+            switch (skillType) {
+              case Skill.tactical:
+                return "";
+              case Skill.form:
+                return "${(skillValue * 10).roundToDouble() / 10}";
+              case Skill.physical:
+              case Skill.technical:
+                return "${skillValue.toInt()}";
+            }
           }
+
+          factors.add(Column(children: [
+            ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 24),
+                child: SizedBox(height: 24, child: icon)),
+            Text(skillText())
+          ]));
         }
         for (var tag in players[name]!.tags) {
           factors.add(TagText.tag(tag));
@@ -118,7 +135,12 @@ class _TeamScreenState extends State<TeamScreen> {
         return Card(
           child: ListTile(
             title: Text(name),
-            trailing: SizedBox(width: 140, child: Row(children: factors)),
+            trailing: SizedBox(
+                width: 120,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: factors,
+                )),
             subtitle: subtitle(players[name]!.history),
             onTap: isAdmin
                 ? () {

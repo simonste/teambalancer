@@ -160,7 +160,7 @@ void main() {
       GameResult.noScore
     ]);
     expect(p1.getWinPercentage(), 2 / 3);
-    expect(p1.skills[Skill.form], closeTo(0.7 + 0.6, 0.05));
+    expect(p1.skills[Skill.form], closeTo(0.7 + 0.6, 0.01));
 
     expect(p2.history, [
       GameResult.won,
@@ -170,7 +170,7 @@ void main() {
       GameResult.noScore
     ]);
     expect(p2.getWinPercentage(), 2 / 3);
-    expect(p2.skills[Skill.form], closeTo(0.45 + 0.8 + 0.6, 0.05));
+    expect(p2.skills[Skill.form], closeTo(0.45 + 0.8 + 0.6, 0.01));
   });
 
   test('refresh games', () {

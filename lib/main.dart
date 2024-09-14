@@ -67,11 +67,11 @@ class MainAppState extends State<MainApp> {
       onGenerateRoute: (RouteSettings settings) {
         return MaterialPageRoute(
           builder: (context) {
+            TeamKey? teamKey;
             if (settings.name != null && settings.name!.length >= 6) {
-              return MainScreen(addTeamKey: TeamKey(settings.name!));
-            } else {
-              return const MainScreen();
+              teamKey = TeamKey(settings.name!);
             }
+            return MainScreen(addTeamKey: teamKey);
           },
           settings: settings,
         );
