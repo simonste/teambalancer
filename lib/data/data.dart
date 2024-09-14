@@ -44,7 +44,7 @@ class Data {
 
     preferenceData = PreferenceData.fromJson(json);
 
-    if (addTeamKey != null) {
+    if (addTeamKey != null && addTeamKey.key.length >= 6) {
       final teamKey = addTeamKey.key.substring(0, 6);
       final adminKey =
           (addTeamKey.key.length == 12) ? addTeamKey.key.substring(6) : '';

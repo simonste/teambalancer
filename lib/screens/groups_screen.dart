@@ -7,6 +7,7 @@ import 'package:teambalancer/data/backend.dart';
 import 'package:teambalancer/data/data.dart';
 import 'package:teambalancer/data/group_data.dart';
 import 'package:teambalancer/data/team_key.dart';
+import 'package:teambalancer/screens/game_screen.dart';
 
 class GroupScreen extends StatefulWidget {
   const GroupScreen(
@@ -82,6 +83,21 @@ class _GroupScreenState extends State<GroupScreen> {
     await Backend.addGame(jsonEncode(body));
 
     final games = await Backend.getHistory(widget.teamKey.key);
-    widget.data.get().team(widget.teamKey).loadGames(games);
+    final teamData = widget.data.get().team(widget.teamKey);
+    teamData.loadGames(games);
+    final isAdmin = widget.data.isAdmin(widget.teamKey);
+
+    if (mounted) {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (context) => GameScreen(
+                    game: teamData.games.last,
+                    teamData: teamData,
+                    isAdmin: isAdmin,
+                  )),
+          // remove all routes except first
+          (Route<dynamic> route) => route.settings.name == "/");
+    }
   }
 }
