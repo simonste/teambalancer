@@ -3,6 +3,7 @@ import 'package:teambalancer/common/constants.dart';
 import 'package:teambalancer/common/localization.dart';
 import 'package:teambalancer/common/utils.dart';
 import 'package:teambalancer/data/data.dart';
+import 'package:teambalancer/data/game_data.dart';
 import 'package:teambalancer/data/team_key.dart';
 import 'package:teambalancer/dialog/string_dialog.dart';
 import 'package:teambalancer/screens/player_screen.dart';
@@ -18,20 +19,9 @@ class TeamScreen extends StatefulWidget {
 }
 
 class _TeamScreenState extends State<TeamScreen> {
-  @override
-  Widget build(BuildContext context) {
-    final isAdmin = widget.data.isAdmin(widget.teamKey);
-    final team = widget.data.get().team(widget.teamKey);
-    final players = team.players;
-
-    List<Widget> tags = [];
-    for (var tag in team.tags) {
-      tags.add(TagText.tag(tag));
-    }
-
-    List<Widget> skills = [Text(context.l10n.skillWeights)];
+  void addSkillWeightsWidget(skills, team, isAdmin) {
     for (var skill in Skill.values) {
-      if (skill != Skill.tactical) {
+      if (skill == Skill.technical || skill == Skill.physical) {
         skills.add(Row(
           children: [
             getSkillIcon(skill, 0, Sport.values[team.sport],
@@ -55,7 +45,52 @@ class _TeamScreenState extends State<TeamScreen> {
         ));
       }
     }
-    skills.add(Text(context.l10n.players));
+  }
+
+  Widget subtitle(List<GameResult> history) {
+    var row = <Widget>[];
+
+    getColor(gameResult) {
+      switch (gameResult) {
+        case GameResult.won:
+          return Colors.green;
+        case GameResult.lost:
+          return Colors.red;
+        case GameResult.draw:
+          return Colors.yellow;
+        case GameResult.miss:
+        case GameResult.noScore:
+          return Colors.black;
+      }
+    }
+
+    for (int i = 0; i < history.length; i++) {
+      row.add(Container(
+        width: 10,
+        height: 3,
+        decoration: BoxDecoration(
+            color: getColor(history[i]),
+            border:
+                const Border(right: BorderSide(color: Colors.white, width: 1))),
+      ));
+    }
+    return Row(children: row);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isAdmin = widget.data.isAdmin(widget.teamKey);
+    final team = widget.data.get().team(widget.teamKey);
+    final players = team.players;
+
+    List<Widget> tags = [];
+    for (var tag in team.tags) {
+      tags.add(TagText.tag(tag));
+    }
+
+    List<Widget> rows = [Text(context.l10n.skillWeights)];
+    addSkillWeightsWidget(rows, team, isAdmin);
+    rows.add(Text(context.l10n.players));
 
     var listView = ListView.builder(
       itemCount: players.length,
@@ -77,33 +112,27 @@ class _TeamScreenState extends State<TeamScreen> {
           factors.add(TagText.tag(tag));
         }
 
-        if (isAdmin) {
-          return Card(
-            child: ListTile(
-              title: Text(name),
-              trailing: SizedBox(width: 100, child: Row(children: factors)),
-              onTap: () {
-                navigateTo(
-                    context,
-                    PlayerScreen(
-                      playerName: name,
-                      teamKey: widget.teamKey,
-                      data: widget.data,
-                    ), callback: (value) {
-                  setState(() {});
-                });
-              },
-              onLongPress: () => dialog(name),
-            ),
-          );
-        } else {
-          return Card(
-            child: ListTile(
-              title: Text(name),
-              trailing: SizedBox(width: 100, child: Row(children: factors)),
-            ),
-          );
-        }
+        return Card(
+          child: ListTile(
+            title: Text(name),
+            trailing: SizedBox(width: 140, child: Row(children: factors)),
+            subtitle: subtitle(players[name]!.history),
+            onTap: isAdmin
+                ? () {
+                    navigateTo(
+                        context,
+                        PlayerScreen(
+                          playerName: name,
+                          teamKey: widget.teamKey,
+                          data: widget.data,
+                        ), callback: (value) {
+                      setState(() {});
+                    });
+                  }
+                : null,
+            onLongPress: isAdmin ? () => dialog(name) : null,
+          ),
+        );
       },
     );
 
@@ -113,7 +142,7 @@ class _TeamScreenState extends State<TeamScreen> {
         children: [
           Wrap(children: [
             Row(children: tags),
-            Column(children: skills),
+            Column(children: rows),
           ]),
           Expanded(child: listView)
         ],

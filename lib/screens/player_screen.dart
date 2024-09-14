@@ -26,15 +26,17 @@ class _PlayerScreenState extends State<PlayerScreen> {
     final player = team.players[widget.playerName]!;
     final skills = player.skills;
 
+    final adjustableSkills = [Skill.tactical, Skill.physical, Skill.technical];
+
     var listView = ListView.builder(
-      itemCount: Skill.values.length,
+      itemCount: adjustableSkills.length,
       itemBuilder: (context, index) {
-        final skillType = Skill.values[index];
+        final skillType = adjustableSkills[index];
         final skill = skills[skillType]!;
 
         if (skillType == Skill.tactical) {
           var groupButtons = List<Widget>.generate(3, (i) {
-            final no = Constants.defaultSkill - 1 + i;
+            final int no = Constants.defaultSkill.toInt() - 1 + i;
             final selected = skill == no;
             return Expanded(
                 child: (IconButton(

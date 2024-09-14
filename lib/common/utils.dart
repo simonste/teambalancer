@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:teambalancer/common/constants.dart';
@@ -15,7 +17,7 @@ void navigateTo(BuildContext context, Widget widget, {Function? callback}) {
   });
 }
 
-Tactics getTactics(int value) {
+Tactics getTactics(num value) {
   if (value < Constants.defaultSkill) {
     return Tactics.defense;
   } else if (value == Constants.defaultSkill) {
@@ -41,6 +43,8 @@ String getAsset(var type) {
       return "assets/skills/offense.svg";
     case Skill.physical:
       return "assets/skills/physical.svg";
+    case Skill.form:
+      return "assets/skills/form.svg";
   }
   return "";
 }
@@ -56,7 +60,7 @@ Widget getSportIcon(Sport sport, {required Color? color}) {
   );
 }
 
-Widget getSkillIcon(Skill skill, int value, Sport sport,
+Widget getSkillIcon(Skill skill, num value, Sport sport,
     {required Color? color}) {
   switch (skill) {
     case Skill.physical:
@@ -71,10 +75,13 @@ Widget getSkillIcon(Skill skill, int value, Sport sport,
       return getSportIcon(sport, color: color);
     case Skill.tactical:
       return getTacticsIcon(value, color: color);
+    case Skill.form:
+      return SvgPicture.asset(getAsset(Skill.form),
+          width: 10 + pow(value, 2).toDouble());
   }
 }
 
-Widget getTacticsIcon(int value, {required Color? color}) {
+Widget getTacticsIcon(num value, {required Color? color}) {
   ColorFilter? colorFilter =
       color != null ? ColorFilter.mode(color, BlendMode.srcIn) : null;
   return SvgPicture.asset(

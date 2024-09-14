@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:teambalancer/common/constants.dart';
 import 'package:teambalancer/data/game_data.dart';
 import 'package:teambalancer/data/player_data.dart';
 import 'package:teambalancer/data/team_data.dart';
@@ -159,7 +160,7 @@ void main() {
       GameResult.noScore
     ]);
     expect(p1.getWinPercentage(), 2 / 3);
-    expect(p1.getForm(), closeTo(0.7 + 0.6, 0.01));
+    expect(p1.skills[Skill.form], closeTo(0.7 + 0.6, 0.05));
 
     expect(p2.history, [
       GameResult.won,
@@ -169,6 +170,47 @@ void main() {
       GameResult.noScore
     ]);
     expect(p2.getWinPercentage(), 2 / 3);
-    expect(p2.getForm(), closeTo(0.45 + 0.8 + 0.6, 0.01));
+    expect(p2.skills[Skill.form], closeTo(0.45 + 0.8 + 0.6, 0.05));
+  });
+
+  test('refresh games', () {
+    var team = createTeam("Team", 4);
+
+    team.loadGames([
+      {
+        "historyId": 1,
+        "date": "2000-01-01 12:00:00",
+        "groups": [
+          [1, 2],
+          [3, 4]
+        ],
+        "result": "4:3",
+      },
+      {
+        "historyId": 2,
+        "date": "2000-01-01 14:00:00",
+        "groups": [
+          [1, 3],
+          [2, 4]
+        ],
+        "result": "2:3",
+      },
+    ]);
+
+    expect(team.games.map((e) => e.historyId).toList(), [1, 2]);
+    expect(team.players["P1"]!.history, [GameResult.won, GameResult.lost]);
+    expect(team.players["P2"]!.history, [GameResult.won, GameResult.won]);
+
+    team.games[0].date = DateTime(2000, 1, 2, 11, 0, 0);
+    team.refreshGames();
+    expect(team.games.map((e) => e.historyId).toList(), [2, 1]);
+    expect(team.players["P1"]!.history, [GameResult.lost, GameResult.won]);
+    expect(team.players["P2"]!.history, [GameResult.won, GameResult.won]);
+
+    expect(team.games[1].result(), "4:3");
+    team.games[1].setResult("2:2");
+    team.refreshGames();
+    expect(team.players["P1"]!.history, [GameResult.lost, GameResult.draw]);
+    expect(team.players["P2"]!.history, [GameResult.won, GameResult.draw]);
   });
 }

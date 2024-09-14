@@ -32,7 +32,7 @@ class Game {
 
   DateTime date;
   List<Group> groups = [];
-  int historyId;
+  final int historyId;
   final Map<String, PlayerData> players;
 
   void moveToNextGroup(name) {

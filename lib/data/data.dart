@@ -18,9 +18,7 @@ Future<TeamData?> getTeamData(TeamKey teamKey) async {
   }
   var teamData = TeamData.fromJson(json);
   final games = await futureGames;
-  if (await games != null) {
-    teamData.loadGames(games);
-  }
+  teamData.loadGames(games);
   return teamData;
 }
 

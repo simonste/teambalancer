@@ -11,10 +11,10 @@ class ShuffleParameter {
   Map<Skill, int> weights = {};
   Map<String, PlayerData> players = {};
 
-  int weightedSkill(String name, Skill skill) =>
+  double weightedSkill(String name, Skill skill) =>
       players[name]!.skills[skill]! * weights[skill]!;
 
-  int totalSkill(Skill skill) => players.keys
+  double totalSkill(Skill skill) => players.keys
       .toList()
       .fold(0, (prev, name) => prev + weightedSkill(name, skill));
 

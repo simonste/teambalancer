@@ -33,7 +33,8 @@ class TeamData {
   );
 
   void loadGames(gamesHistory) {
-    for (var game in gamesHistory) {
+    games.clear();
+    for (var game in gamesHistory ?? []) {
       games.add(Game(
         DateTime.parse(game['date']),
         game['groups'],
@@ -42,8 +43,13 @@ class TeamData {
         players,
       ));
     }
+    refreshGames();
+  }
+
+  void refreshGames() {
     games.sort((a, b) => a.date.compareTo(b.date));
 
+    players.forEach((player, data) => data.history.clear());
     for (var game in games) {
       players.forEach((player, data) {
         bool played = false;
@@ -59,12 +65,14 @@ class TeamData {
         }
       });
     }
+    players.forEach((player, data) => data.updateForm());
   }
 
   Future<void> addPlayer(String name) async {
     Map<String, dynamic> body = {'name': name, 'teamKey': teamKey};
     final json = await Backend.addPlayer(jsonEncode(body));
     players[name] = PlayerData.fromJson(json);
+    players[name]!.updateForm();
   }
 
   Future<void> removePlayer(String name) async {

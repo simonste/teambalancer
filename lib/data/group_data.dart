@@ -11,7 +11,7 @@ class GroupData {
   final String name;
   final int capacity;
   Map<String, int> members = {};
-  Map<Skill, int> skills = {};
+  Map<Skill, double> skills = {};
 
   GroupData(this.name, this.capacity)
       : skills = {for (var key in Skill.values) key: 0};

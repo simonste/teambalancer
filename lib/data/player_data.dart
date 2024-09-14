@@ -13,11 +13,12 @@ class PlayerData {
   factory PlayerData.fromJson(Map<String, dynamic> json) =>
       _$PlayerDataFromJson(json);
 
-  Map<Skill, int> skills;
+  Map<Skill, double> skills;
   List<String> tags;
   int playerId;
 
-  List<GameResult> history = [];
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  late List<GameResult> history = [];
 
   PlayerData(this.skills, this.tags, this.playerId);
 
@@ -26,7 +27,7 @@ class PlayerData {
         tags = [];
 
   Future<void> setSkill(Skill skill, int value, TeamKey teamKey) async {
-    skills[skill] = value;
+    skills[skill] = value.toDouble();
 
     var json = toJson();
     json['teamKey'] = teamKey.key;
@@ -42,16 +43,18 @@ class PlayerData {
     throw Exception('Backend not implemented');
   }
 
-  double getForm() {
+  void updateForm() {
+    const checkWindow = 10;
     var form = 0.0;
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < checkWindow; i++) {
       if (history.length > i) {
+        final gameWeight = 0.1 * (checkWindow - i);
         switch (history[history.length - i - 1]) {
           case GameResult.won:
-            form += (0.1 * (10 - i));
+            form += gameWeight;
             break;
           case GameResult.draw:
-            form += 0.5 * (0.1 * (10 - i));
+            form += 0.5 * gameWeight;
             break;
           case GameResult.lost:
           case GameResult.miss:
@@ -59,7 +62,7 @@ class PlayerData {
         }
       }
     }
-    return form;
+    skills[Skill.form] = (form * 10).roundToDouble() / 10;
   }
 
   double getWinPercentage() {

@@ -75,6 +75,7 @@ class _GameScreenState extends State<GameScreen> {
           return GestureDetector(
               onLongPress: () {
                 widget.game.moveToNextGroup(name);
+                widget.teamData.refreshGames();
                 save();
               },
               child:
@@ -100,6 +101,7 @@ class _GameScreenState extends State<GameScreen> {
     if (date == null) return; // cancelled
     widget.game.date =
         DateTime(date.year, date.month, date.day, time.hour, time.minute);
+    widget.teamData.refreshGames();
     save();
   }
 
@@ -110,6 +112,7 @@ class _GameScreenState extends State<GameScreen> {
     if (timeOfDay == null) return; // cancelled
     widget.game.date = DateTime(
         time.year, time.month, time.day, timeOfDay.hour, timeOfDay.minute);
+    widget.teamData.refreshGames();
     save();
   }
 
@@ -124,6 +127,7 @@ class _GameScreenState extends State<GameScreen> {
     }
     if (input == null) return; // empty name not allowed
     widget.game.setResult(input);
+    widget.teamData.refreshGames();
     save();
   }
 }

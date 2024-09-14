@@ -28,7 +28,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
     var listView = ListView.builder(
       itemCount: widget.teamData.games.length,
       itemBuilder: (context, index) {
-        final game = widget.teamData.games[index];
+        final reversedIndex = widget.teamData.games.length - index - 1;
+        final game = widget.teamData.games[reversedIndex];
 
         var groups = <Widget>[];
         final maxGroupSize = game.groups.fold(0, (maxLength, group) {
@@ -77,6 +78,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   widget.teamData.games.removeWhere((game) {
                     return game.historyId == toRemove;
                   });
+                  widget.teamData.refreshGames();
                 }
                 setState(() {});
               },

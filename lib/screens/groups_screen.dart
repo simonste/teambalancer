@@ -43,7 +43,10 @@ class _GroupScreenState extends State<GroupScreen> {
 
         var weights = <Widget>[];
         group.skills.forEach((key, value) {
-          weights.add(Text("$key : ${value.toStringAsFixed(1)}"));
+          weights.add(Text(
+            "$key : ${value.toStringAsFixed(1)}",
+            textScaler: const TextScaler.linear(0.7),
+          ));
         });
 
         return Card(
@@ -71,11 +74,14 @@ class _GroupScreenState extends State<GroupScreen> {
     );
   }
 
-  void saveGroups() {
+  void saveGroups() async {
     Map<String, dynamic> body = {
       'teamKey': widget.teamKey.key,
       'groups': widget.groups
     };
-    Backend.addGame(jsonEncode(body));
+    await Backend.addGame(jsonEncode(body));
+
+    final games = await Backend.getHistory(widget.teamKey.key);
+    widget.data.get().team(widget.teamKey).loadGames(games);
   }
 }
