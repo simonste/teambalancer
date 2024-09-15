@@ -51,6 +51,12 @@ extension AppHelper on WidgetTester {
     }
   }
 
+  Future<void> sendDeepLink(String link) async {
+    final binding = WidgetsFlutterBinding.ensureInitialized();
+    binding.handlePushRoute(link);
+    await pumpAndSettle();
+  }
+
   Future<void> slideTo(Skill skill, int value) async {
     final slider = find.byKey(Key(skill.name));
     final prefSlider = slider.evaluate().single.widget as Slider;

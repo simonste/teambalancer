@@ -68,8 +68,9 @@ class MainAppState extends State<MainApp> {
         return MaterialPageRoute(
           builder: (context) {
             TeamKey? teamKey;
-            if (settings.name != null && settings.name!.length >= 6) {
-              teamKey = TeamKey(settings.name!);
+            final routeLink = settings.name?.replaceFirst("/#", "");
+            if (routeLink != null && routeLink.length >= 6) {
+              teamKey = TeamKey(routeLink);
             }
             return MainScreen(addTeamKey: teamKey);
           },
