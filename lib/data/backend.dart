@@ -4,9 +4,13 @@ import 'package:http/http.dart' as http;
 
 class Backend {
   static const baseUrl = 'https://teambalancer.simonste.ch/api-test/';
+  static const header = {'Api-Version': '1.0'};
 
   static Future<dynamic> get(url) async {
-    final response = await http.get(Uri.parse("$baseUrl$url"));
+    final response = await http.get(
+      Uri.parse("$baseUrl$url"),
+      headers: header,
+    );
     if (response.statusCode != 200) {
       throw Exception('Failed to get $url');
     }
@@ -18,7 +22,11 @@ class Backend {
   }
 
   static Future<dynamic> put(url, body) async {
-    final response = await http.put(Uri.parse("$baseUrl$url"), body: body);
+    final response = await http.put(
+      Uri.parse("$baseUrl$url"),
+      headers: header,
+      body: body,
+    );
     if (response.statusCode != 200) {
       throw Exception('Failed to put $url');
     }
@@ -26,7 +34,11 @@ class Backend {
   }
 
   static Future<dynamic> post(url, body) async {
-    final response = await http.post(Uri.parse("$baseUrl$url"), body: body);
+    final response = await http.post(
+      Uri.parse("$baseUrl$url"),
+      headers: header,
+      body: body,
+    );
     if (response.statusCode != 200) {
       throw Exception('Failed to post $url');
     }
@@ -34,7 +46,11 @@ class Backend {
   }
 
   static Future<dynamic> delete(url, body) async {
-    final response = await http.delete(Uri.parse("$baseUrl$url"), body: body);
+    final response = await http.delete(
+      Uri.parse("$baseUrl$url"),
+      headers: header,
+      body: body,
+    );
     if (response.statusCode != 200) {
       throw Exception('Failed to delete $url');
     }
