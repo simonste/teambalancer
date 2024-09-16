@@ -98,7 +98,12 @@ class Backend {
   }
 
   static Future<dynamic> getHistory(key) async {
-    return get('history.php/list/$key');
+    // use try-catch and await for async request if team removed
+    try {
+      return await get('history.php/list/$key');
+    } catch (e) {
+      return null;
+    }
   }
 
   static Future<dynamic> removeGame(body) async {
