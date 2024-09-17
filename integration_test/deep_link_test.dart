@@ -15,6 +15,7 @@ void main() {
   testWidgets('test user', (tester) async {
     await tester.launchApp();
     await tester.sendDeepLink("https://teambalancer.simonste.ch/#DEMO99");
+    await tester.waitForString("Demo Team");
 
     expect(find.text("Demo Team"), findsOneWidget);
     expect(find.byIcon(Icons.settings), findsNothing);
@@ -24,6 +25,7 @@ void main() {
   testWidgets('test admin', (tester) async {
     await tester.launchApp();
     await tester.sendDeepLink("https://teambalancer.simonste.ch/#DEMO99DEMO99");
+    await tester.waitForString("Demo Team");
 
     expect(find.text("Demo Team"), findsOneWidget);
     expect(find.byIcon(Icons.settings), findsOneWidget);

@@ -37,18 +37,23 @@ extension AppHelper on WidgetTester {
     app.main();
     // pump and wait for AppBar to assure app is launched
     await pumpAndSettle();
-    while (find.byType(AppBar).evaluate().isEmpty) {
-      await Future.delayed(const Duration(seconds: 1));
+    await waitFor(() => find.byType(AppBar).evaluate().isEmpty);
+  }
+
+  Future<void> waitFor(fun) async {
+    while (fun()) {
+      await Future.delayed(const Duration(milliseconds: 100));
       await pumpAndSettle();
     }
   }
 
+  Future<void> waitForString(string) async {
+    await waitFor(() => find.text(string).evaluate().isEmpty);
+  }
+
   Future<void> launchAndWaitTeam(team) async {
     await launchApp();
-    while (find.text(team).evaluate().isEmpty) {
-      await Future.delayed(const Duration(seconds: 1));
-      await pumpAndSettle();
-    }
+    await waitForString(team);
   }
 
   Future<void> sendDeepLink(String link) async {
@@ -86,10 +91,7 @@ extension AppHelper on WidgetTester {
     await pump();
     await tap(find.text('Ok'));
     await pumpAndSettle();
-    while (find.text(teamName).evaluate().isEmpty) {
-      await Future.delayed(const Duration(seconds: 1));
-      await pumpAndSettle();
-    }
+    await waitForString(teamName);
   }
 
   Future<void> deleteTeam(String teamName) async {
@@ -99,10 +101,7 @@ extension AppHelper on WidgetTester {
     await pumpAndSettle();
     await tap(find.text('Delete for everyone'));
     await pumpAndSettle();
-    while (find.text(teamName).evaluate().isNotEmpty) {
-      await Future.delayed(const Duration(seconds: 1));
-      await pumpAndSettle();
-    }
+    await waitFor(() => find.text(teamName).evaluate().isNotEmpty);
   }
 
   Future<void> addPlayer(String playerName) async {
@@ -112,10 +111,7 @@ extension AppHelper on WidgetTester {
     await pump();
     await tap(find.text('Ok'));
     await pumpAndSettle();
-    while (find.text(playerName).evaluate().isEmpty) {
-      await Future.delayed(const Duration(seconds: 1));
-      await pumpAndSettle();
-    }
+    await waitForString(playerName);
   }
 
   Future<void> renamePlayer(String currentName, String newName) async {
