@@ -4,6 +4,7 @@ import 'package:teambalancer/common/localization.dart';
 import 'package:teambalancer/common/utils.dart';
 import 'package:teambalancer/data/data.dart';
 import 'package:teambalancer/data/game_data.dart';
+import 'package:teambalancer/data/preference_data.dart';
 import 'package:teambalancer/data/team_key.dart';
 import 'package:teambalancer/dialog/string_dialog.dart';
 import 'package:teambalancer/screens/player_screen.dart';
@@ -95,10 +96,24 @@ class _TeamScreenState extends State<TeamScreen> {
     addSkillWeightsWidget(rows, team, isAdmin);
     rows.add(Text(context.l10n.players));
 
+    var sortingKind =
+        widget.data.preferenceData.teams[widget.teamKey.key]!.playerSorting;
+
+    int sorting(String a, String b) {
+      switch (sortingKind) {
+        case PlayerSorting.name:
+          return a.compareTo(b);
+        case PlayerSorting.form:
+          return players[b]!
+              .skills[Skill.form]!
+              .compareTo(players[a]!.skills[Skill.form]!);
+      }
+    }
+
     var listView = ListView.builder(
       itemCount: players.length,
       itemBuilder: (context, index) {
-        final sorted = players.keys.toList()..sort();
+        final sorted = players.keys.toList()..sort((a, b) => sorting(a, b));
         final name = sorted[index];
         final player = players[name]!;
 
@@ -162,7 +177,21 @@ class _TeamScreenState extends State<TeamScreen> {
     );
 
     return Scaffold(
-      appBar: AppBar(title: Text(team.name)),
+      appBar: AppBar(
+        title: Text(team.name),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.sort_by_alpha),
+            onPressed: () {
+              final nextSortingKind = PlayerSorting.values[
+                  (sortingKind.index + 1) % PlayerSorting.values.length];
+              widget.data.preferenceData.teams[widget.teamKey.key]!
+                  .playerSorting = nextSortingKind;
+              setState(() {});
+            },
+          )
+        ],
+      ),
       body: Column(
         children: [
           Wrap(children: [

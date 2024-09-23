@@ -1,6 +1,8 @@
 import 'package:json_annotation/json_annotation.dart';
 part 'preference_data.g.dart';
 
+enum PlayerSorting { name, form }
+
 @JsonSerializable()
 class PreferenceTeamData {
   Map<String, dynamic> toJson() => _$PreferenceTeamDataToJson(this);
@@ -8,8 +10,10 @@ class PreferenceTeamData {
       _$PreferenceTeamDataFromJson(json);
 
   String adminKey;
+  PlayerSorting playerSorting;
 
-  PreferenceTeamData({this.adminKey = ''});
+  PreferenceTeamData(
+      {this.adminKey = '', this.playerSorting = PlayerSorting.name});
 }
 
 @JsonSerializable()
