@@ -23,10 +23,12 @@ class TeamScreen extends StatefulWidget {
 class _TeamScreenState extends State<TeamScreen> {
   void addSkillWeightsWidget(skills, team, isAdmin) {
     for (var skill in Skill.values) {
-      if (skill == Skill.technical || skill == Skill.physical) {
+      if (skill == Skill.technical ||
+          skill == Skill.physical ||
+          skill == Skill.form) {
         skills.add(Row(
           children: [
-            getSkillIcon(skill, 0, Sport.values[team.sport],
+            getSkillIcon(skill, 3.8, Sport.values[team.sport],
                 color: Theme.of(context).iconTheme.color),
             Expanded(
                 child: Slider(
