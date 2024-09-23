@@ -63,14 +63,14 @@ class _MainScreenState extends State<MainScreen> {
               title: Text(name),
               leading: getSportIcon(Sport.values[team.sport],
                   color: Theme.of(context).iconTheme.color),
-              trailing: SizedBox(
-                  width: 150,
+              subtitle: SizedBox(
+                  width: 300,
                   child: Row(children: [
                     IconButton(
-                      icon: Icon(isAdmin ? Icons.settings : Icons.info_outline),
+                      icon: const Icon(Icons.shuffle),
                       onPressed: () => navigateTo(
                           context,
-                          TeamScreen(
+                          ShuffleScreen(
                             teamKey: teamKey,
                             data: data,
                           )),
@@ -82,6 +82,15 @@ class _MainScreenState extends State<MainScreen> {
                           HistoryScreen(
                             teamData: data.data.team(teamKey),
                             isAdmin: isAdmin,
+                          )),
+                    ),
+                    IconButton(
+                      icon: Icon(isAdmin ? Icons.settings : Icons.info_outline),
+                      onPressed: () => navigateTo(
+                          context,
+                          TeamScreen(
+                            teamKey: teamKey,
+                            data: data,
                           )),
                     ),
                     IconButton(
