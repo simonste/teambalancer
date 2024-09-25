@@ -8,6 +8,7 @@ import 'package:teambalancer/data/preference_data.dart';
 import 'package:teambalancer/data/team_key.dart';
 import 'package:teambalancer/dialog/string_dialog.dart';
 import 'package:teambalancer/screens/player_screen.dart';
+import 'package:teambalancer/widgets/scaffold_with_hiding_fab.dart';
 import 'package:teambalancer/widgets/tag_text.dart';
 import 'dart:developer' as developer;
 
@@ -178,7 +179,7 @@ class _TeamScreenState extends State<TeamScreen> {
       },
     );
 
-    return Scaffold(
+    return ScaffoldWithHidingFab(
       appBar: AppBar(
         title: Text(team.name),
         actions: [

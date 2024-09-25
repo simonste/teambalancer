@@ -10,6 +10,7 @@ import 'package:teambalancer/dialog/create_team_dialog.dart';
 import 'package:teambalancer/screens/history_screen.dart';
 import 'package:teambalancer/screens/shuffle_screen.dart';
 import 'package:teambalancer/screens/team_screen.dart';
+import 'package:teambalancer/widgets/scaffold_with_hiding_fab.dart';
 import 'package:teambalancer/data/data.dart';
 import 'dart:developer' as developer;
 
@@ -41,7 +42,7 @@ class _MainScreenState extends State<MainScreen> {
     final sortedKeys = data.get().getKeysSortedByName();
     developer.log('build main screen ${sortedKeys.length} teams',
         name: 'teambalancer data');
-    return Scaffold(
+    return ScaffoldWithHidingFab(
       appBar: AppBar(
         title: Text(context.l10n.appName),
         leading: SvgPicture.asset(
