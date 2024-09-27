@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 
 class Backend {
   static const baseUrl = 'https://teambalancer.simonste.ch/api-test/';
-  static const header = {'Api-Version': '1.0'};
+  static const header = {'Api-Version': '2.0'};
 
   static Future<dynamic> get(url) async {
     final response = await http.get(

@@ -2,44 +2,25 @@ import 'dart:convert';
 
 import 'package:teambalancer/data/backend.dart';
 import 'package:teambalancer/data/group_data.dart';
-import 'package:teambalancer/data/player_data.dart';
-
-class Group {
-  Group(this.members, {this.score});
-
-  int? score;
-  var gameResult = GameResult.noScore;
-  List<String> members;
-}
 
 class Game {
-  Game(this.date, groupsIds, result, this.historyId, this.players) {
-    for (var group in groupsIds) {
-      List<String> members = [];
-      for (var member in group) {
-        if (member > 0) {
-          members.add(
-              players.keys.firstWhere((k) => players[k]!.playerId == member));
-        } else {
-          // invalid member
-        }
-      }
-      groups.add(Group(members..sort()));
-    }
-    setResult(result);
-  }
+  Game({required this.date, required this.groups, required this.historyId});
 
   DateTime date;
-  List<Group> groups = [];
+  List<GroupData> groups = [];
   final int historyId;
-  final Map<String, PlayerData> players;
 
-  void moveToNextGroup(name) {
-    final groupNo =
-        groups.indexOf(groups.firstWhere((a) => a.members.contains(name)));
-    final newGroupNo = (groupNo + 1) % groups.length;
-    groups[newGroupNo].members.add(name);
-    groups[groupNo].members.remove(name);
+  void moveToNextGroup(int playerId) {
+    for (var groupNo = 0; groupNo < groups.length; groupNo++) {
+      for (var playerName in groups[groupNo].members.keys) {
+        if (groups[groupNo].members[playerName]!.playerId == playerId) {
+          final newGroupNo = (groupNo + 1) % groups.length;
+          groups[newGroupNo].members[playerName] =
+              groups[groupNo].members.remove(playerName)!;
+          return;
+        }
+      }
+    }
   }
 
   void remove(teamKey) async {
@@ -51,20 +32,10 @@ class Game {
   }
 
   void save() async {
-    List<List<int>> groupsIds = [];
-    for (var group in groups) {
-      List<int> g = [];
-      for (var member in group.members) {
-        g.add(players[member]!.playerId);
-      }
-      groupsIds.add(g);
-    }
-
     Map<String, dynamic> body = {
       'historyId': historyId,
       'date': date.toString(),
-      'result': result(),
-      'groups': groupsIds
+      'groupData': groups
     };
     await Backend.updateGame(jsonEncode(body));
   }
@@ -82,21 +53,28 @@ class Game {
     return res;
   }
 
+  GameResult getResult(int groupNo) {
+    var scores = groups.map((g) => g.score).toList();
+    if (scores.any((s) => s == null)) {
+      return GameResult.noScore;
+    }
+    var sortedScores = List.from(scores);
+    sortedScores.sort((a, b) => b.compareTo(a));
+
+    if (scores[groupNo]! < sortedScores[0]) {
+      return GameResult.lost;
+    } else if (sortedScores[0] == sortedScores[1]) {
+      return GameResult.draw;
+    } else {
+      return GameResult.won;
+    }
+  }
+
   void setResult(String result) {
     var scores =
         result.isEmpty ? [] : result.split(":").map(int.parse).toList();
     if (scores.length == groups.length) {
-      var sortedScores = List.from(scores);
-      sortedScores.sort((a, b) => b.compareTo(a));
-
       for (int i = 0; i < scores.length; i++) {
-        if (scores[i] < sortedScores[0]) {
-          groups[i].gameResult = GameResult.lost;
-        } else if (sortedScores[0] == sortedScores[1]) {
-          groups[i].gameResult = GameResult.draw;
-        } else {
-          groups[i].gameResult = GameResult.won;
-        }
         groups[i].score = scores[i];
       }
     }

@@ -71,15 +71,20 @@ class _GameScreenState extends State<GameScreen> {
           if (widget.game.groups[groupNo].members.length <= playerIdx) {
             return const SizedBox();
           }
-          final name = widget.game.groups[groupNo].members[playerIdx];
+          final playerName =
+              widget.game.groups[groupNo].members.keys.elementAt(playerIdx);
+          final playerData = widget.game.groups[groupNo].members[playerName]!;
           return GestureDetector(
               onLongPress: () {
-                widget.game.moveToNextGroup(name);
+                widget.game.moveToNextGroup(playerData.playerId);
                 widget.teamData.refreshGames();
                 save();
               },
-              child:
-                  PlayerCard(name, no: groupNo + 1, theme: Theme.of(context)));
+              child: PlayerCard(
+                playerName,
+                no: groupNo + 1,
+                theme: Theme.of(context),
+              ));
         });
     cols.add(Expanded(child: gridView));
 

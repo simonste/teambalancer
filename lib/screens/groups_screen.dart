@@ -71,7 +71,7 @@ class _GroupScreenState extends State<GroupScreen> {
   void saveGroups() async {
     Map<String, dynamic> body = {
       'teamKey': widget.teamKey.key,
-      'groups': widget.groups
+      'groupData': widget.groups
     };
     await Backend.addGame(jsonEncode(body));
 

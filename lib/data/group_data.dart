@@ -14,6 +14,7 @@ class GroupData {
   final String name;
   Map<String, PlayerData> members = {};
   Map<Skill, int> weights;
+  int? score;
 
   GroupData(this.name, this.weights);
 
