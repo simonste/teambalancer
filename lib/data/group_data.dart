@@ -2,6 +2,8 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:teambalancer/common/constants.dart';
 part 'group_data.g.dart';
 
+enum GameResult { noScore, won, lost, draw, miss }
+
 @JsonSerializable()
 class GroupData {
   Map<String, dynamic> toJson() => _$GroupDataToJson(this);

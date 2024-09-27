@@ -3,7 +3,7 @@ import 'package:teambalancer/common/constants.dart';
 import 'package:teambalancer/common/localization.dart';
 import 'package:teambalancer/common/utils.dart';
 import 'package:teambalancer/data/data.dart';
-import 'package:teambalancer/data/game_data.dart';
+import 'package:teambalancer/data/group_data.dart';
 import 'package:teambalancer/data/preference_data.dart';
 import 'package:teambalancer/data/team_key.dart';
 import 'package:teambalancer/dialog/string_dialog.dart';

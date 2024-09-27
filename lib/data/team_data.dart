@@ -4,6 +4,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:teambalancer/common/constants.dart';
 import 'package:teambalancer/data/backend.dart';
 import 'package:teambalancer/data/game_data.dart';
+import 'package:teambalancer/data/group_data.dart';
 import 'package:teambalancer/data/player_data.dart';
 import 'package:teambalancer/data/team_key.dart';
 part 'team_data.g.dart';

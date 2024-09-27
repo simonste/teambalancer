@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:teambalancer/common/constants.dart';
 import 'package:teambalancer/data/backend.dart';
-import 'package:teambalancer/data/game_data.dart';
+import 'package:teambalancer/data/group_data.dart';
 import 'package:teambalancer/data/team_key.dart';
 part 'player_data.g.dart';
 

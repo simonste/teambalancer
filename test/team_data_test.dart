@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:teambalancer/common/constants.dart';
-import 'package:teambalancer/data/game_data.dart';
+import 'package:teambalancer/data/group_data.dart';
 import 'package:teambalancer/data/player_data.dart';
 import 'package:teambalancer/data/team_data.dart';
 

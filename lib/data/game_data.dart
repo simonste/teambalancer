@@ -1,9 +1,8 @@
 import 'dart:convert';
 
 import 'package:teambalancer/data/backend.dart';
+import 'package:teambalancer/data/group_data.dart';
 import 'package:teambalancer/data/player_data.dart';
-
-enum GameResult { noScore, won, lost, draw, miss }
 
 class Group {
   Group(this.members, {this.score});
