@@ -58,16 +58,16 @@ void main() {
 
     expect(team.games.length, 2);
     expect(team.games[0].groups.length, 2);
-    expect(team.games[0].groups[0].members, ["P1", "P2"]);
+    expect(team.games[0].groups[0].members.keys, ["P1", "P2"]);
     expect(team.games[0].groups[0].score, 4);
-    expect(team.games[0].groups[1].members, ["P3", "P4"]);
+    expect(team.games[0].groups[1].members.keys, ["P3", "P4"]);
     expect(team.games[0].groups[1].score, 3);
     expect(team.games[1].groups.length, 3);
-    expect(team.games[1].groups[0].members, ["P1"]);
+    expect(team.games[1].groups[0].members.keys, ["P1"]);
     expect(team.games[1].groups[0].score, null);
-    expect(team.games[1].groups[1].members, ["P3", "P4"]);
+    expect(team.games[1].groups[1].members.keys, ["P3", "P4"]);
     expect(team.games[1].groups[1].score, null);
-    expect(team.games[1].groups[2].members, ["P2", "P5", "P6"]);
+    expect(team.games[1].groups[2].members.keys, ["P2", "P5", "P6"]);
     expect(team.games[1].groups[2].score, null);
   });
 

@@ -69,7 +69,7 @@ class ShuffleWeighted {
       double error = 0;
       for (var group in groups) {
         for (var skill in Skill.values) {
-          error += (group.skills[skill]! - avgSkills[skill]!).abs();
+          error += (group.skill(skill) - avgSkills[skill]!).abs();
         }
       }
 
@@ -90,20 +90,15 @@ class ShuffleBase {
   final List<int> _groupSize;
 
   ShuffleBase({required this.parameter})
-      : _groups = List<GroupData>.generate(
-            parameter.noOfGroups, (i) => GroupData("Group ${i + 1}"),
+      : _groups = List<GroupData>.generate(parameter.noOfGroups,
+            (i) => GroupData("Group ${i + 1}", parameter.weights),
             growable: false),
         _groupSize = List<int>.generate(
             parameter.noOfGroups, (i) => parameter.groupSize(groupNo: i));
 
   void _addToGroup(String playerName, int groupNo) {
     var group = _groups[groupNo];
-    group.members[playerName] = parameter.players[playerName]!.playerId;
-
-    for (var skill in Skill.values) {
-      group.skills[skill] =
-          group.skills[skill]! + parameter.weightedSkill(playerName, skill);
-    }
+    group.members[playerName] = parameter.players[playerName]!;
   }
 
   List<GroupData> shuffle() {

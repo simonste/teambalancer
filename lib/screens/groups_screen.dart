@@ -8,6 +8,7 @@ import 'package:teambalancer/data/data.dart';
 import 'package:teambalancer/data/group_data.dart';
 import 'package:teambalancer/data/team_key.dart';
 import 'package:teambalancer/screens/game_screen.dart';
+import 'package:teambalancer/widgets/group_summary.dart';
 
 class GroupScreen extends StatefulWidget {
   const GroupScreen(
@@ -42,14 +43,6 @@ class _GroupScreenState extends State<GroupScreen> {
       itemBuilder: (context, index) {
         final group = widget.groups[index];
 
-        var weights = <Widget>[];
-        group.skills.forEach((key, value) {
-          weights.add(Text(
-            "$key : ${value.toStringAsFixed(1)}",
-            textScaler: const TextScaler.linear(0.7),
-          ));
-        });
-
         return Card(
           child: ListTile(
             title: Row(children: [Text(group.name)]),
@@ -58,7 +51,7 @@ class _GroupScreenState extends State<GroupScreen> {
                     .map((element) =>
                         Row(children: [skill(element), Text(element)]))
                     .toList()),
-            trailing: Column(children: weights),
+            trailing: GroupSummary(group: group),
           ),
         );
       },
