@@ -87,11 +87,14 @@ class ShuffleWeighted {
 class ShuffleBase {
   final ShuffleParameter parameter;
   final List<GroupData> _groups;
+  final List<int> _groupSize;
 
   ShuffleBase({required this.parameter})
-      : _groups = List<GroupData>.generate(parameter.noOfGroups,
-            (i) => GroupData("Group ${i + 1}", parameter.groupSize(groupNo: i)),
-            growable: false);
+      : _groups = List<GroupData>.generate(
+            parameter.noOfGroups, (i) => GroupData("Group ${i + 1}"),
+            growable: false),
+        _groupSize = List<int>.generate(
+            parameter.noOfGroups, (i) => parameter.groupSize(groupNo: i));
 
   void _addToGroup(String playerName, int groupNo) {
     var group = _groups[groupNo];
@@ -110,7 +113,8 @@ class ShuffleBase {
     for (var p = 0; p < playerNames.length; p++) {
       final playerName = playerNames[p];
       for (var g = 0; g < _groups.length; g++) {
-        if (!_groups[g].isComplete()) {
+        final groupIsComplete = _groups[g].members.length >= _groupSize[g];
+        if (!groupIsComplete) {
           _addToGroup(playerName, g);
           break;
         }
