@@ -3,11 +3,12 @@ import 'package:teambalancer/common/constants.dart';
 import 'package:teambalancer/common/localization.dart';
 import 'package:teambalancer/common/utils.dart';
 import 'package:teambalancer/data/data.dart';
-import 'package:teambalancer/data/group_data.dart';
 import 'package:teambalancer/data/preference_data.dart';
 import 'package:teambalancer/data/team_key.dart';
 import 'package:teambalancer/dialog/string_dialog.dart';
 import 'package:teambalancer/screens/player_screen.dart';
+import 'package:teambalancer/widgets/player_history.dart';
+import 'package:teambalancer/widgets/player_skills.dart';
 import 'package:teambalancer/widgets/scaffold_with_hiding_fab.dart';
 import 'package:teambalancer/widgets/tag_text.dart';
 import 'dart:developer' as developer;
@@ -52,36 +53,6 @@ class _TeamScreenState extends State<TeamScreen> {
     }
   }
 
-  Widget subtitle(List<GameResult> history) {
-    var row = <Widget>[];
-
-    getColor(gameResult) {
-      switch (gameResult) {
-        case GameResult.won:
-          return Colors.green;
-        case GameResult.lost:
-          return Colors.red;
-        case GameResult.draw:
-          return Colors.yellow;
-        case GameResult.miss:
-        case GameResult.noScore:
-          return Colors.black;
-      }
-    }
-
-    for (int i = 0; i < history.length; i++) {
-      row.add(Container(
-        width: 10,
-        height: 3,
-        decoration: BoxDecoration(
-            color: getColor(history[i]),
-            border:
-                const Border(right: BorderSide(color: Colors.white, width: 1))),
-      ));
-    }
-    return Row(children: row);
-  }
-
   @override
   Widget build(BuildContext context) {
     final isAdmin = widget.data.isAdmin(widget.teamKey);
@@ -120,46 +91,13 @@ class _TeamScreenState extends State<TeamScreen> {
         final name = sorted[index];
         final player = players[name]!;
 
-        List<Widget> factors = [];
-        for (var skillType in Skill.values) {
-          final skillValue = player.skills[skillType]!;
-          final icon = getSkillIcon(
-              skillType, skillValue, Sport.values[team.sport],
-              color: Theme.of(context).iconTheme.color);
-
-          skillText() {
-            switch (skillType) {
-              case Skill.tactical:
-                return "";
-              case Skill.form:
-                return "${(skillValue * 10).roundToDouble() / 10}";
-              case Skill.physical:
-              case Skill.technical:
-                return "${skillValue.toInt()}";
-            }
-          }
-
-          factors.add(Column(children: [
-            ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 24),
-                child: SizedBox(height: 24, child: icon)),
-            Text(skillText())
-          ]));
-        }
-        for (var tag in players[name]!.tags) {
-          factors.add(TagText.tag(tag));
-        }
-
         return Card(
           child: ListTile(
             title: Text(name),
             trailing: SizedBox(
                 width: 120,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: factors,
-                )),
-            subtitle: subtitle(players[name]!.history),
+                child: PlayerSkills(player.skills, sport: team.sport)),
+            subtitle: PlayerHistory(players[name]!.history),
             onTap: isAdmin
                 ? () {
                     navigateTo(
