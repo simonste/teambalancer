@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:teambalancer/data/player_data.dart';
+import 'package:teambalancer/widgets/player_skills.dart';
 
 class PlayerCard extends Card {
   static Color? cardColor(groupNo, ThemeData theme) {
@@ -32,10 +34,25 @@ class PlayerCard extends Card {
   }
 
   PlayerCard(String name,
-      {required int no, required ThemeData theme, super.key})
+      {required PlayerData data,
+      required int no,
+      required ThemeData theme,
+      super.key})
       : super(
             color: cardColor(no, theme),
-            child: Center(child: Text(name, style: textStyle(no, theme))));
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(name, style: textStyle(no, theme)),
+                  PlayerSkills(
+                    data.skills,
+                    sport: 1,
+                    withIcon: false,
+                  )
+                ],
+              ),
+            ));
 
   PlayerCard.select(String name,
       {required bool selected, required ThemeData theme, super.key})

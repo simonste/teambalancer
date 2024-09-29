@@ -48,10 +48,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
             )));
           }
           for (var j = 0; j < maxGroupSize; j++) {
-            var name = game.groups[i].members.length > j
-                ? game.groups[i].members.keys.elementAt(j)
-                : "";
-            column.add(SizedBox(child: Text(name)));
+            if (game.groups[i].members.length <= j) {
+              column.add(const SizedBox());
+            } else {
+              var name = game.groups[i].members.keys.elementAt(j);
+              column.add(SizedBox(
+                child: Text(name),
+              ));
+            }
           }
           groups.add(Expanded(child: Column(children: column)));
         }

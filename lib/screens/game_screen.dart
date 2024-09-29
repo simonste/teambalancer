@@ -82,6 +82,7 @@ class _GameScreenState extends State<GameScreen> {
               },
               child: PlayerCard(
                 playerName,
+                data: playerData,
                 no: groupNo + 1,
                 theme: Theme.of(context),
               ));

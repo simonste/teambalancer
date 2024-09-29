@@ -7,8 +7,14 @@ class PlayerSkills extends StatelessWidget {
   final int sport;
   final Map<Skill, double> skills;
   final List<String> tags = [];
+  final bool withIcon;
 
-  PlayerSkills(this.skills, {super.key, required this.sport});
+  PlayerSkills(
+    this.skills, {
+    super.key,
+    required this.sport,
+    this.withIcon = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -30,12 +36,20 @@ class PlayerSkills extends StatelessWidget {
         }
       }
 
-      factors.add(Column(children: [
-        ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 24),
-            child: SizedBox(height: 24, child: icon)),
-        Text(skillText())
-      ]));
+      factors.add(Column(
+        children: withIcon
+            ? [
+                ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 24),
+                    child: SizedBox(height: 24, child: icon)),
+                Text(skillText())
+              ]
+            : [
+                ConstrainedBox(
+                    constraints: const BoxConstraints(minWidth: 24),
+                    child: SizedBox(child: Text(skillText())))
+              ],
+      ));
     }
     for (var tag in tags) {
       factors.add(TagText.tag(tag));
