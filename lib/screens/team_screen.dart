@@ -23,12 +23,13 @@ class TeamScreen extends StatefulWidget {
 }
 
 class _TeamScreenState extends State<TeamScreen> {
-  void addSkillWeightsWidget(skills, team, isAdmin) {
+  Widget getSkillWeightsWidget(team, isAdmin) {
+    List<Widget> skillSlider = [];
     for (var skill in Skill.values) {
       if (skill == Skill.technical ||
           skill == Skill.physical ||
           skill == Skill.form) {
-        skills.add(Row(
+        skillSlider.add(Row(
           children: [
             getSkillIcon(skill, 3.8, Sport.values[team.sport],
                 color: Theme.of(context).iconTheme.color),
@@ -51,6 +52,26 @@ class _TeamScreenState extends State<TeamScreen> {
         ));
       }
     }
+    return ExpansionTile(
+      title: Text(context.l10n.skillWeights),
+      initiallyExpanded: true,
+      children: skillSlider,
+    );
+  }
+
+  Widget getPlayersTitle(sortingKind) {
+    return ListTile(
+        title: Text(context.l10n.players),
+        trailing: IconButton(
+          icon: const Icon(Icons.sort_by_alpha),
+          onPressed: () {
+            final nextSortingKind = PlayerSorting
+                .values[(sortingKind.index + 1) % PlayerSorting.values.length];
+            widget.data.preferenceData.teams[widget.teamKey.key]!
+                .playerSorting = nextSortingKind;
+            setState(() {});
+          },
+        ));
   }
 
   @override
@@ -58,6 +79,8 @@ class _TeamScreenState extends State<TeamScreen> {
     final isAdmin = widget.data.isAdmin(widget.teamKey);
     final team = widget.data.get().team(widget.teamKey);
     final players = team.players;
+    final sortingKind =
+        widget.data.preferenceData.teams[widget.teamKey.key]!.playerSorting;
     developer.log('build team screen ${players.length} players',
         name: 'teambalancer data');
 
@@ -65,13 +88,6 @@ class _TeamScreenState extends State<TeamScreen> {
     for (var tag in team.tags) {
       tags.add(TagText.tag(tag));
     }
-
-    List<Widget> rows = [Text(context.l10n.skillWeights)];
-    addSkillWeightsWidget(rows, team, isAdmin);
-    rows.add(Text(context.l10n.players));
-
-    var sortingKind =
-        widget.data.preferenceData.teams[widget.teamKey.key]!.playerSorting;
 
     int sorting(String a, String b) {
       switch (sortingKind) {
@@ -120,24 +136,15 @@ class _TeamScreenState extends State<TeamScreen> {
     return ScaffoldWithHidingFab(
       appBar: AppBar(
         title: Text(team.name),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.sort_by_alpha),
-            onPressed: () {
-              final nextSortingKind = PlayerSorting.values[
-                  (sortingKind.index + 1) % PlayerSorting.values.length];
-              widget.data.preferenceData.teams[widget.teamKey.key]!
-                  .playerSorting = nextSortingKind;
-              setState(() {});
-            },
-          )
-        ],
       ),
       body: Column(
         children: [
           Wrap(children: [
             Row(children: tags),
-            Column(children: rows),
+            Column(children: [
+              getSkillWeightsWidget(team, isAdmin),
+              getPlayersTitle(sortingKind)
+            ]),
           ]),
           Expanded(child: listView)
         ],
