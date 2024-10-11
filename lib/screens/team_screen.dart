@@ -4,11 +4,12 @@ import 'package:teambalancer/common/localization.dart';
 import 'package:teambalancer/common/utils.dart';
 import 'package:teambalancer/data/data.dart';
 import 'package:teambalancer/data/preference_data.dart';
+import 'package:teambalancer/data/team_data.dart';
 import 'package:teambalancer/data/team_key.dart';
 import 'package:teambalancer/dialog/string_dialog.dart';
 import 'package:teambalancer/screens/player_screen.dart';
-import 'package:teambalancer/widgets/player_history.dart';
 import 'package:teambalancer/widgets/player_skills.dart';
+import 'package:teambalancer/widgets/player_tile.dart';
 import 'package:teambalancer/widgets/scaffold_with_hiding_fab.dart';
 import 'package:teambalancer/widgets/tag_text.dart';
 import 'dart:developer' as developer;
@@ -23,7 +24,36 @@ class TeamScreen extends StatefulWidget {
 }
 
 class _TeamScreenState extends State<TeamScreen> {
-  Widget getSkillWeightsWidget(team, isAdmin) {
+  Widget getTagsWidget(TeamData team, isAdmin) {
+    if (team.tags.isEmpty && !isAdmin) {
+      return const SizedBox();
+    }
+
+    List<Widget> tags = [];
+    for (var tag in team.tags) {
+      tags.add(InkWell(
+        child: TagText.tag(tag, theme: Theme.of(context)),
+        onTap: () => tagDialog(tag),
+      ));
+    }
+    if (isAdmin) {
+      tags.add(InkWell(
+        child: TagText.tag(
+          "+ ${context.l10n.newTag}",
+          theme: Theme.of(context),
+        ),
+        onTap: () => tagDialog(null),
+      ));
+    }
+
+    return ExpansionTile(
+      title: Text(context.l10n.tags),
+      initiallyExpanded: false,
+      children: [Row(children: tags)],
+    );
+  }
+
+  Widget getSkillWeightsWidget(TeamData team, isAdmin) {
     List<Widget> skillSlider = [];
     for (var skill in Skill.values) {
       if (skill == Skill.technical ||
@@ -84,11 +114,6 @@ class _TeamScreenState extends State<TeamScreen> {
     developer.log('build team screen ${players.length} players',
         name: 'teambalancer data');
 
-    List<Widget> tags = [];
-    for (var tag in team.tags) {
-      tags.add(TagText.tag(tag));
-    }
-
     int sorting(String a, String b) {
       switch (sortingKind) {
         case PlayerSorting.name:
@@ -108,12 +133,12 @@ class _TeamScreenState extends State<TeamScreen> {
         final player = players[name]!;
 
         return Card(
-          child: ListTile(
-            title: Text(name),
-            trailing: SizedBox(
-                width: 120,
-                child: PlayerSkills(player.skills, sport: team.sport)),
-            subtitle: PlayerHistory(players[name]!.history),
+          child: PlayerTile(
+            name: name,
+            skills: player.skills,
+            sport: Sport.values[team.sport],
+            tags: player.tags,
+            history: players[name]!.history,
             onTap: isAdmin
                 ? () {
                     navigateTo(
@@ -127,7 +152,7 @@ class _TeamScreenState extends State<TeamScreen> {
                     });
                   }
                 : null,
-            onLongPress: isAdmin ? () => dialog(name) : null,
+            onLongPress: isAdmin ? () => playerDialog(name) : null,
           ),
         );
       },
@@ -140,8 +165,8 @@ class _TeamScreenState extends State<TeamScreen> {
       body: Column(
         children: [
           Wrap(children: [
-            Row(children: tags),
             Column(children: [
+              getTagsWidget(team, isAdmin),
               getSkillWeightsWidget(team, isAdmin),
               getPlayersTitle(sortingKind)
             ]),
@@ -151,14 +176,14 @@ class _TeamScreenState extends State<TeamScreen> {
       ),
       floatingActionButton: (isAdmin)
           ? FloatingActionButton(
-              onPressed: () => dialog(null),
+              onPressed: () => playerDialog(null),
               child: const Icon(Icons.person_add),
             )
           : null,
     );
   }
 
-  void dialog(String? defaultText) async {
+  void playerDialog(String? defaultText) async {
     final team = widget.data.get().team(widget.teamKey);
     String? input;
     if (defaultText != null) {
@@ -183,6 +208,35 @@ class _TeamScreenState extends State<TeamScreen> {
       team.renamePlayer(defaultText, input);
     } else {
       await team.addPlayer(input);
+    }
+    setState(() {});
+  }
+
+  void tagDialog(String? defaultText) async {
+    final team = widget.data.get().team(widget.teamKey);
+    String? input;
+    if (defaultText != null) {
+      input = await stringDialog(
+        context,
+        title: context.l10n.tag,
+        defaultText: defaultText,
+        deleteFunction: () {
+          team.removeTag(defaultText);
+          setState(() {});
+        },
+      );
+    } else {
+      input = await stringDialog(context,
+          title: context.l10n.newTag, hintText: context.l10n.tag);
+    }
+    if (input == null) return; // empty name not allowed
+    if (defaultText != null) {
+      if (team.tags.contains(input)) {
+        return;
+      }
+      await team.renameTag(defaultText, input);
+    } else {
+      await team.addTag(input);
     }
     setState(() {});
   }

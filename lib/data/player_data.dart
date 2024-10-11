@@ -26,21 +26,41 @@ class PlayerData {
       : skills = {for (var key in Skill.values) key: Constants.defaultSkill},
         tags = [];
 
-  Future<void> setSkill(Skill skill, int value, TeamKey teamKey) async {
-    skills[skill] = value.toDouble();
-
+  Future<void> _save(TeamKey teamKey) async {
     var json = toJson();
     json['teamKey'] = teamKey.key;
     await Backend.updatePlayer(jsonEncode(json));
   }
 
-  Future<void> toggleTag(String tag) async {
+  Future<void> setSkill(Skill skill, int value, TeamKey teamKey) async {
+    skills[skill] = value.toDouble();
+
+    _save(teamKey);
+  }
+
+  Future<void> toggleTag(String tag, TeamKey teamKey) async {
     if (tags.contains(tag)) {
       tags.remove(tag);
     } else {
       tags.add(tag);
     }
-    throw Exception('Backend not implemented');
+
+    _save(teamKey);
+  }
+
+  Future<void> removeTag(String tag, TeamKey teamKey) async {
+    if (tags.contains(tag)) {
+      tags.remove(tag);
+      return _save(teamKey);
+    }
+  }
+
+  Future<void> renameTag(String from, String tag, TeamKey teamKey) async {
+    if (tags.contains(from)) {
+      tags.remove(from);
+      tags.add(tag);
+      return _save(teamKey);
+    }
   }
 
   void updateForm() {

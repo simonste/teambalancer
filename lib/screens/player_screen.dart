@@ -89,9 +89,13 @@ class _PlayerScreenState extends State<PlayerScreen> {
 
     var tags = team.tags
         .map((tag) => InkWell(
-              child: TagText.tag(tag, active: player.tags.contains(tag)),
+              child: TagText.tag(
+                tag,
+                active: player.tags.contains(tag),
+                theme: Theme.of(context),
+              ),
               onTap: () {
-                player.toggleTag(tag);
+                player.toggleTag(tag, widget.teamKey);
                 setState(() {});
               },
             ))

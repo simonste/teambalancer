@@ -23,12 +23,12 @@ class TagText extends Container {
             padding: _padding,
             child: Text(text));
 
-  TagText.tag(String text, {super.key, active = true})
+  TagText.tag(String text, {super.key, required ThemeData theme, active = true})
       : super(
             decoration: BoxDecoration(
               borderRadius: _borderRadius,
               border: Border.all(),
-              color: active ? Colors.black : null,
+              color: active ? theme.secondaryHeaderColor : null,
             ),
             margin: _margin,
             padding: _padding,

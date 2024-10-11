@@ -15,6 +15,9 @@
   "deleteForAll": "Für alle Löschen",
   "deleteForMe": "Für mich Löschen",
   "skillWeights": "Gewichtung der Fähigkeiten",
+  "tags": "Tags",
+  "tag": "Tag",
+  "newTag": "Neuer Tag",
   "players": "Spieler",
   "result": "Resultat",
   "noGamesPlayedYet": "Noch keine Spiele gespielt."

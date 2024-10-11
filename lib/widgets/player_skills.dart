@@ -52,7 +52,7 @@ class PlayerSkills extends StatelessWidget {
       ));
     }
     for (var tag in tags) {
-      factors.add(TagText.tag(tag));
+      factors.add(TagText.tag(tag, theme: Theme.of(context)));
     }
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,

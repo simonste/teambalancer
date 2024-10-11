@@ -102,6 +102,32 @@ class TeamData {
   Future<void> setWeight(Skill skill, int value) async {
     weights[skill] = value;
 
+    return _save();
+  }
+
+  Future<void> removeTag(String tag) {
+    tags.remove(tag);
+    for (var player in players.values) {
+      player.removeTag(tag, TeamKey(teamKey));
+    }
+    return _save();
+  }
+
+  Future<void> addTag(String tag) {
+    tags.add(tag);
+    tags.sort();
+    return _save();
+  }
+
+  Future<void> renameTag(String from, String tag) {
+    tags.remove(from);
+    for (var player in players.values) {
+      player.renameTag(from, tag, TeamKey(teamKey));
+    }
+    return addTag(tag);
+  }
+
+  Future<void> _save() async {
     var json = toJson();
     json.remove('players');
     json['teamKey'] = teamKey;

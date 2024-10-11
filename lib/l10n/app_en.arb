@@ -29,6 +29,9 @@
   "deleteForAll": "Delete for everyone",
   "deleteForMe": "Delete only for me",
   "skillWeights": "Skill-Weights",
+  "tags": "Tags",
+  "tag": "Tag",
+  "newTag": "New Tag",
   "players": "Players",
   "result": "Result",
   "noGamesPlayedYet": "No games played"
