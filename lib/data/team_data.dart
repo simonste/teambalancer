@@ -33,40 +33,12 @@ class TeamData {
     this.teamKey,
   );
 
-  GroupData convertFromOldData(group, result, int groupIdx) {
-    var gd = GroupData("Group ${groupIdx + 1}", weights);
-
-    var scores =
-        result.isEmpty ? [] : result.split(":").map(int.parse).toList();
-    if (scores.length > 0) {
-      gd.score = scores[groupIdx];
-    }
-
-    for (var member in group) {
-      if (member > 0 && players.isNotEmpty) {
-        var pl = players.keys.firstWhere((k) => players[k]!.playerId == member);
-        gd.members[pl] = players[pl]!;
-      } else {
-        // invalid member
-      }
-    }
-    return gd;
-  }
-
   void loadGames(gamesHistory) {
     games.clear();
     for (var game in gamesHistory ?? []) {
       List<GroupData> groups = [];
-
-      if (game['groupData'] == null) {
-        var groupIdx = 0;
-        for (var group in game['groups']) {
-          groups.add(convertFromOldData(group, game['result'], groupIdx++));
-        }
-      } else {
-        for (var g in game['groupData']) {
-          groups.add(GroupData.fromJson(g));
-        }
+      for (var g in game['groupData']) {
+        groups.add(GroupData.fromJson(g));
       }
 
       games.add(Game(

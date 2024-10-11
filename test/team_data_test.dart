@@ -13,6 +13,21 @@ void main() {
     return TeamData(teamName, 1, p, {}, [], "ABCDEF");
   }
 
+  Map<String, dynamic> getMembers(TeamData team, List<String> players) {
+    Map<String, dynamic> members = {};
+    for (var name in players) {
+      members[name] = team.players[name]!.toJson();
+    }
+    return members;
+  }
+
+  final defaultWeights = {
+    "physical": 0,
+    "technical": 0,
+    "tactical": 0,
+    "form": 0
+  };
+
   test('sorted keys', () {
     var teams = TeamsData({});
     teams.addTeam(TeamData("Gamma", 1, {}, {}, [], "AAAA"));
@@ -38,21 +53,44 @@ void main() {
       {
         "historyId": 1,
         "date": "2000-01-01 12:00:00",
-        "groups": [
-          [1, 2],
-          [3, 4]
-        ],
-        "result": "4:3",
+        "groupData": [
+          {
+            "name": "Group 1",
+            "members": getMembers(team, ["P1", "P2"]),
+            "weights": defaultWeights,
+            "score": 4
+          },
+          {
+            "name": "Group 2",
+            "members": getMembers(team, ["P3", "P4"]),
+            "weights": defaultWeights,
+            "score": 3
+          }
+        ]
       },
       {
         "historyId": 2,
         "date": "2000-01-02 12:00:00",
-        "groups": [
-          [1],
-          [3, 4],
-          [2, 5, 6],
-        ],
-        "result": "",
+        "groupData": [
+          {
+            "name": "Group 1",
+            "members": getMembers(team, ["P1"]),
+            "weights": defaultWeights,
+            "score": null
+          },
+          {
+            "name": "Group 2",
+            "members": getMembers(team, ["P3", "P4"]),
+            "weights": defaultWeights,
+            "score": null
+          },
+          {
+            "name": "Group 3",
+            "members": getMembers(team, ["P2", "P5", "P6"]),
+            "weights": defaultWeights,
+            "score": null
+          }
+        ]
       }
     ]);
 
@@ -78,11 +116,20 @@ void main() {
       {
         "historyId": 1,
         "date": "2000-01-01 12:00:00",
-        "groups": [
-          [1, 2],
-          [3, 4]
-        ],
-        "result": "4:3",
+        "groupData": [
+          {
+            "name": "Group 1",
+            "members": getMembers(team, ["P1", "P2"]),
+            "weights": defaultWeights,
+            "score": 4
+          },
+          {
+            "name": "Group 2",
+            "members": getMembers(team, ["P3", "P4"]),
+            "weights": defaultWeights,
+            "score": 3
+          }
+        ]
       }
     ]);
 
@@ -102,47 +149,92 @@ void main() {
       {
         "historyId": 1,
         "date": "2000-01-01 12:00:00",
-        "groups": [
-          [1, 2],
-          [3, 4]
-        ],
-        "result": "4:3",
+        "groupData": [
+          {
+            "name": "Group 1",
+            "members": getMembers(team, ["P1", "P2"]),
+            "weights": defaultWeights,
+            "score": 4
+          },
+          {
+            "name": "Group 2",
+            "members": getMembers(team, ["P3", "P4"]),
+            "weights": defaultWeights,
+            "score": 3
+          }
+        ]
       },
       {
         "historyId": 2,
         "date": "2000-01-01 14:00:00",
-        "groups": [
-          [1, 3],
-          [2, 4]
-        ],
-        "result": "2:3",
+        "groupData": [
+          {
+            "name": "Group 1",
+            "members": getMembers(team, ["P1", "P3"]),
+            "weights": defaultWeights,
+            "score": 2
+          },
+          {
+            "name": "Group 2",
+            "members": getMembers(team, ["P2", "P4"]),
+            "weights": defaultWeights,
+            "score": 3
+          }
+        ]
       },
       {
         "historyId": 3,
         "date": "2000-01-01 13:00:00",
-        "groups": [
-          [1, 3],
-          [2, 4]
-        ],
-        "result": "2:0",
+        "groupData": [
+          {
+            "name": "Group 1",
+            "members": getMembers(team, ["P1", "P3"]),
+            "weights": defaultWeights,
+            "score": 2
+          },
+          {
+            "name": "Group 2",
+            "members": getMembers(team, ["P2", "P4"]),
+            "weights": defaultWeights,
+            "score": 0
+          }
+        ]
       },
       {
         "historyId": 4,
         "date": "2000-01-01 15:00:00",
-        "groups": [
-          [2],
-          [4]
-        ],
-        "result": "2:2",
+        "groupData": [
+          {
+            "name": "Group 1",
+            "members": getMembers(team, ["P2"]),
+            "weights": defaultWeights,
+            "score": 2
+          },
+          {
+            "name": "Group 2",
+            "members": getMembers(team, ["P4"]),
+            "weights": defaultWeights,
+            "score": 2
+          }
+        ]
       },
       {
         "historyId": 5,
         "date": "2000-01-01 16:00:00",
-        "groups": [
-          [1, 2],
-          [4]
-        ],
-        "result": "",
+        "groupData": [
+          {
+            "name": "Group 1",
+            "members": getMembers(team, ["P1", "P2"]),
+            "weights": defaultWeights,
+            "score": null
+          },
+          {
+            "name": "Group 2",
+            "members": getMembers(team, ["P4"]),
+            "weights": defaultWeights,
+            "score": null
+          }
+        ]
       }
     ]);
 
@@ -180,20 +272,38 @@ void main() {
       {
         "historyId": 1,
         "date": "2000-01-01 12:00:00",
-        "groups": [
-          [1, 2],
-          [3, 4]
-        ],
-        "result": "4:3",
+        "groupData": [
+          {
+            "name": "Group 1",
+            "members": getMembers(team, ["P1", "P2"]),
+            "weights": defaultWeights,
+            "score": 4
+          },
+          {
+            "name": "Group 2",
+            "members": getMembers(team, ["P3", "P4"]),
+            "weights": defaultWeights,
+            "score": 3
+          }
+        ]
       },
       {
         "historyId": 2,
         "date": "2000-01-01 14:00:00",
-        "groups": [
-          [1, 3],
-          [2, 4]
-        ],
-        "result": "2:3",
+        "groupData": [
+          {
+            "name": "Group 1",
+            "members": getMembers(team, ["P1", "P3"]),
+            "weights": defaultWeights,
+            "score": 2
+          },
+          {
+            "name": "Group 2",
+            "members": getMembers(team, ["P2", "P4"]),
+            "weights": defaultWeights,
+            "score": 3
+          }
+        ]
       },
     ]);
 
