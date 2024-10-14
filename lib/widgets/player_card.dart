@@ -45,11 +45,7 @@ class PlayerCard extends Card {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text(name, style: textStyle(no, theme)),
-                  PlayerSkills(
-                    data.skills,
-                    sport: 1,
-                    withIcon: false,
-                  )
+                  PlayerSkills.withoutIcon(data.skills)
                 ],
               ),
             ));

@@ -8,7 +8,6 @@ import 'package:teambalancer/data/team_data.dart';
 import 'package:teambalancer/data/team_key.dart';
 import 'package:teambalancer/dialog/string_dialog.dart';
 import 'package:teambalancer/screens/player_screen.dart';
-import 'package:teambalancer/widgets/player_skills.dart';
 import 'package:teambalancer/widgets/player_tile.dart';
 import 'package:teambalancer/widgets/scaffold_with_hiding_fab.dart';
 import 'package:teambalancer/widgets/tag_text.dart';

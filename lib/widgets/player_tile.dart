@@ -31,7 +31,7 @@ class PlayerTile extends StatelessWidget {
     for (var e in tags) {
       list.add(TagText.tag(e, theme: Theme.of(context)));
     }
-    list.add(PlayerSkills(skills, sport: sport.index));
+    list.add(PlayerSkills(skills, sport: sport));
 
     return InkWell(
       onTap: onTap,

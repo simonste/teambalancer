@@ -4,7 +4,7 @@ import 'package:teambalancer/common/utils.dart';
 import 'package:teambalancer/widgets/tag_text.dart';
 
 class PlayerSkills extends StatelessWidget {
-  final int sport;
+  final Sport sport;
   final Map<Skill, double> skills;
   final List<String> tags = [];
   final bool withIcon;
@@ -13,15 +13,20 @@ class PlayerSkills extends StatelessWidget {
     this.skills, {
     super.key,
     required this.sport,
-    this.withIcon = true,
-  });
+  }) : withIcon = true;
+
+  PlayerSkills.withoutIcon(
+    this.skills, {
+    super.key,
+  })  : withIcon = false,
+        sport = Sport.football;
 
   @override
   Widget build(BuildContext context) {
     List<Widget> factors = [];
     for (var skillType in Skill.values) {
       final skillValue = skills[skillType]!;
-      final icon = getSkillIcon(skillType, skillValue, Sport.values[sport],
+      final icon = getSkillIcon(skillType, skillValue, sport,
           color: Theme.of(context).iconTheme.color);
 
       skillText() {
