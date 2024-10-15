@@ -124,11 +124,21 @@ class _TeamScreenState extends State<TeamScreen> {
       }
     }
 
+    final topWidgets = [
+      getTagsWidget(team, isAdmin),
+      getSkillWeightsWidget(team, isAdmin),
+      getPlayersTitle(sortingKind),
+    ];
+
     var listView = ListView.builder(
-      itemCount: players.length,
+      itemCount: players.length + topWidgets.length,
       itemBuilder: (context, index) {
+        if (index < topWidgets.length) {
+          return topWidgets[index];
+        }
+
         final sorted = players.keys.toList()..sort((a, b) => sorting(a, b));
-        final name = sorted[index];
+        final name = sorted[index - topWidgets.length];
         final player = players[name]!;
 
         return Card(
@@ -161,18 +171,7 @@ class _TeamScreenState extends State<TeamScreen> {
       appBar: AppBar(
         title: Text(team.name),
       ),
-      body: Column(
-        children: [
-          Wrap(children: [
-            Column(children: [
-              getTagsWidget(team, isAdmin),
-              getSkillWeightsWidget(team, isAdmin),
-              getPlayersTitle(sortingKind)
-            ]),
-          ]),
-          Expanded(child: listView)
-        ],
-      ),
+      body: listView,
       floatingActionButton: (isAdmin)
           ? FloatingActionButton(
               onPressed: () => playerDialog(null),
