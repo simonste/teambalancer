@@ -323,4 +323,33 @@ void main() {
     expect(team.players["P1"]!.history, [GameResult.lost, GameResult.draw]);
     expect(team.players["P2"]!.history, [GameResult.won, GameResult.draw]);
   });
+
+  test('rename player', () {
+    var team = createTeam("Team", 4);
+    team.loadGames([
+      {
+        "historyId": 1,
+        "date": "2000-01-01 12:00:00",
+        "groupData": [
+          {
+            "name": "Group 1",
+            "members": getMembers(team, ["P1", "P2"]),
+            "weights": defaultWeights,
+            "score": 4
+          },
+          {
+            "name": "Group 2",
+            "members": getMembers(team, ["P3", "P4"]),
+            "weights": defaultWeights,
+            "score": 3
+          }
+        ]
+      }
+    ]);
+
+    team.renamePlayer("P1", "PX");
+
+    expect(team.players["PX"]!.history, [GameResult.won]);
+    expect(team.games[0].groups[0].members.containsKey("PX"), true);
+  });
 }

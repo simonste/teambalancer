@@ -58,11 +58,21 @@ class TeamData {
       players.forEach((player, data) {
         bool played = false;
         for (var g = 0; g < game.groups.length; g++) {
-          if (game.groups[g].members.containsKey(player)) {
-            played = true;
-            data.history.add(game.getResult(g));
-            break;
-          }
+          var renamedPlayers = {};
+          game.groups[g].members.forEach((n, member) {
+            if (member.playerId == data.playerId) {
+              played = true;
+              data.history.add(game.getResult(g));
+              if (n != player) {
+                renamedPlayers[n] = player;
+              }
+            }
+          });
+
+          renamedPlayers.forEach((from, to) {
+            final pd = game.groups[g].members.remove(from);
+            game.groups[g].members[to] = pd!;
+          });
         }
         if (!played) {
           data.history.add(GameResult.miss);
@@ -96,6 +106,7 @@ class TeamData {
       'playerId': players[to]!.playerId,
       'name': to
     };
+    refreshGames();
     await Backend.renamePlayer(jsonEncode(body));
   }
 
