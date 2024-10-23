@@ -59,11 +59,17 @@ class MainAppState extends State<MainApp> {
       navigatorKey: _navigatorKey,
       themeMode: ThemeMode.system,
       theme: ThemeData(
-          colorScheme: const ColorScheme.light(
-              primary: Color.fromARGB(255, 0, 52, 154))),
+        colorScheme: const ColorScheme.light(
+          primary: Color.fromARGB(255, 0, 52, 154),
+        ),
+        cardColor: const Color.fromARGB(255, 196, 196, 248),
+      ),
       darkTheme: ThemeData(
-          colorScheme: const ColorScheme.dark(
-              primary: Color.fromARGB(255, 63, 169, 245))),
+        colorScheme: const ColorScheme.dark(
+          primary: Color.fromARGB(255, 63, 169, 245),
+        ),
+        cardColor: const Color.fromARGB(255, 47, 47, 99),
+      ),
       onGenerateRoute: (RouteSettings settings) {
         return MaterialPageRoute(
           builder: (context) {

@@ -60,6 +60,7 @@ class _MainScreenState extends State<MainScreen> {
           final isAdmin = data.isAdmin(teamKey);
           final name = team.name;
           return Card(
+            color: Theme.of(context).cardColor,
             child: ListTile(
               title: Text(name),
               leading: getSportIcon(Sport.values[team.sport],

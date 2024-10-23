@@ -61,6 +61,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
         }
 
         return Card(
+          color: Theme.of(context).cardColor,
           child: ListTile(
             title: Row(children: [
               Text(dateFormatter.format(game.date)),

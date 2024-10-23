@@ -142,6 +142,7 @@ class _TeamScreenState extends State<TeamScreen> {
         final player = players[name]!;
 
         return Card(
+          color: Theme.of(context).cardColor,
           child: PlayerTile(
             name: name,
             skills: player.skills,
