@@ -68,9 +68,20 @@ class ShuffleWeighted {
       final groups = ShuffleBase(parameter: parameter).shuffle();
       double error = 0;
       for (var group in groups) {
+        List<String> tags = [];
         for (var skill in Skill.values) {
           error += (group.skill(skill) - avgSkills[skill]!).abs();
         }
+        group.members.forEach((name, data) {
+          for (var tag in data.tags) {
+            if (tags.contains(tag)) {
+              // punish duplicate tags in group
+              error += group.members.length * 50;
+            } else {
+              tags.add(tag);
+            }
+          }
+        });
       }
 
       if (error < bestError) {
@@ -116,16 +127,48 @@ class ShuffleBase {
   void _distributeToGroups(List<String> players) {
     for (var p = 0; p < players.length; p++) {
       final playerName = players[p];
-      _addToGroup(playerName, _groupNoToAddTo());
+      final playerAlreadyDrawn =
+          _groups.any((group) => group.members.containsKey(playerName));
+      if (!playerAlreadyDrawn) {
+        _addToGroup(playerName, _groupNoToAddTo());
+      }
     }
+  }
+
+  Map<String, List<String>> tagPlayerMap() {
+    Map<String, List<String>> playersWithThisTag = {};
+    parameter.players.forEach((name, playerData) {
+      for (var tag in playerData.tags) {
+        if (playersWithThisTag.containsKey(tag)) {
+          playersWithThisTag[tag]!.add(name);
+        } else {
+          playersWithThisTag[tag] = [name];
+        }
+      }
+      if (playerData.tags.isEmpty) {
+        if (!playersWithThisTag.containsKey("")) {
+          playersWithThisTag[""] = [];
+        }
+        playersWithThisTag[""]!.add(name);
+      }
+    });
+    return playersWithThisTag;
   }
 
   List<GroupData> shuffle() {
     Random random = Random();
-    final playerNames = parameter.players.keys.toList()..shuffle(random);
 
-    _distributeToGroups(playerNames);
+    List<List<String>> tagGroups = [];
+    if (parameter.separateTagged) {
+      tagGroups = tagPlayerMap().values.toList();
+    } else {
+      tagGroups = [parameter.players.keys.toList()];
+    }
 
+    for (final tagGroup in tagGroups) {
+      final playerNames = tagGroup..shuffle(random);
+      _distributeToGroups(playerNames);
+    }
     return _groups;
   }
 }
