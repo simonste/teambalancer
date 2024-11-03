@@ -87,34 +87,45 @@ class ShuffleWeighted {
 class ShuffleBase {
   final ShuffleParameter parameter;
   final List<GroupData> _groups;
-  final List<int> _groupSize;
 
   ShuffleBase({required this.parameter})
       : _groups = List<GroupData>.generate(parameter.noOfGroups,
             (i) => GroupData("Group ${i + 1}", parameter.weights),
-            growable: false),
-        _groupSize = List<int>.generate(
-            parameter.noOfGroups, (i) => parameter.groupSize(groupNo: i));
+            growable: false);
 
   void _addToGroup(String playerName, int groupNo) {
     var group = _groups[groupNo];
     group.members[playerName] = parameter.players[playerName]!;
   }
 
+  int _groupNoToAddTo() {
+    var smallestGroupLength =
+        _groups.map((e) => e.members.length).reduce((a, b) => a < b ? a : b);
+    List<int> groupNos = [];
+    for (var i = 0; i < _groups.length; i++) {
+      if (_groups[i].members.length == smallestGroupLength) {
+        groupNos.add(i);
+      }
+    }
+
+    Random random = Random();
+    groupNos.shuffle(random);
+    return groupNos[0];
+  }
+
+  void _distributeToGroups(List<String> players) {
+    for (var p = 0; p < players.length; p++) {
+      final playerName = players[p];
+      _addToGroup(playerName, _groupNoToAddTo());
+    }
+  }
+
   List<GroupData> shuffle() {
     Random random = Random();
     final playerNames = parameter.players.keys.toList()..shuffle(random);
 
-    for (var p = 0; p < playerNames.length; p++) {
-      final playerName = playerNames[p];
-      for (var g = 0; g < _groups.length; g++) {
-        final groupIsComplete = _groups[g].members.length >= _groupSize[g];
-        if (!groupIsComplete) {
-          _addToGroup(playerName, g);
-          break;
-        }
-      }
-    }
+    _distributeToGroups(playerNames);
+
     return _groups;
   }
 }
