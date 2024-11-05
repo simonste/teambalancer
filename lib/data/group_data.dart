@@ -25,4 +25,9 @@ class GroupData {
     }
     return val;
   }
+
+  @override
+  String toString() {
+    return members.keys.fold("", (str, k) => str + k);
+  }
 }
