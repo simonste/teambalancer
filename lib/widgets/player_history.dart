@@ -34,6 +34,11 @@ class PlayerHistory extends StatelessWidget {
                 const Border(right: BorderSide(color: Colors.white, width: 1))),
       ));
     }
-    return Row(children: row);
+    return SizedBox(
+        child: SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      reverse: true,
+      child: Row(children: row),
+    ));
   }
 }
