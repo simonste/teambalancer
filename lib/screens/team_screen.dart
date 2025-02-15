@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:teambalancer/common/constants.dart';
 import 'package:teambalancer/common/localization.dart';
+import 'package:teambalancer/common/sorting.dart';
 import 'package:teambalancer/common/utils.dart';
 import 'package:teambalancer/data/data.dart';
 import 'package:teambalancer/data/preference_data.dart';
@@ -94,10 +95,13 @@ class _TeamScreenState extends State<TeamScreen> {
         trailing: IconButton(
           icon: const Icon(Icons.sort_by_alpha),
           onPressed: () {
-            final nextSortingKind = PlayerSorting
-                .values[(sortingKind.index + 1) % PlayerSorting.values.length];
-            widget.data.preferenceData.teams[widget.teamKey.key]!
-                .playerSorting = nextSortingKind;
+            if (sortingKind == PlayerSorting.name) {
+              widget.data.preferenceData.teams[widget.teamKey.key]!
+                  .playerSorting = PlayerSorting.form;
+            } else {
+              widget.data.preferenceData.teams[widget.teamKey.key]!
+                  .playerSorting = PlayerSorting.name;
+            }
             setState(() {});
           },
         ));
@@ -113,17 +117,6 @@ class _TeamScreenState extends State<TeamScreen> {
     developer.log('build team screen ${players.length} players',
         name: 'teambalancer data');
 
-    int sorting(String a, String b) {
-      switch (sortingKind) {
-        case PlayerSorting.name:
-          return a.compareTo(b);
-        case PlayerSorting.form:
-          return players[b]!
-              .skills[Skill.form]!
-              .compareTo(players[a]!.skills[Skill.form]!);
-      }
-    }
-
     final topWidgets = [
       getTagsWidget(team, isAdmin),
       getSkillWeightsWidget(team, isAdmin),
@@ -137,7 +130,8 @@ class _TeamScreenState extends State<TeamScreen> {
           return topWidgets[index];
         }
 
-        final sorted = players.keys.toList()..sort((a, b) => sorting(a, b));
+        final sorted = players.keys.toList()
+          ..sort((a, b) => sorting(sortingKind, players, a, b));
         final name = sorted[index - topWidgets.length];
         final player = players[name]!;
 

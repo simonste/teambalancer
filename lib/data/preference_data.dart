@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 part 'preference_data.g.dart';
 
-enum PlayerSorting { name, form }
+enum PlayerSorting { name, form, games, won, lost, winPercentage }
 
 @JsonSerializable()
 class PreferenceTeamData {
