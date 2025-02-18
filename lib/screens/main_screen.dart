@@ -9,6 +9,7 @@ import 'package:teambalancer/dialog/confirm_dialog.dart';
 import 'package:teambalancer/dialog/create_team_dialog.dart';
 import 'package:teambalancer/screens/history_screen.dart';
 import 'package:teambalancer/screens/shuffle_screen.dart';
+import 'package:teambalancer/screens/statistics_screen.dart';
 import 'package:teambalancer/screens/team_screen.dart';
 import 'package:teambalancer/widgets/scaffold_with_hiding_fab.dart';
 import 'package:teambalancer/data/data.dart';
@@ -91,6 +92,15 @@ class _MainScreenState extends State<MainScreen> {
                       onPressed: () => navigateTo(
                           context,
                           TeamScreen(
+                            teamKey: teamKey,
+                            data: data,
+                          )),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.bar_chart),
+                      onPressed: () => navigateTo(
+                          context,
+                          StatisticsScreen(
                             teamKey: teamKey,
                             data: data,
                           )),
