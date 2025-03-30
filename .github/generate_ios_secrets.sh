@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Yearly refresh: delete ios_distribution.cer & run this script
+#
+# Per Developer Profile:
+# - Create Certificate of type iOS Distribution @ https://developer.apple.com/account/resources/certificates/list"
+# Per App:
+# - Create Profile of type App Store Connect @ https://developer.apple.com/account/resources/profiles/list"
+
+
 # GithubActions: 
 # - https://medium.com/team-rockstars-it/the-easiest-way-to-build-a-flutter-ios-app-using-github-actions-plus-a-key-takeaway-for-developers-48cf2ad7c72a
 # - https://github.com/damienaicheh/demo_flutter_github_actions
@@ -31,6 +39,7 @@ fi
 # This has to be refreshed after 1 year
 if [ ! -f "ios_distribution.cer" ]; then
     rm res/ios_distribution.pem
+    rm teambalancer_distribution.mobileprovision
     echo "FAIL: ios_distribution certificate missing"
     echo "Create Certificate of type iOS Distribution @ https://developer.apple.com/account/resources/certificates/list"
     echo "Download it to ios_distribution.cer"
