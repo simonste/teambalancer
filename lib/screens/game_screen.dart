@@ -67,12 +67,12 @@ class _GameScreenState extends State<GameScreen> {
         itemCount: noOfGroups * largestGroup,
         itemBuilder: (context, index) {
           final groupNo = index % noOfGroups;
+          final members = widget.game.groups[groupNo].members.keys.sorted();
           final playerIdx = (index / noOfGroups).floor();
           if (widget.game.groups[groupNo].members.length <= playerIdx) {
             return const SizedBox();
           }
-          final playerName =
-              widget.game.groups[groupNo].members.keys.elementAt(playerIdx);
+          final playerName = members.elementAt(playerIdx);
           final playerData = widget.game.groups[groupNo].members[playerName]!;
           return GestureDetector(
               onLongPress: () {

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:calc/calc.dart';
 import 'package:flutter/material.dart';
 import 'package:teambalancer/common/constants.dart';
 import 'package:teambalancer/common/utils.dart';
@@ -45,14 +46,14 @@ class _GroupScreenState extends State<GroupScreen> {
       itemCount: widget.groups.length,
       itemBuilder: (context, index) {
         final group = widget.groups[index];
+        final sorted = group.members.keys.sorted();
 
         return Card(
           child: ListTile(
             title: Row(children: [Text(group.name)]),
             subtitle: Column(
-                children: group.members.keys
-                    .map((element) => playerInfo(element))
-                    .toList()),
+                children:
+                    sorted.map((element) => playerInfo(element)).toList()),
             trailing: GroupSummary(group: group),
           ),
         );

@@ -1,3 +1,4 @@
+import 'package:calc/calc.dart';
 import 'package:flutter/material.dart';
 import 'package:teambalancer/common/localization.dart';
 import 'package:teambalancer/common/utils.dart';
@@ -47,14 +48,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
               textScaler: const TextScaler.linear(1.8),
             )));
           }
+
+          final sortedMembers = game.groups[i].members.keys.sorted();
           for (var j = 0; j < maxGroupSize; j++) {
             if (game.groups[i].members.length <= j) {
               column.add(const SizedBox());
             } else {
-              var name = game.groups[i].members.keys.elementAt(j);
-              column.add(SizedBox(
-                child: Text(name),
-              ));
+              column.add(SizedBox(child: Text(sortedMembers.elementAt(j))));
             }
           }
           groups.add(Expanded(child: Column(children: column)));
