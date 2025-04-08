@@ -34,5 +34,11 @@
   "newTag": "New Tag",
   "players": "Players",
   "result": "Result",
-  "noGamesPlayedYet": "No games played"
+  "noGamesPlayedYet": "No games played",
+  "name": "Name",
+  "total": "Total",
+  "won": "Won",
+  "lost": "Lost",
+  "winPercentage": "%",
+  "form": "Form"
 }

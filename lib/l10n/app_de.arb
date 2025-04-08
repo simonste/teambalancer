@@ -20,5 +20,11 @@
   "newTag": "Neuer Tag",
   "players": "Spieler",
   "result": "Resultat",
-  "noGamesPlayedYet": "Noch keine Spiele gespielt."
+  "noGamesPlayedYet": "Noch keine Spiele gespielt.",
+  "name": "Name",
+  "total": "Total",
+  "won": "Siege",
+  "lost": "Niederlagen",
+  "winPercentage": "%",
+  "form": "Form"
 }

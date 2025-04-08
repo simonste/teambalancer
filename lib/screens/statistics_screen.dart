@@ -48,11 +48,12 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       ..sort((a, b) => sorting(sortingKind, players, a, b));
 
     var columnHeaders = {
-      PlayerSorting.name: Text("Name"),
-      PlayerSorting.games: Text("T", textAlign: TextAlign.right),
-      PlayerSorting.won: Text("S", textAlign: TextAlign.right),
-      PlayerSorting.lost: Text("N", textAlign: TextAlign.right),
-      PlayerSorting.winPercentage: Text("%", textAlign: TextAlign.right),
+      PlayerSorting.name: Text(context.l10n.name),
+      PlayerSorting.games: Text(context.l10n.total, textAlign: TextAlign.right),
+      PlayerSorting.won: Text(context.l10n.won, textAlign: TextAlign.right),
+      PlayerSorting.lost: Text(context.l10n.lost, textAlign: TextAlign.right),
+      PlayerSorting.winPercentage:
+          Text(context.l10n.winPercentage, textAlign: TextAlign.right),
       PlayerSorting.form: getSkillIcon(
           Skill.form, 1.8, Sport.values[team.sport],
           color: Theme.of(context).iconTheme.color)
@@ -103,6 +104,8 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         title: Text(team.name),
       ),
       body: Table(
+        defaultColumnWidth: FlexColumnWidth(1),
+        columnWidths: {0: FlexColumnWidth(2)},
         children: rows,
       ),
     );
