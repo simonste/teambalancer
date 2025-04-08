@@ -9,6 +9,7 @@ import 'package:teambalancer/data/group_data.dart';
 import 'package:teambalancer/data/team_key.dart';
 import 'package:teambalancer/screens/game_screen.dart';
 import 'package:teambalancer/widgets/group_summary.dart';
+import 'package:teambalancer/widgets/tag_text.dart';
 
 class GroupScreen extends StatefulWidget {
   const GroupScreen(
@@ -25,15 +26,17 @@ class GroupScreen extends StatefulWidget {
 }
 
 class _GroupScreenState extends State<GroupScreen> {
-  Widget skill(String name) {
-    return getTacticsIcon(
-        widget.data
-                .get()
-                .team(widget.teamKey)
-                .players[name]!
-                .skills[Skill.tactical] ??
-            1,
-        color: Theme.of(context).iconTheme.color);
+  Widget playerInfo(String name) {
+    var player = widget.data.get().team(widget.teamKey).players[name]!;
+    List<Widget> list = [
+      getTacticsIcon(player.skills[Skill.tactical] ?? 1,
+          color: Theme.of(context).iconTheme.color),
+      Text(name)
+    ];
+    for (var e in player.tags) {
+      list.add(TagText.tag(e, theme: Theme.of(context)));
+    }
+    return Row(children: list);
   }
 
   @override
@@ -48,8 +51,7 @@ class _GroupScreenState extends State<GroupScreen> {
             title: Row(children: [Text(group.name)]),
             subtitle: Column(
                 children: group.members.keys
-                    .map((element) =>
-                        Row(children: [skill(element), Text(element)]))
+                    .map((element) => playerInfo(element))
                     .toList()),
             trailing: GroupSummary(group: group),
           ),
