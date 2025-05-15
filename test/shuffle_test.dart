@@ -65,6 +65,24 @@ void main() {
     expect(shuffleParameter.groupSize(groupNo: 3), 1);
   });
 
+  test('ignored players', () {
+    var shuffleParameter = prepareShuffle(4, noOfGroups: 2);
+    expect(shuffleParameter.minimumGroupSize(), 2);
+    expect(shuffleParameter.getIgnoredPlayers().length, 0);
+
+    shuffleParameter = prepareShuffle(5, noOfGroups: 2);
+    expect(shuffleParameter.minimumGroupSize(), 2);
+    expect(shuffleParameter.getIgnoredPlayers().length, 1);
+
+    shuffleParameter = prepareShuffle(5, noOfGroups: 3);
+    expect(shuffleParameter.minimumGroupSize(), 1);
+    expect(shuffleParameter.getIgnoredPlayers().length, 2);
+
+    shuffleParameter = prepareShuffle(15, noOfGroups: 4);
+    expect(shuffleParameter.minimumGroupSize(), 3);
+    expect(shuffleParameter.getIgnoredPlayers().length, 3);
+  });
+
   test('draw groups', () {
     var shuffleParameter = prepareShuffle(4);
 
@@ -99,6 +117,41 @@ void main() {
     drawMultipleTimes(shuffleParameter, (groups) {
       expect(groups.length, 2);
       expect(groups[0].length + groups[1].length, 5);
+    });
+  });
+
+  test('draw uneven groups weights', () {
+    var shuffleParameter = prepareShuffle(5);
+    shuffleParameter.players['P1']!.skills[Skill.physical] = 5;
+    shuffleParameter.players['P2']!.skills[Skill.physical] = 5;
+    shuffleParameter.players['P3']!.skills[Skill.physical] = 5;
+    shuffleParameter.players['P4']!.skills[Skill.physical] = 5;
+    shuffleParameter.players['P5']!.skills[Skill.physical] = 1;
+
+    drawMultipleTimes(shuffleParameter, (groups) {
+      expect(groups.length, 2);
+      // P5 is in the larger group
+      expect(groups[0].contains("P5"), groups[0].length == 3);
+      expect(groups[1].contains("P5"), groups[1].length == 3);
+    });
+  });
+
+  test('draw uneven groups weights do not count weakest', () {
+    var shuffleParameter = prepareShuffle(5);
+    shuffleParameter.players['P1']!.skills[Skill.physical] = 4;
+    shuffleParameter.players['P2']!.skills[Skill.physical] = 4;
+    shuffleParameter.players['P3']!.skills[Skill.physical] = 3;
+    shuffleParameter.players['P4']!.skills[Skill.physical] = 3;
+    shuffleParameter.players['P5']!.skills[Skill.physical] = 2;
+
+    drawMultipleTimes(shuffleParameter, (groups) {
+      expect(groups.length, 2);
+      // P5 is in the larger group
+      expect(groups[0].contains("P5"), groups[0].length == 3);
+      expect(groups[1].contains("P5"), groups[1].length == 3);
+      // the two better players should not be in the same group
+      expect(groups[0].contains("P1") && groups[0].contains("P2"), false);
+      expect(groups[0].contains("P3") && groups[0].contains("P4"), false);
     });
   });
 

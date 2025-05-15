@@ -54,7 +54,7 @@ class _GroupScreenState extends State<GroupScreen> {
             subtitle: Column(
                 children:
                     sorted.map((element) => playerInfo(element)).toList()),
-            trailing: GroupSummary(group: group),
+            trailing: GroupSummary(group: group, ignoredMembers: []),
           ),
         );
       },

@@ -11,12 +11,36 @@ class ShuffleParameter {
   Map<Skill, int> weights = {};
   Map<String, PlayerData> players = {};
 
+  List<String> getIgnoredPlayers() {
+    List<String> ignoredPlayers = [];
+    Map<String, double> playerSkills = {};
+    for (var playerName in players.keys) {
+      playerSkills[playerName] = Skill.values
+          .toList()
+          .fold(0.0, (prev, skill) => prev + weightedSkill(playerName, skill));
+    }
+
+    final playerList = players.keys.toList();
+    playerList.sort((a, b) => playerSkills[b]!.compareTo(playerSkills[a]!));
+
+    final relevantPlayers = noOfGroups * minimumGroupSize();
+    for (int i = relevantPlayers; i < players.length; i++) {
+      ignoredPlayers.add(playerList[i]);
+    }
+    return ignoredPlayers;
+  }
+
   double weightedSkill(String name, Skill skill) =>
       players[name]!.skills[skill]! * weights[skill]!;
 
-  double totalSkill(Skill skill) => players.keys
-      .toList()
-      .fold(0, (prev, name) => prev + weightedSkill(name, skill));
+  double totalSkill(Skill skill, List<String> ignoredPlayers) =>
+      players.keys.toList().fold(
+          0,
+          (prev, name) =>
+              prev +
+              (ignoredPlayers.contains(name)
+                  ? 0.0
+                  : weightedSkill(name, skill)));
 
   int groupSize({required int groupNo}) {
     var p = players.length;
@@ -24,6 +48,10 @@ class ShuffleParameter {
       p -= groupSize(groupNo: i);
     }
     return (p / (noOfGroups - groupNo)).ceil();
+  }
+
+  int minimumGroupSize() {
+    return (players.length / noOfGroups).floor();
   }
 
   int possibleGroups() {
@@ -46,10 +74,13 @@ class ShuffleWeighted {
   final ShuffleParameter parameter;
   Map<Skill, double> avgSkills = {};
   double bestError = double.maxFinite;
+  List<String> ignoredPlayers = [];
 
   ShuffleWeighted({required this.parameter}) {
+    ignoredPlayers = parameter.getIgnoredPlayers();
     for (var skill in Skill.values) {
-      avgSkills[skill] = parameter.totalSkill(skill) / parameter.noOfGroups;
+      avgSkills[skill] =
+          parameter.totalSkill(skill, ignoredPlayers) / parameter.noOfGroups;
     }
 
     developer.log('Possible Groups: ${parameter.possibleGroups()}',
@@ -70,7 +101,8 @@ class ShuffleWeighted {
       for (var group in groups) {
         List<String> tags = [];
         for (var skill in Skill.values) {
-          error += (group.skill(skill) - avgSkills[skill]!).abs();
+          error +=
+              (group.skill(skill, ignoredPlayers) - avgSkills[skill]!).abs();
         }
         group.members.forEach((name, data) {
           for (var tag in data.tags) {
