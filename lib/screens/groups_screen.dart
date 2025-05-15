@@ -47,6 +47,10 @@ class _GroupScreenState extends State<GroupScreen> {
       itemBuilder: (context, index) {
         final group = widget.groups[index];
         final sorted = group.members.keys.sorted();
+        final minGroupSize = widget.groups
+            .reduce((a, b) => a.members.length < b.members.length ? a : b)
+            .members
+            .length;
 
         return Card(
           child: ListTile(
@@ -54,7 +58,7 @@ class _GroupScreenState extends State<GroupScreen> {
             subtitle: Column(
                 children:
                     sorted.map((element) => playerInfo(element)).toList()),
-            trailing: GroupSummary(group: group),
+            trailing: GroupSummary(group: group, countingMembers: minGroupSize),
           ),
         );
       },

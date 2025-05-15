@@ -18,10 +18,12 @@ class GroupData {
 
   GroupData(this.name, this.weights);
 
-  double skill(Skill skill) {
+  double skill(Skill skill, List<String> ignoredMembers) {
     var val = 0.0;
-    for (var member in members.values) {
-      val += weights[skill]! * member.skills[skill]!;
+    for (var playerName in members.keys) {
+      if (!ignoredMembers.contains(playerName)) {
+        val += weights[skill]! * members[playerName]!.skills[skill]!;
+      }
     }
     return val;
   }
