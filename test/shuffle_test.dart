@@ -19,14 +19,17 @@ void main() {
 
   void drawMultipleTimes(
     ShuffleParameter shuffleParameter,
-    Function checkFunction, {
+    Function(List<List<String>>) checkFunction, {
     bool distinguish = true,
   }) {
     Set<String> groupStrings = {};
     for (var i = 0; i < 4; i++) {
       var groups = ShuffleWeighted(parameter: shuffleParameter).shuffle();
       groupStrings.add(groups.toString());
-      checkFunction(groups);
+
+      var groupsSorted =
+          groups.map((group) => group.members.keys.toList()..sort()).toList();
+      checkFunction(groupsSorted);
     }
     if (distinguish) {
       expect(groupStrings.length, greaterThan(1));
@@ -67,8 +70,8 @@ void main() {
 
     drawMultipleTimes(shuffleParameter, (groups) {
       expect(groups.length, 2);
-      expect(groups[0].members.length, 2);
-      expect(groups[1].members.length, 2);
+      expect(groups[0].length, 2);
+      expect(groups[1].length, 2);
     });
   });
 
@@ -81,14 +84,12 @@ void main() {
 
     drawMultipleTimes(shuffleParameter, (groups) {
       expect(groups.length, 2);
-      var m0 = groups[0].members;
-      var m1 = groups[1].members;
-      expect(m0.length, 2);
-      expect(m1.length, 2);
+      expect(groups[0].length, 2);
+      expect(groups[1].length, 2);
 
       // the two better players should not be in the same group
-      expect(m0.keys.contains("P1") && m0.keys.contains("P2"), false);
-      expect(m0.keys.contains("P3") && m0.keys.contains("P4"), false);
+      expect(groups[0].contains("P1") && groups[0].contains("P2"), false);
+      expect(groups[0].contains("P3") && groups[0].contains("P4"), false);
     });
   });
 
@@ -97,7 +98,7 @@ void main() {
 
     drawMultipleTimes(shuffleParameter, (groups) {
       expect(groups.length, 2);
-      expect(groups[0].members.length + groups[1].members.length, 5);
+      expect(groups[0].length + groups[1].length, 5);
     });
   });
 
@@ -107,10 +108,10 @@ void main() {
 
     drawMultipleTimes(shuffleParameter, (groups) {
       expect(groups.length, 4);
-      expect(groups[0].members.length, inInclusiveRange(1, 2));
-      expect(groups[1].members.length, inInclusiveRange(1, 2));
-      expect(groups[2].members.length, inInclusiveRange(1, 2));
-      expect(groups[3].members.length, inInclusiveRange(1, 2));
+      expect(groups[0].length, inInclusiveRange(1, 2));
+      expect(groups[1].length, inInclusiveRange(1, 2));
+      expect(groups[2].length, inInclusiveRange(1, 2));
+      expect(groups[3].length, inInclusiveRange(1, 2));
     });
   });
 
@@ -121,14 +122,12 @@ void main() {
 
     drawMultipleTimes(shuffleParameter, (groups) {
       expect(groups.length, 2);
-      var m0 = groups[0].members;
-      var m1 = groups[1].members;
-      expect(m0.length, 2);
-      expect(m1.length, 2);
+      expect(groups[0].length, 2);
+      expect(groups[1].length, 2);
 
       // the two Goalies should not be in the same group
-      expect(m0.keys.contains("P1") && m0.keys.contains("P3"), false);
-      expect(m0.keys.contains("P2") && m0.keys.contains("P4"), false);
+      expect(groups[0].contains("P1") && groups[0].contains("P3"), false);
+      expect(groups[0].contains("P2") && groups[0].contains("P4"), false);
     });
   });
 
@@ -143,19 +142,17 @@ void main() {
 
     drawMultipleTimes(shuffleParameter, (groups) {
       expect(groups.length, 2);
-      var m0 = groups[0].members;
-      var m1 = groups[1].members;
-      expect(m0.length, 2);
-      expect(m1.length, 2);
+      expect(groups[0].length, 2);
+      expect(groups[1].length, 2);
 
       // the two Goalies should not be in the same group
       // the two better players should not be in the same group
-      if (groups[0].members.keys.contains("P1")) {
-        expect(groups[0].members.keys.toList()..sort(), ["P1", "P4"]);
-        expect(groups[1].members.keys.toList()..sort(), ["P2", "P3"]);
+      if (groups[0].contains("P1")) {
+        expect(groups[0].toList()..sort(), ["P1", "P4"]);
+        expect(groups[1].toList()..sort(), ["P2", "P3"]);
       } else {
-        expect(groups[1].members.keys.toList()..sort(), ["P1", "P4"]);
-        expect(groups[0].members.keys.toList()..sort(), ["P2", "P3"]);
+        expect(groups[1].toList()..sort(), ["P1", "P4"]);
+        expect(groups[0].toList()..sort(), ["P2", "P3"]);
       }
     }, distinguish: false);
   });
@@ -173,16 +170,16 @@ void main() {
 
     drawMultipleTimes(shuffleParameter, (groups) {
       expect(groups.length, 2);
-      expect(groups[0].members.length, 2);
-      expect(groups[1].members.length, 2);
+      expect(groups[0].length, 2);
+      expect(groups[1].length, 2);
       // P1 and P2 should be together in one team (tags are more important than weights)
-      if (groups[0].members.containsKey("P1")) {
-        expect(groups[0].members.containsKey("P2"), true);
-        expect(groups[0].members.containsKey("P3"), false);
-        expect(groups[0].members.containsKey("P4"), false);
+      if (groups[0].contains("P1")) {
+        expect(groups[0].contains("P2"), true);
+        expect(groups[0].contains("P3"), false);
+        expect(groups[0].contains("P4"), false);
       } else {
-        expect(groups[1].members.containsKey("P1"), true);
-        expect(groups[1].members.containsKey("P2"), true);
+        expect(groups[1].contains("P1"), true);
+        expect(groups[1].contains("P2"), true);
       }
     }, distinguish: false);
   });
