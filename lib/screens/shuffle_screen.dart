@@ -50,6 +50,14 @@ class _ShuffleScreenState extends State<ShuffleScreen> {
     if (parameter.weights.isEmpty) {
       parameter.weights = team.weights;
       parameter.players = Map<String, PlayerData>.from(team.players);
+      for (var playerName in team.players.keys) {
+        if (team.games.isNotEmpty &&
+            !team.games.last.groups.any(
+                (groupData) => groupData.members.containsKey(playerName))) {
+          // do not pre-select players which missed the last game
+          parameter.players.remove(playerName);
+        }
+      }
     }
     final sorted = players.keys.toList()..sort();
 
