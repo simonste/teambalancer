@@ -40,4 +40,57 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text("Thu, Sep 12, 2024"), findsOneWidget);
   });
+
+  testWidgets('test shuffle', (tester) async {
+    await tester.quickSetup(
+      "Team X",
+      Sport.football,
+      players: ["P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8"],
+    );
+
+    await tester.launchAndWaitTeam("Team X");
+    await tester.tap(find.byIcon(Icons.shuffle));
+    await tester.pumpAndSettle();
+
+    expect(find.text("8 players"), findsOneWidget);
+    await tester.tap(find.text("P3"));
+    await tester.tap(find.text("P8"));
+    await tester.tap(find.text("P6"));
+    await tester.pumpAndSettle();
+    expect(find.text("5 players"), findsOneWidget);
+
+    await tester.tap(find.byIcon(Icons.shuffle));
+    await tester.pumpAndSettle();
+
+    expect(find.text("Group 1"), findsOneWidget);
+    expect(find.text("Group 2"), findsOneWidget);
+
+    await tester.tap(find.byIcon(Icons.save));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text("Result: "));
+    await tester.pumpAndSettle();
+
+    await tester.scrollNumberPicker('picker_0', 5);
+    await tester.scrollNumberPicker('picker_1', 3);
+    await tester.tap(find.text("Ok"));
+
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip("Back"));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byIcon(Icons.history));
+    await tester.pumpAndSettle();
+
+    expect(find.text("5"), findsOneWidget);
+    expect(find.text("3"), findsOneWidget);
+
+    await tester.tap(find.byTooltip("Back"));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byIcon(Icons.shuffle));
+    await tester.pumpAndSettle();
+
+    expect(find.text("5 players"), findsOneWidget);
+  });
 }

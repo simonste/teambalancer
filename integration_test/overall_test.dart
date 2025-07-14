@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg_test/flutter_svg_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:numberpicker/numberpicker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:teambalancer/common/constants.dart';
 import 'package:teambalancer/common/utils.dart';
@@ -159,6 +160,16 @@ extension AppHelper on WidgetTester {
       updateCallback: () {},
       addTeamKey: admin ? TeamKey("DEMO99DEMO99") : TeamKey("DEMO99"),
     );
+  }
+
+  Future<void> scrollNumberPicker(String key, int value) async {
+    final picker =
+        find.byKey(Key(key)).evaluate().single.widget as NumberPicker;
+    final center = getCenter(find.byKey(Key(key)));
+    final offsetY = (picker.value - value) * picker.itemHeight;
+    final TestGesture testGesture = await startGesture(center);
+    await testGesture.moveBy(Offset(0.0, offsetY));
+    await pump();
   }
 }
 
