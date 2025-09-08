@@ -117,12 +117,18 @@ class _ShuffleScreenState extends State<ShuffleScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          if (parameter.players.isEmpty) {
+            return;
+          }
           final groups = ShuffleWeighted(parameter: parameter).shuffle();
           navigateTo(
               context,
               GroupScreen(
                   teamKey: widget.teamKey, data: widget.data, groups: groups));
         },
+        backgroundColor: parameter.players.isEmpty
+            ? Theme.of(context).cardColor
+            : Theme.of(context).colorScheme.primary,
         child: const Icon(Icons.shuffle),
       ),
     );
