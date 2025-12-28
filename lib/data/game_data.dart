@@ -23,7 +23,7 @@ class Game {
     }
   }
 
-  void remove(teamKey) async {
+  void remove(String teamKey) async {
     Map<String, dynamic> body = {
       'teamKey': teamKey,
       'historyId': historyId,

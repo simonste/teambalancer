@@ -108,8 +108,9 @@ class _MainScreenState extends State<MainScreen> {
                     IconButton(
                         icon: const Icon(Icons.share),
                         onPressed: () {
-                          Share.share(
+                          var uri = Uri.parse(
                               'https://teambalancer.simonste.ch/#${team.teamKey}');
+                          SharePlus.instance.share(ShareParams(uri: uri));
                         })
                   ])),
               onTap: () {

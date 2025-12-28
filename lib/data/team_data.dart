@@ -33,7 +33,7 @@ class TeamData {
     this.teamKey,
   );
 
-  void loadGames(gamesHistory) {
+  void loadGames(List<dynamic>? gamesHistory) {
     games.clear();
     for (var game in gamesHistory ?? []) {
       List<GroupData> groups = [];

@@ -8,7 +8,7 @@ extension AppLocalizationsX on BuildContext {
   AppLocalizations get l10n => AppLocalizations.of(this)!;
 }
 
-DateFormat getDateTimeFormatter(context) {
+DateFormat getDateTimeFormatter(BuildContext context) {
   Locale currentLocale = Localizations.localeOf(context);
   if (currentLocale.languageCode == 'de') {
     return DateFormat('EEE, d. MMM y, HH:mm', 'de_DE');
@@ -17,7 +17,7 @@ DateFormat getDateTimeFormatter(context) {
   }
 }
 
-DateFormat getDateFormatter(context) {
+DateFormat getDateFormatter(BuildContext context) {
   Locale currentLocale = Localizations.localeOf(context);
   if (currentLocale.languageCode == 'de') {
     return DateFormat('EEE, d. MMM y', 'de_DE');
@@ -26,7 +26,7 @@ DateFormat getDateFormatter(context) {
   }
 }
 
-DateFormat getTimeFormatter(context) {
+DateFormat getTimeFormatter(BuildContext context) {
   Locale currentLocale = Localizations.localeOf(context);
   if (currentLocale.languageCode == 'de') {
     return DateFormat('HH:mm', 'de_DE');

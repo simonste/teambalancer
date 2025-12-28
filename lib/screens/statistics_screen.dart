@@ -22,7 +22,7 @@ class StatisticsScreen extends StatefulWidget {
 class _StatisticsScreenState extends State<StatisticsScreen> {
   PlayerSorting sortingKind = PlayerSorting.name;
 
-  Widget getPlayersTitle(sortingKind) {
+  Widget getPlayersTitle(PlayerSorting sortingKind) {
     return ListTile(
         title: Text(context.l10n.players),
         trailing: IconButton(

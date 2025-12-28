@@ -29,7 +29,7 @@ class _ShuffleScreenState extends State<ShuffleScreen> {
     }
   }
 
-  ButtonStyle? buttonStyle(selected) {
+  ButtonStyle? buttonStyle(bool selected) {
     return selected
         ? ButtonStyle(
             backgroundColor: WidgetStateProperty.all<Color>(
@@ -37,7 +37,7 @@ class _ShuffleScreenState extends State<ShuffleScreen> {
         : null;
   }
 
-  TextStyle? textStyle(selected) {
+  TextStyle? textStyle(bool selected) {
     return selected
         ? TextStyle(color: Theme.of(context).colorScheme.onPrimary)
         : null;

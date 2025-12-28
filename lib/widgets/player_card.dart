@@ -3,7 +3,7 @@ import 'package:teambalancer/data/player_data.dart';
 import 'package:teambalancer/widgets/player_skills.dart';
 
 class PlayerCard extends Card {
-  static Color? cardColor(groupNo, ThemeData theme) {
+  static Color? cardColor(int groupNo, ThemeData theme) {
     switch (groupNo) {
       case 1:
         return theme.colorScheme.primary;
@@ -18,7 +18,7 @@ class PlayerCard extends Card {
     }
   }
 
-  static TextStyle? textStyle(groupNo, ThemeData theme) {
+  static TextStyle? textStyle(int groupNo, ThemeData theme) {
     switch (groupNo) {
       case 1:
         return TextStyle(color: theme.colorScheme.onPrimary);

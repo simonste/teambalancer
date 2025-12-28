@@ -41,18 +41,18 @@ extension AppHelper on WidgetTester {
     await waitFor(() => find.byType(AppBar).evaluate().isEmpty);
   }
 
-  Future<void> waitFor(fun) async {
+  Future<void> waitFor(bool Function() fun) async {
     while (fun()) {
       await Future.delayed(const Duration(milliseconds: 100));
       await pumpAndSettle();
     }
   }
 
-  Future<void> waitForString(string) async {
+  Future<void> waitForString(String string) async {
     await waitFor(() => find.text(string).evaluate().isEmpty);
   }
 
-  Future<void> launchAndWaitTeam(team) async {
+  Future<void> launchAndWaitTeam(String team) async {
     await launchApp();
     await waitForString(team);
   }

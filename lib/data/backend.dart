@@ -6,7 +6,7 @@ class Backend {
   static const baseUrl = 'https://teambalancer.simonste.ch/api-test/';
   static const header = {'Api-Version': '2.0'};
 
-  static Future<dynamic> get(url) async {
+  static Future<dynamic> get(String url) async {
     final response = await http.get(
       Uri.parse("$baseUrl$url"),
       headers: header,
@@ -21,7 +21,7 @@ class Backend {
     }
   }
 
-  static Future<dynamic> put(url, body) async {
+  static Future<dynamic> put(String url, String body) async {
     final response = await http.put(
       Uri.parse("$baseUrl$url"),
       headers: header,
@@ -33,7 +33,7 @@ class Backend {
     return jsonDecode(response.body);
   }
 
-  static Future<dynamic> post(url, body) async {
+  static Future<dynamic> post(String url, String body) async {
     final response = await http.post(
       Uri.parse("$baseUrl$url"),
       headers: header,
@@ -45,7 +45,7 @@ class Backend {
     return jsonDecode(response.body);
   }
 
-  static Future<dynamic> delete(url, body) async {
+  static Future<dynamic> delete(String url, String body) async {
     final response = await http.delete(
       Uri.parse("$baseUrl$url"),
       headers: header,
@@ -57,47 +57,47 @@ class Backend {
     return response;
   }
 
-  static Future<dynamic> getTeam(key) async {
+  static Future<dynamic> getTeam(String key) async {
     return get('team.php/get/$key');
   }
 
-  static Future<dynamic> addTeam(body) async {
+  static Future<dynamic> addTeam(String body) async {
     return post('team.php/add', body);
   }
 
-  static Future<dynamic> removeTeam(body) async {
+  static Future<dynamic> removeTeam(String body) async {
     return delete('team.php/remove', body);
   }
 
-  static Future<dynamic> renameTeam(body) async {
+  static Future<dynamic> renameTeam(String body) async {
     return put('team.php/rename', body);
   }
 
-  static Future<dynamic> updateTeam(body) async {
+  static Future<dynamic> updateTeam(String body) async {
     return put('team.php/update', body);
   }
 
-  static Future<dynamic> addPlayer(body) async {
+  static Future<dynamic> addPlayer(String body) async {
     return post('player.php/add', body);
   }
 
-  static Future<dynamic> removePlayer(body) async {
+  static Future<dynamic> removePlayer(String body) async {
     return delete('player.php/remove', body);
   }
 
-  static Future<dynamic> renamePlayer(body) async {
+  static Future<dynamic> renamePlayer(String body) async {
     return put('player.php/rename', body);
   }
 
-  static Future<dynamic> updatePlayer(body) async {
+  static Future<dynamic> updatePlayer(String body) async {
     return put('player.php/update', body);
   }
 
-  static Future<dynamic> addGame(body) async {
+  static Future<dynamic> addGame(String body) async {
     return post('history.php/add', body);
   }
 
-  static Future<dynamic> getHistory(key) async {
+  static Future<dynamic> getHistory(String key) async {
     // use try-catch and await for async request if team removed
     try {
       return await get('history.php/list/$key');
@@ -106,11 +106,11 @@ class Backend {
     }
   }
 
-  static Future<dynamic> removeGame(body) async {
+  static Future<dynamic> removeGame(String body) async {
     return delete('history.php/remove', body);
   }
 
-  static Future<dynamic> updateGame(body) async {
+  static Future<dynamic> updateGame(String body) async {
     return put('history.php/update', body);
   }
 }

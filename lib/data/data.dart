@@ -29,7 +29,8 @@ class Data {
   TeamsData data = TeamsData({});
 
   Future<void> restoreData(
-      {required updateCallback, required TeamKey? addTeamKey}) async {
+      {required void Function() updateCallback,
+      required TeamKey? addTeamKey}) async {
     final preferences = await SharedPreferences.getInstance();
 
     final defaultStr = '{"teams": {}, "data_version": $_dataVersion}';

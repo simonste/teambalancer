@@ -27,7 +27,7 @@ Tactics getTactics(num value) {
   }
 }
 
-String getAsset(var type) {
+String getAsset(Object type) {
   switch (type) {
     case Sport.football:
       return "assets/sports/football.svg";
