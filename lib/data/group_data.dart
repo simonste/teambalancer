@@ -18,6 +18,13 @@ class GroupData {
 
   GroupData(this.name, this.weights);
 
+  static GroupData cloneWithoutScoresAndStats(GroupData original) {
+    final clone = GroupData(original.name, original.weights);
+    clone.members = Map.from(original.members);
+    clone.score = null;
+    return clone;
+  }
+
   double skill(Skill skill, List<String> ignoredMembers) {
     var val = 0.0;
     for (var playerName in members.keys) {

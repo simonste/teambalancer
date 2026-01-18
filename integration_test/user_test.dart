@@ -88,12 +88,32 @@ void main() {
     expect(find.text("5"), findsOneWidget);
     expect(find.text("3"), findsOneWidget);
 
+    // open game
+    await tester.tap(find.text("5"));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byIcon(Icons.copy));
+    await tester.pumpAndSettle();
+
+    expect(find.text("Add result"), findsOneWidget);
+
     await tester.tap(find.byTooltip("Back"));
     await tester.pumpAndSettle();
 
     await tester.tap(find.byIcon(Icons.shuffle));
     await tester.pumpAndSettle();
 
-    expect(find.text("5 players"), findsOneWidget);
+    expect(find.text("5 players"), findsOneWidget); // selection is kept
+
+    await tester.tap(find.byTooltip("Back"));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byIcon(Icons.history));
+    await tester.pumpAndSettle();
+
+    // check that history screen has two cards
+    expect(find.byType(Card), findsNWidgets(2));
+    expect(find.text("P1"), findsExactly(2));
+    expect(find.text("5"), findsOneWidget);
   });
 }

@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:calc/calc.dart';
 import 'package:flutter/material.dart';
 import 'package:teambalancer/common/localization.dart';
+import 'package:teambalancer/data/backend.dart';
 import 'package:teambalancer/data/game_data.dart';
+import 'package:teambalancer/data/group_data.dart';
 import 'package:teambalancer/data/team_data.dart';
 import 'package:teambalancer/dialog/result_dialog.dart';
 import 'package:teambalancer/widgets/player_card.dart';
@@ -41,6 +45,11 @@ class _GameScreenState extends State<GameScreen> {
                 onPressed: () => timeDialog(widget.game.date),
                 child:
                     Text(getTimeFormatter(context).format(widget.game.date)))),
+        IconButton(
+            icon: const Icon(Icons.copy),
+            onPressed: () {
+              _copyGame();
+            }),
         widget.isAdmin
             ? IconButton(
                 icon: const Icon(Icons.delete),
@@ -149,5 +158,42 @@ class _GameScreenState extends State<GameScreen> {
     widget.game.setResult(input);
     widget.teamData.refreshGames();
     save();
+  }
+
+  void _copyGame() async {
+    var groups = widget.game.groups.map((g) {
+      return GroupData.cloneWithoutScoresAndStats(g);
+    }).toList();
+
+    Map<String, dynamic> body = {
+      'teamKey': widget.teamData.teamKey,
+      'groupData': groups
+    };
+    final response = await Backend.addGame(jsonEncode(body));
+
+    final teamData = widget.teamData;
+    final isAdmin = widget.isAdmin;
+
+    // Create new game from response instead of re-fetching all games
+    final newGame = Game(
+      date: DateTime.parse(response['date']),
+      groups: groups,
+      historyId: response['historyId'],
+    );
+    teamData.games.add(newGame);
+    teamData.refreshGames();
+
+    if (mounted) {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (context) => GameScreen(
+                    game: teamData.games.last,
+                    teamData: teamData,
+                    isAdmin: isAdmin,
+                  )),
+          // remove all routes except first
+          (Route<dynamic> route) => route.settings.name == "/");
+    }
   }
 }
