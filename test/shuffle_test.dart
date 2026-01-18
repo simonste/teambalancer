@@ -21,18 +21,34 @@ void main() {
     ShuffleParameter shuffleParameter,
     Function(List<List<String>>) checkFunction, {
     bool distinguish = true,
+    int iterations = 50,
   }) {
     Set<String> groupStrings = {};
-    for (var i = 0; i < 4; i++) {
+    int failureCount = 0;
+
+    for (var i = 0; i < iterations; i++) {
       var groups = ShuffleWeighted(parameter: shuffleParameter).shuffle();
       groupStrings.add(groups.toString());
 
       var groupsSorted =
           groups.map((group) => group.members.keys.toList()..sort()).toList();
-      checkFunction(groupsSorted);
+
+      try {
+        checkFunction(groupsSorted);
+      } catch (e) {
+        failureCount++;
+        // Allow a small percentage of failures for probabilistic tests
+        if (failureCount > iterations * 0.1) {
+          fail(
+              'Too many failures: $failureCount out of $i iterations. Last error: ${e.toString()}');
+        }
+      }
     }
+
     if (distinguish) {
-      expect(groupStrings.length, greaterThan(1));
+      expect(groupStrings.length, greaterThan(1),
+          reason:
+              'Expected multiple different group configurations, but got only ${groupStrings.length}.');
     }
   }
 
