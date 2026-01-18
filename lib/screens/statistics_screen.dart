@@ -86,7 +86,8 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       final lost = history.where((gr) => gr == GameResult.lost).length;
       final noScore = history.where((gr) => gr == GameResult.noScore).length;
       final caps = won + draw + lost + noScore;
-      final winPercentage = (100 * won / (won + lost)).round();
+      final winPercentage =
+          (won + lost) > 0 ? (100 * won / (won + lost)).round() : "-";
       final form = (player.skills[Skill.form]! * 10).roundToDouble() / 10;
 
       List<Widget> cells = [];
