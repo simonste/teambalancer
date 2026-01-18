@@ -6,6 +6,7 @@ import 'package:teambalancer/common/constants.dart';
 import 'package:teambalancer/common/utils.dart';
 import 'package:teambalancer/data/backend.dart';
 import 'package:teambalancer/data/data.dart';
+import 'package:teambalancer/data/game_data.dart';
 import 'package:teambalancer/data/group_data.dart';
 import 'package:teambalancer/data/team_key.dart';
 import 'package:teambalancer/screens/game_screen.dart';
@@ -76,12 +77,19 @@ class _GroupScreenState extends State<GroupScreen> {
       'teamKey': widget.teamKey.key,
       'groupData': widget.groups
     };
-    await Backend.addGame(jsonEncode(body));
+    final response = await Backend.addGame(jsonEncode(body));
 
-    final games = await Backend.getHistory(widget.teamKey.key);
     final teamData = widget.data.get().team(widget.teamKey);
-    teamData.loadGames(games);
     final isAdmin = widget.data.isAdmin(widget.teamKey);
+
+    // Create new game from response instead of re-fetching all games
+    final newGame = Game(
+      date: DateTime.parse(response['date']),
+      groups: widget.groups,
+      historyId: response['historyId'],
+    );
+    teamData.games.add(newGame);
+    teamData.refreshGames();
 
     if (mounted) {
       Navigator.pushAndRemoveUntil(
