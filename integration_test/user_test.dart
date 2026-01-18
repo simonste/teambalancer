@@ -68,7 +68,10 @@ void main() {
     await tester.tap(find.byIcon(Icons.save));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text("Result: "));
+    // Wait for the game screen to load
+    await tester.pumpAndSettle(const Duration(seconds: 2));
+
+    await tester.tap(find.text("Add result"));
     await tester.pumpAndSettle();
 
     await tester.scrollNumberPicker('picker_0', 5);

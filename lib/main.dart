@@ -78,6 +78,7 @@ class MainAppState extends State<MainApp> {
             if (routeLink != null && routeLink.length >= 6) {
               teamKey = TeamKey(routeLink);
             }
+            // teamKey = TeamKey("DEMO99"); // For testing
             return MainScreen(addTeamKey: teamKey);
           },
           settings: settings,

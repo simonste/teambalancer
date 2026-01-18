@@ -5,6 +5,7 @@ import 'package:teambalancer/data/game_data.dart';
 import 'package:teambalancer/data/team_data.dart';
 import 'package:teambalancer/dialog/result_dialog.dart';
 import 'package:teambalancer/widgets/player_card.dart';
+import 'package:teambalancer/widgets/score_card.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen(
@@ -50,9 +51,22 @@ class _GameScreenState extends State<GameScreen> {
             : const SizedBox()
       ]),
     ];
-    cols.add(InkWell(
+    final result = widget.game.result();
+    if (result.isEmpty) {
+      cols.add(ScoreCard(
+        context.l10n.addResult,
+        theme: Theme.of(context),
         onTap: () => _resultDialog(widget.game.result()),
-        child: Text("${context.l10n.result}: ${widget.game.result()}")));
+      ));
+    } else {
+      var elem = <Widget>[];
+      for (var r in result.split(":")) {
+        elem.add(Expanded(
+            child: ScoreCard(r,
+                theme: Theme.of(context), onTap: () => _resultDialog(result))));
+      }
+      cols.add(Row(children: elem));
+    }
 
     final noOfGroups = widget.game.groups.length;
     final largestGroup =
