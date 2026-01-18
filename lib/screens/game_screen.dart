@@ -76,7 +76,7 @@ class _GameScreenState extends State<GameScreen> {
           crossAxisCount: noOfGroups,
           mainAxisSpacing: 8.0,
           crossAxisSpacing: 8.0,
-          childAspectRatio: 3 / 1,
+          mainAxisExtent: 60,
         ),
         itemCount: noOfGroups * largestGroup,
         itemBuilder: (context, index) {
