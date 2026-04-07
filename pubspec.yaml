@@ -23,6 +23,7 @@ dependencies:
   share_plus: ^12.0.1
   flutter_svg_test: ^1.0.1
   http: ^1.2.1
+  radar_chart_plus: ^2.3.0
 
 dev_dependencies:
   flutter_test:

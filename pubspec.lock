@@ -628,6 +628,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.0"
+  radar_chart_plus:
+    dependency: "direct main"
+    description:
+      name: radar_chart_plus
+      sha256: cd758cefedaf1a1fe7a7d9662984592fc6b6f047b715ef44a9edf8e642069077
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.0"
   share_plus:
     dependency: "direct main"
     description:

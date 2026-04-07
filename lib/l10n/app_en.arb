@@ -41,5 +41,8 @@
   "won": "Won",
   "lost": "Lost",
   "winPercentage": "%",
-  "form": "Form"
+  "form": "Form",
+  "tactical": "Tactical",
+  "physical": "Physical",
+  "technical": "Technical"
 }

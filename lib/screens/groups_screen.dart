@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:calc/calc.dart';
 import 'package:flutter/material.dart';
+import 'package:radar_chart_plus/radar_chart_plus.dart';
 import 'package:teambalancer/common/constants.dart';
+import 'package:teambalancer/common/localization.dart';
 import 'package:teambalancer/common/utils.dart';
 import 'package:teambalancer/data/backend.dart';
 import 'package:teambalancer/data/data.dart';
@@ -10,7 +12,7 @@ import 'package:teambalancer/data/game_data.dart';
 import 'package:teambalancer/data/group_data.dart';
 import 'package:teambalancer/data/team_key.dart';
 import 'package:teambalancer/screens/game_screen.dart';
-import 'package:teambalancer/widgets/group_summary.dart';
+import 'package:teambalancer/widgets/player_card.dart';
 import 'package:teambalancer/widgets/tag_text.dart';
 
 class GroupScreen extends StatefulWidget {
@@ -43,22 +45,69 @@ class _GroupScreenState extends State<GroupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var listView = ListView.builder(
+    var gridView = GridView.builder(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 1.0,
+        crossAxisSpacing: 8.0,
+        mainAxisSpacing: 8.0,
+      ),
+      padding: const EdgeInsets.all(8.0),
       itemCount: widget.groups.length,
       itemBuilder: (context, index) {
         final group = widget.groups[index];
         final sorted = group.members.keys.sorted();
 
         return Card(
-          child: ListTile(
-            title: Row(children: [Text(group.name)]),
-            subtitle: Column(
-                children:
-                    sorted.map((element) => playerInfo(element)).toList()),
-            trailing: GroupSummary(group: group, ignoredMembers: []),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  group.name,
+                  style: TextStyle(
+                    color: PlayerCard.cardColor(index, Theme.of(context)),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Expanded(
+                  child: ListView(
+                    children:
+                        sorted.map((element) => playerInfo(element)).toList(),
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },
+    );
+
+    var radarChart = RadarChartPlus(
+      labels: [
+        context.l10n.tactical,
+        context.l10n.physical,
+        context.l10n.technical,
+        context.l10n.form
+      ],
+      dotTapEnabled: false,
+      dataSets: widget.groups.map((group) {
+        final index = widget.groups.indexOf(group);
+        final color = PlayerCard.cardColor(index, Theme.of(context));
+        return RadarDataSet(
+          data: [
+            group.skill(Skill.tactical, []),
+            group.skill(Skill.physical, []),
+            group.skill(Skill.technical, []),
+            group.skill(Skill.form, []),
+          ],
+          fillColor: color.withValues(alpha: 0.3),
+          borderColor: color,
+        );
+      }).toList(),
     );
 
     return Scaffold(
@@ -68,7 +117,8 @@ class _GroupScreenState extends State<GroupScreen> {
           IconButton(icon: const Icon(Icons.save), onPressed: saveGroups)
         ],
       ),
-      body: listView,
+      body: Column(
+          children: [Expanded(child: gridView), Expanded(child: radarChart)]),
     );
   }
 

@@ -27,5 +27,8 @@
   "won": "Siege",
   "lost": "Niederlagen",
   "winPercentage": "%",
-  "form": "Form"
+  "form": "Form",
+  "tactical": "Taktisch",
+  "physical": "Physisch",
+  "technical": "Technisch"
 }

@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:calc/calc.dart';
 import 'package:flutter/material.dart';
+import 'package:radar_chart_plus/radar_chart_plus.dart';
+import 'package:teambalancer/common/constants.dart';
 import 'package:teambalancer/common/localization.dart';
 import 'package:teambalancer/data/backend.dart';
 import 'package:teambalancer/data/game_data.dart';
@@ -106,11 +108,36 @@ class _GameScreenState extends State<GameScreen> {
               child: PlayerCard(
                 playerName,
                 data: playerData,
-                no: groupNo + 1,
+                no: groupNo,
                 theme: Theme.of(context),
               ));
         });
     cols.add(Expanded(child: gridView));
+
+    cols.add(Expanded(
+        child: RadarChartPlus(
+      labels: [
+        context.l10n.tactical,
+        context.l10n.physical,
+        context.l10n.technical,
+        context.l10n.form
+      ],
+      dotTapEnabled: false,
+      dataSets: widget.game.groups.map((group) {
+        final index = widget.game.groups.indexOf(group);
+        final color = PlayerCard.cardColor(index, Theme.of(context));
+        return RadarDataSet(
+          data: [
+            group.skill(Skill.tactical, []),
+            group.skill(Skill.physical, []),
+            group.skill(Skill.technical, []),
+            group.skill(Skill.form, []),
+          ],
+          fillColor: color.withValues(alpha: 0.3),
+          borderColor: color,
+        );
+      }).toList(),
+    )));
 
     return Scaffold(
       appBar: AppBar(
