@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:radar_chart_plus/radar_chart_plus.dart';
 import 'package:teambalancer/common/constants.dart';
 import 'package:teambalancer/common/localization.dart';
+import 'package:teambalancer/common/shuffle.dart';
 import 'package:teambalancer/common/utils.dart';
 import 'package:teambalancer/data/backend.dart';
 import 'package:teambalancer/data/data.dart';
@@ -20,11 +21,13 @@ class GroupScreen extends StatefulWidget {
       {required this.groups,
       required this.teamKey,
       required this.data,
+      required this.parameter,
       super.key});
 
   final List<GroupData> groups;
   final TeamKey teamKey;
   final Data data;
+  final ShuffleParameter parameter;
   @override
   State<GroupScreen> createState() => _GroupScreenState();
 }
@@ -114,11 +117,27 @@ class _GroupScreenState extends State<GroupScreen> {
       appBar: AppBar(
         title: Text(widget.data.get().team(widget.teamKey).name),
         actions: [
+          IconButton(icon: const Icon(Icons.shuffle), onPressed: shuffleGroups),
           IconButton(icon: const Icon(Icons.save), onPressed: saveGroups)
         ],
       ),
       body: Column(
           children: [Expanded(child: gridView), Expanded(child: radarChart)]),
+    );
+  }
+
+  void shuffleGroups() {
+    final groups = ShuffleWeighted(parameter: widget.parameter).shuffle();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => GroupScreen(
+          teamKey: widget.teamKey,
+          data: widget.data,
+          groups: groups,
+          parameter: widget.parameter,
+        ),
+      ),
     );
   }
 

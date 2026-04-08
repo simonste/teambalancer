@@ -124,7 +124,10 @@ class _ShuffleScreenState extends State<ShuffleScreen> {
           navigateTo(
               context,
               GroupScreen(
-                  teamKey: widget.teamKey, data: widget.data, groups: groups));
+                  teamKey: widget.teamKey,
+                  data: widget.data,
+                  groups: groups,
+                  parameter: parameter));
         },
         backgroundColor: parameter.players.isEmpty
             ? Theme.of(context).cardColor
