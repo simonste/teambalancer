@@ -28,6 +28,8 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
+  bool _isBusy = false;
+
   void save() {
     widget.game.save();
     setState(() {});
@@ -47,11 +49,17 @@ class _GameScreenState extends State<GameScreen> {
                 onPressed: () => timeDialog(widget.game.date),
                 child:
                     Text(getTimeFormatter(context).format(widget.game.date)))),
-        IconButton(
-            icon: const Icon(Icons.copy),
-            onPressed: () {
-              _copyGame();
-            }),
+        if (_isBusy)
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: SizedBox(
+              width: 24,
+              height: 24,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+          )
+        else
+          IconButton(icon: const Icon(Icons.copy), onPressed: _copyGame),
         widget.isAdmin
             ? IconButton(
                 icon: const Icon(Icons.delete),
@@ -100,11 +108,13 @@ class _GameScreenState extends State<GameScreen> {
           final playerName = members.elementAt(playerIdx);
           final playerData = widget.game.groups[groupNo].members[playerName]!;
           return GestureDetector(
-              onLongPress: () {
-                widget.game.moveToNextGroup(playerData.playerId);
-                widget.teamData.refreshGames();
-                save();
-              },
+              onLongPress: _isBusy
+                  ? null
+                  : () {
+                      widget.game.moveToNextGroup(playerData.playerId);
+                      widget.teamData.refreshGames();
+                      save();
+                    },
               child: PlayerCard(
                 playerName,
                 data: playerData,
@@ -188,39 +198,46 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   void _copyGame() async {
-    var groups = widget.game.groups.map((g) {
-      return GroupData.cloneWithoutScoresAndStats(g);
-    }).toList();
+    if (_isBusy) return;
+    setState(() => _isBusy = true);
+    try {
+      var groups = widget.game.groups.map((g) {
+        return GroupData.cloneWithoutScoresAndStats(g);
+      }).toList();
 
-    Map<String, dynamic> body = {
-      'teamKey': widget.teamData.teamKey,
-      'groupData': groups
-    };
-    final response = await Backend.addGame(jsonEncode(body));
+      Map<String, dynamic> body = {
+        'teamKey': widget.teamData.teamKey,
+        'groupData': groups
+      };
+      final response = await Backend.addGame(jsonEncode(body));
 
-    final teamData = widget.teamData;
-    final isAdmin = widget.isAdmin;
+      final teamData = widget.teamData;
+      final isAdmin = widget.isAdmin;
 
-    // Create new game from response instead of re-fetching all games
-    final newGame = Game(
-      date: DateTime.parse(response['date']),
-      groups: groups,
-      historyId: response['historyId'],
-    );
-    teamData.games.add(newGame);
-    teamData.refreshGames();
+      // Create new game from response instead of re-fetching all games
+      final newGame = Game(
+        date: DateTime.parse(response['date']),
+        groups: groups,
+        historyId: response['historyId'],
+      );
+      teamData.games.add(newGame);
+      teamData.refreshGames();
 
-    if (mounted) {
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-              builder: (context) => GameScreen(
-                    game: teamData.games.last,
-                    teamData: teamData,
-                    isAdmin: isAdmin,
-                  )),
-          // remove all routes except first
-          (Route<dynamic> route) => route.settings.name == "/");
+      if (mounted) {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (context) => GameScreen(
+                      game: teamData.games.last,
+                      teamData: teamData,
+                      isAdmin: isAdmin,
+                    )),
+            // remove all routes except first
+            (Route<dynamic> route) => route.settings.name == "/");
+      }
+    } catch (_) {
+      if (mounted) setState(() => _isBusy = false);
+      rethrow;
     }
   }
 }

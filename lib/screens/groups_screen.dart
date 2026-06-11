@@ -33,6 +33,7 @@ class GroupScreen extends StatefulWidget {
 }
 
 class _GroupScreenState extends State<GroupScreen> {
+  bool _isSaving = false;
   Widget playerInfo(String name) {
     var player = widget.data.get().team(widget.teamKey).players[name]!;
     List<Widget> list = [
@@ -118,7 +119,17 @@ class _GroupScreenState extends State<GroupScreen> {
         title: Text(widget.data.get().team(widget.teamKey).name),
         actions: [
           IconButton(icon: const Icon(Icons.shuffle), onPressed: shuffleGroups),
-          IconButton(icon: const Icon(Icons.save), onPressed: saveGroups)
+          if (_isSaving)
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              child: SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            )
+          else
+            IconButton(icon: const Icon(Icons.save), onPressed: saveGroups)
         ],
       ),
       body: Column(
@@ -142,35 +153,42 @@ class _GroupScreenState extends State<GroupScreen> {
   }
 
   void saveGroups() async {
-    Map<String, dynamic> body = {
-      'teamKey': widget.teamKey.key,
-      'groupData': widget.groups
-    };
-    final response = await Backend.addGame(jsonEncode(body));
+    if (_isSaving) return;
+    setState(() => _isSaving = true);
+    try {
+      Map<String, dynamic> body = {
+        'teamKey': widget.teamKey.key,
+        'groupData': widget.groups
+      };
+      final response = await Backend.addGame(jsonEncode(body));
 
-    final teamData = widget.data.get().team(widget.teamKey);
-    final isAdmin = widget.data.isAdmin(widget.teamKey);
+      final teamData = widget.data.get().team(widget.teamKey);
+      final isAdmin = widget.data.isAdmin(widget.teamKey);
 
-    // Create new game from response instead of re-fetching all games
-    final newGame = Game(
-      date: DateTime.parse(response['date']),
-      groups: widget.groups,
-      historyId: response['historyId'],
-    );
-    teamData.games.add(newGame);
-    teamData.refreshGames();
+      // Create new game from response instead of re-fetching all games
+      final newGame = Game(
+        date: DateTime.parse(response['date']),
+        groups: widget.groups,
+        historyId: response['historyId'],
+      );
+      teamData.games.add(newGame);
+      teamData.refreshGames();
 
-    if (mounted) {
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-              builder: (context) => GameScreen(
-                    game: teamData.games.last,
-                    teamData: teamData,
-                    isAdmin: isAdmin,
-                  )),
-          // remove all routes except first
-          (Route<dynamic> route) => route.settings.name == "/");
+      if (mounted) {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (context) => GameScreen(
+                      game: teamData.games.last,
+                      teamData: teamData,
+                      isAdmin: isAdmin,
+                    )),
+            // remove all routes except first
+            (Route<dynamic> route) => route.settings.name == "/");
+      }
+    } catch (_) {
+      if (mounted) setState(() => _isSaving = false);
+      rethrow;
     }
   }
 }
