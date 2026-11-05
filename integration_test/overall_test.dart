@@ -151,7 +151,7 @@ extension AppHelper on WidgetTester {
   }) async {
     Map<String, dynamic> body = {'name': teamName, 'sport': sport.index};
     final json = await Backend.addTeam(jsonEncode(body));
-    final teamData = TeamData.fromJson(json);
+    final teamData = TeamData.fromJson(json)..adminKey = json['adminKey'];
     for (var p in players) {
       await teamData.addPlayer(p);
     }

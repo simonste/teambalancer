@@ -59,6 +59,7 @@ class Data {
     for (var key in preferenceData.teams.keys) {
       final teamKey = TeamKey(key);
       var teamData = await getTeamData(teamKey);
+      teamData?.adminKey = preferenceData.teams[key]!.adminKey;
       if (teamData == null) {
         developer.log('remove obsolete team $key', name: 'teambalancer data');
         obsoleteTeams.add(key);
@@ -91,7 +92,7 @@ class Data {
     Map<String, dynamic> body = {'name': name, 'sport': sport.index};
     final json = await Backend.addTeam(jsonEncode(body));
 
-    data.addTeam(TeamData.fromJson(json));
+    data.addTeam(TeamData.fromJson(json)..adminKey = json['adminKey']);
     preferenceData.teams[json['teamKey']] =
         PreferenceTeamData(adminKey: json['adminKey']);
     _save();

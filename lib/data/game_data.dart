@@ -23,16 +23,17 @@ class Game {
     }
   }
 
-  void remove(String teamKey) async {
+  void remove(Map<String, dynamic> keys) async {
     Map<String, dynamic> body = {
-      'teamKey': teamKey,
+      ...keys,
       'historyId': historyId,
     };
     await Backend.removeGame(jsonEncode(body));
   }
 
-  void save() async {
+  void save(Map<String, dynamic> keys) async {
     Map<String, dynamic> body = {
+      ...keys,
       'historyId': historyId,
       'date': date.toString(),
       'groupData': groups

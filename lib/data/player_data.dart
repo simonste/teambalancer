@@ -4,7 +4,6 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:teambalancer/common/constants.dart';
 import 'package:teambalancer/data/backend.dart';
 import 'package:teambalancer/data/group_data.dart';
-import 'package:teambalancer/data/team_key.dart';
 part 'player_data.g.dart';
 
 @JsonSerializable()
@@ -26,40 +25,42 @@ class PlayerData {
       : skills = {for (var key in Skill.values) key: Constants.defaultSkill},
         tags = [];
 
-  Future<void> _save(TeamKey teamKey) async {
+  Future<void> _save(Map<String, dynamic> keys) async {
     var json = toJson();
-    json['teamKey'] = teamKey.key;
+    json.addAll(keys);
     await Backend.updatePlayer(jsonEncode(json));
   }
 
-  Future<void> setSkill(Skill skill, int value, TeamKey teamKey) async {
+  Future<void> setSkill(
+      Skill skill, int value, Map<String, dynamic> keys) async {
     skills[skill] = value.toDouble();
 
-    _save(teamKey);
+    _save(keys);
   }
 
-  Future<void> toggleTag(String tag, TeamKey teamKey) async {
+  Future<void> toggleTag(String tag, Map<String, dynamic> keys) async {
     if (tags.contains(tag)) {
       tags.remove(tag);
     } else {
       tags.add(tag);
     }
 
-    _save(teamKey);
+    _save(keys);
   }
 
-  Future<void> removeTag(String tag, TeamKey teamKey) async {
+  Future<void> removeTag(String tag, Map<String, dynamic> keys) async {
     if (tags.contains(tag)) {
       tags.remove(tag);
-      return _save(teamKey);
+      return _save(keys);
     }
   }
 
-  Future<void> renameTag(String from, String tag, TeamKey teamKey) async {
+  Future<void> renameTag(
+      String from, String tag, Map<String, dynamic> keys) async {
     if (tags.contains(from)) {
       tags.remove(from);
       tags.add(tag);
-      return _save(teamKey);
+      return _save(keys);
     }
   }
 

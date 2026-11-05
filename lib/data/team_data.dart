@@ -22,6 +22,14 @@ class TeamData {
   List<String> tags;
   String teamKey;
 
+  /// Empty unless this device administers the team.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  String adminKey = '';
+
+  /// Keys sent with every request, so that the backend can check them.
+  Map<String, dynamic> get keys =>
+      {'teamKey': teamKey, if (adminKey.isNotEmpty) 'adminKey': adminKey};
+
   final List<Game> games = [];
 
   TeamData(
@@ -83,7 +91,7 @@ class TeamData {
   }
 
   Future<void> addPlayer(String name) async {
-    Map<String, dynamic> body = {'name': name, 'teamKey': teamKey};
+    Map<String, dynamic> body = {'name': name, ...keys};
     final json = await Backend.addPlayer(jsonEncode(body));
     players[name] = PlayerData.fromJson(json);
     players[name]!.updateForm();
@@ -92,7 +100,7 @@ class TeamData {
   Future<void> removePlayer(String name) async {
     Map<String, dynamic> body = {
       'playerId': players[name]!.playerId,
-      'teamKey': teamKey
+      ...keys,
     };
     players.remove(name);
     await Backend.removePlayer(jsonEncode(body));
@@ -102,7 +110,7 @@ class TeamData {
     players[to] = players[from]!;
     players.remove(from);
     Map<String, dynamic> body = {
-      'teamKey': teamKey,
+      ...keys,
       'playerId': players[to]!.playerId,
       'name': to
     };
@@ -119,7 +127,7 @@ class TeamData {
   Future<void> removeTag(String tag) {
     tags.remove(tag);
     for (var player in players.values) {
-      player.removeTag(tag, TeamKey(teamKey));
+      player.removeTag(tag, keys);
     }
     return _save();
   }
@@ -133,7 +141,7 @@ class TeamData {
   Future<void> renameTag(String from, String tag) {
     tags.remove(from);
     for (var player in players.values) {
-      player.renameTag(from, tag, TeamKey(teamKey));
+      player.renameTag(from, tag, keys);
     }
     return addTag(tag);
   }
@@ -141,7 +149,7 @@ class TeamData {
   Future<void> _save() async {
     var json = toJson();
     json.remove('players');
-    json['teamKey'] = teamKey;
+    json.addAll(keys);
     await Backend.updateTeam(jsonEncode(json));
   }
 }

@@ -157,7 +157,7 @@ class _GroupScreenState extends State<GroupScreen> {
     setState(() => _isSaving = true);
     try {
       Map<String, dynamic> body = {
-        'teamKey': widget.teamKey.key,
+        ...widget.data.get().team(widget.teamKey).keys,
         'groupData': widget.groups
       };
       final response = await Backend.addGame(jsonEncode(body));

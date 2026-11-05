@@ -31,7 +31,7 @@ class _GameScreenState extends State<GameScreen> {
   bool _isBusy = false;
 
   void save() {
-    widget.game.save();
+    widget.game.save(widget.teamData.keys);
     setState(() {});
   }
 
@@ -64,7 +64,7 @@ class _GameScreenState extends State<GameScreen> {
             ? IconButton(
                 icon: const Icon(Icons.delete),
                 onPressed: () {
-                  widget.game.remove(widget.teamData.teamKey);
+                  widget.game.remove(widget.teamData.keys);
                   Navigator.of(context).pop(widget.game.historyId);
                 })
             : const SizedBox()
@@ -206,7 +206,7 @@ class _GameScreenState extends State<GameScreen> {
       }).toList();
 
       Map<String, dynamic> body = {
-        'teamKey': widget.teamData.teamKey,
+        ...widget.teamData.keys,
         'groupData': groups
       };
       final response = await Backend.addGame(jsonEncode(body));

@@ -46,7 +46,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                           Theme.of(context).colorScheme.primary))
                   : null,
               onPressed: () => setState(() {
-                player.setSkill(skillType, no, widget.teamKey);
+                player.setSkill(skillType, no, team.keys);
               }),
               icon: getTacticsIcon(no,
                   color: selected
@@ -73,8 +73,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                     value: skill.toDouble(),
                     onChanged: (double value) {
                       setState(() {
-                        player.setSkill(
-                            skillType, value.toInt(), widget.teamKey);
+                        player.setSkill(skillType, value.toInt(), team.keys);
                       });
                     },
                   )),
@@ -95,7 +94,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                 theme: Theme.of(context),
               ),
               onTap: () {
-                player.toggleTag(tag, widget.teamKey);
+                player.toggleTag(tag, team.keys);
                 setState(() {});
               },
             ))
