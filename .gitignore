@@ -50,3 +50,6 @@ lib/l10n/app*.dart
 *ic_launcher*
 *Icon*.png
 *favicon.png
+
+# FVM Version Cache
+.fvm/

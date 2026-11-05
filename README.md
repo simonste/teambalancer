@@ -9,3 +9,9 @@
 You will never lose again due to unfair groups.
 
 Teambalancer draws balanced teams based on the skills of the players.
+
+## Getting Started
+
+The Flutter version is pinned in [`.fvmrc`](.fvmrc). Either use that version of
+Flutter directly, or let [fvm](https://fvm.app) manage it:
+`fvm install` (then prefix flutter commands with `fvm`, e.g. `fvm flutter test`)
