@@ -46,5 +46,11 @@
   },
 
   "cmake.configureOnOpen": false,
-  "cmake.sourceDirectory": "${workspaceFolder}/linux"
+  "cmake.sourceDirectory": "${workspaceFolder}/linux",
+  "workbench.colorCustomizations": {
+    "titleBar.activeBackground": "#00349a",
+    "titleBar.activeForeground": "#ffffff",
+    "titleBar.inactiveBackground": "#10204a",
+    "titleBar.inactiveForeground": "#ffffffaa"
+  }
 }
