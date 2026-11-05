@@ -38,6 +38,7 @@ void main() {
     expect(find.text("Demo Team"), findsOneWidget);
     await tester.tap(find.byIcon(Icons.history));
     await tester.pumpAndSettle();
+    await tester.scrollTo(find.text("Thu, Sep 12, 2024"));
     expect(find.text("Thu, Sep 12, 2024"), findsOneWidget);
   });
 
@@ -53,9 +54,9 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text("8 players"), findsOneWidget);
-    await tester.tap(find.text("P3"));
-    await tester.tap(find.text("P8"));
-    await tester.tap(find.text("P6"));
+    await tester.tapVisible(find.text("P3"));
+    await tester.tapVisible(find.text("P8"));
+    await tester.tapVisible(find.text("P6"));
     await tester.pumpAndSettle();
     expect(find.text("5 players"), findsOneWidget);
 

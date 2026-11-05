@@ -39,6 +39,7 @@ void main() {
     expect(find.text("Demo Team"), findsOneWidget);
     await tester.tap(find.byIcon(Icons.history));
     await tester.pumpAndSettle();
+    await tester.scrollTo(find.text("Thu, Sep 12, 2024"));
     expect(find.text("Thu, Sep 12, 2024"), findsOneWidget);
   });
 }

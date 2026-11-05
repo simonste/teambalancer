@@ -57,6 +57,18 @@ extension AppHelper on WidgetTester {
     await waitForString(team);
   }
 
+  /// Scrolls the screen's list or grid until [finder] is built, e.g. on
+  /// landscape tablets where lazily built items start off screen.
+  Future<void> scrollTo(Finder finder) async {
+    await scrollUntilVisible(finder, 100,
+        scrollable: find.byType(Scrollable).first);
+  }
+
+  Future<void> tapVisible(Finder finder) async {
+    await scrollTo(finder);
+    await tap(finder);
+  }
+
   Future<void> sendDeepLink(String link) async {
     final binding = WidgetsFlutterBinding.ensureInitialized();
     binding.handlePushRoute(link);
