@@ -16,6 +16,13 @@
       "problemMatcher": []
     },
     {
+      "label": "Generate cspell Dictionary",
+      "type": "shell",
+      "command": "dart",
+      "args": ["run", "tool/gen_cspell_dict.dart"],
+      "problemMatcher": []
+    },
+    {
       "label": "Generate Icons",
       "type": "flutter",
       "command": "flutter",

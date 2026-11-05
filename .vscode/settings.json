@@ -46,7 +46,5 @@
   },
 
   "cmake.configureOnOpen": false,
-  "cmake.sourceDirectory": "${workspaceFolder}/linux",
-  "cSpell.words": ["autofocus", "cupertino", "floorball", "teambalancer"],
-  "cSpell.ignoreRegExpList": ["import '[.a-z0-9/:]+.dart"]
+  "cmake.sourceDirectory": "${workspaceFolder}/linux"
 }

@@ -1,0 +1,47 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "words": [
+    "autofocus",
+    "cupertino",
+    "floorball",
+    "fvmrc",
+    "gvfs",
+    "pubspec",
+    "simonste",
+    "teambalancer"
+  ],
+  "ignoreRegExpList": [
+    "import '[.a-z0-9/:]+.dart"
+  ],
+  "ignorePaths": [
+    "assets/",
+    "build/",
+    ".dart_tool/",
+    ".fvm/",
+    "node_modules/",
+    "android/",
+    "ios/",
+    "linux/",
+    "macos/",
+    "windows/",
+    "web/",
+    "**/*.g.dart",
+    "lib/l10n/app_localizations*.dart",
+    "lib/l10n/*.arb",
+    "lib/l10n/untranslated.txt",
+    "pubspec.lock",
+    "screenshots/",
+    "*.png"
+  ],
+  "dictionaryDefinitions": [
+    {
+      "name": "l10n",
+      "path": "./.cspell/l10n-words.txt",
+      "noSuggest": true
+    }
+  ],
+  "dictionaries": [
+    "l10n"
+  ]
+}
