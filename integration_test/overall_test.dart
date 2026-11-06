@@ -38,18 +38,28 @@ extension AppHelper on WidgetTester {
     app.main();
     // pump and wait for AppBar to assure app is launched
     await pumpAndSettle();
-    await waitFor(() => find.byType(AppBar).evaluate().isEmpty);
+    await waitFor(() => find.byType(AppBar).evaluate().isEmpty,
+        what: 'the app bar');
   }
 
-  Future<void> waitFor(bool Function() fun) async {
+  /// Pumps while [fun] is true. Fails after [timeout] instead of hanging
+  /// the CI job, e.g. when the backend does not answer.
+  Future<void> waitFor(bool Function() fun,
+      {required String what,
+      Duration timeout = const Duration(seconds: 30)}) async {
+    final deadline = DateTime.now().add(timeout);
     while (fun()) {
+      if (DateTime.now().isAfter(deadline)) {
+        fail('timed out after ${timeout.inSeconds}s waiting for $what');
+      }
       await Future.delayed(const Duration(milliseconds: 100));
       await pumpAndSettle();
     }
   }
 
   Future<void> waitForString(String string) async {
-    await waitFor(() => find.text(string).evaluate().isEmpty);
+    await waitFor(() => find.text(string).evaluate().isEmpty,
+        what: '"$string"');
   }
 
   Future<void> launchAndWaitTeam(String team) async {
@@ -114,7 +124,8 @@ extension AppHelper on WidgetTester {
     await pumpAndSettle();
     await tap(find.text('Delete for everyone'));
     await pumpAndSettle();
-    await waitFor(() => find.text(teamName).evaluate().isNotEmpty);
+    await waitFor(() => find.text(teamName).evaluate().isNotEmpty,
+        what: '"$teamName" to disappear');
   }
 
   Future<void> addPlayer(String playerName) async {
