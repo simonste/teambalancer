@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:teambalancer/data/backend.dart';
 import 'package:teambalancer/data/group_data.dart';
+import 'package:teambalancer/data/player_data.dart';
 
 class Game {
   Game({required this.date, required this.groups, required this.historyId});
@@ -10,17 +11,42 @@ class Game {
   List<GroupData> groups = [];
   final int historyId;
 
-  void moveToNextGroup(int playerId) {
+  /// Index of the group [playerId] plays in, or null if not part of the game.
+  int? groupOf(int playerId) {
     for (var groupNo = 0; groupNo < groups.length; groupNo++) {
-      for (var playerName in groups[groupNo].members.keys) {
-        if (groups[groupNo].members[playerName]!.playerId == playerId) {
-          final newGroupNo = (groupNo + 1) % groups.length;
-          groups[newGroupNo].members[playerName] =
-              groups[groupNo].members.remove(playerName)!;
-          return;
-        }
+      if (groups[groupNo].members.values.any((p) => p.playerId == playerId)) {
+        return groupNo;
       }
     }
+    return null;
+  }
+
+  bool contains(int playerId) => groupOf(playerId) != null;
+
+  void moveToGroup(int playerId, int newGroupNo) {
+    final groupNo = groupOf(playerId);
+    if (groupNo == null || groupNo == newGroupNo) return;
+    final members = groups[groupNo].members;
+    final name =
+        members.keys.firstWhere((n) => members[n]!.playerId == playerId);
+    groups[newGroupNo].members[name] = members.remove(name)!;
+  }
+
+  void removePlayer(int playerId) {
+    for (var group in groups) {
+      group.members.removeWhere((_, p) => p.playerId == playerId);
+    }
+  }
+
+  /// Adds [player] to the smallest group, the first one on a tie.
+  void addPlayer(String name, PlayerData player) {
+    if (contains(player.playerId)) return;
+    var smallest = groups.first;
+    for (var group in groups) {
+      if (group.members.length < smallest.members.length) smallest = group;
+    }
+    // a copy: the game keeps the skills the player had when added
+    smallest.members[name] = PlayerData.fromJson(player.toJson());
   }
 
   void remove(Map<String, dynamic> keys) async {

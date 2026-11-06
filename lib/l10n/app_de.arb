@@ -30,5 +30,8 @@
   "form": "Form",
   "tactical": "Taktisch",
   "physical": "Physisch",
-  "technical": "Technisch"
+  "technical": "Technisch",
+  "moveToGroup": "In Gruppe {no} verschieben",
+  "removeFromGame": "Aus dem Spiel entfernen",
+  "addPlayerToGame": "Spieler hinzufügen"
 }

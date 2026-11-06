@@ -44,5 +44,15 @@
   "form": "Form",
   "tactical": "Tactical",
   "physical": "Physical",
-  "technical": "Technical"
+  "technical": "Technical",
+  "moveToGroup": "Move to group {no}",
+  "@moveToGroup": {
+    "placeholders": {
+      "no": {
+        "type": "int"
+      }
+    }
+  },
+  "removeFromGame": "Remove from game",
+  "addPlayerToGame": "Add player"
 }

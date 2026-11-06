@@ -42,6 +42,46 @@ void main() {
     expect(find.text("Thu, Sep 12, 2024"), findsOneWidget);
   });
 
+  testWidgets('edit the players of a game', (tester) async {
+    await tester.quickSetup(
+      "Team X",
+      Sport.football,
+      players: ["P1", "P2", "P3", "P4", "P5", "P6"],
+    );
+
+    await tester.launchAndWaitTeam("Team X");
+    await tester.tap(find.byIcon(Icons.shuffle));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byIcon(Icons.shuffle));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byIcon(Icons.save));
+    await tester.pumpAndSettle(const Duration(seconds: 2));
+    expect(find.text("Add result"), findsOneWidget);
+
+    // every player plays, nothing to add
+    expect(find.byTooltip("Add player"), findsNothing);
+
+    await tester.longPress(find.text("P1"));
+    await tester.pumpAndSettle();
+    expect(find.textContaining("Move to group"), findsOneWidget);
+    await tester.tap(find.text("Remove from game"));
+    await tester.pumpAndSettle();
+    expect(find.text("P1"), findsNothing);
+
+    await tester.tap(find.byTooltip("Add player"));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text("P1"));
+    await tester.pumpAndSettle();
+    expect(find.text("P1"), findsOneWidget);
+    expect(find.byTooltip("Add player"), findsNothing);
+
+    await tester.longPress(find.text("P1"));
+    await tester.pumpAndSettle();
+    await tester.tap(find.textContaining("Move to group"));
+    await tester.pumpAndSettle();
+    expect(find.text("P1"), findsOneWidget);
+  });
+
   testWidgets('test shuffle', (tester) async {
     await tester.quickSetup(
       "Team X",

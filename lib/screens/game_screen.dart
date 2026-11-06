@@ -108,13 +108,12 @@ class _GameScreenState extends State<GameScreen> {
           final playerName = members.elementAt(playerIdx);
           final playerData = widget.game.groups[groupNo].members[playerName]!;
           return GestureDetector(
-              onLongPress: _isBusy
+              // open the menu on release: a route pushed while the finger
+              // is still down breaks the following long presses
+              onLongPressEnd: _isBusy
                   ? null
-                  : () {
-                      widget.game.moveToNextGroup(playerData.playerId);
-                      widget.teamData.refreshGames();
-                      save();
-                    },
+                  : (details) => _playerMenu(
+                      details.globalPosition, playerData.playerId, groupNo),
               child: PlayerCard(
                 playerName,
                 data: playerData,
@@ -149,12 +148,94 @@ class _GameScreenState extends State<GameScreen> {
       }).toList(),
     )));
 
+    final missingPlayers = widget.teamData.players.keys
+        .where((name) =>
+            !widget.game.contains(widget.teamData.players[name]!.playerId))
+        .sorted();
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.teamData.name),
+        actions: [
+          if (missingPlayers.isNotEmpty)
+            IconButton(
+              icon: const Icon(Icons.person_add),
+              tooltip: context.l10n.addPlayerToGame,
+              onPressed:
+                  _isBusy ? null : () => _addPlayerDialog(missingPlayers),
+            ),
+        ],
       ),
       body: Column(children: cols),
     );
+  }
+
+  void _changeGroups(void Function() change) {
+    change();
+    widget.teamData.refreshGames();
+    save();
+  }
+
+  void _playerMenu(Offset position, int playerId, int groupNo) async {
+    final noOfGroups = widget.game.groups.length;
+    final overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
+    final action = await showMenu<int>(
+      context: context,
+      position: RelativeRect.fromRect(
+          position & const Size(1, 1), Offset.zero & overlay.size),
+      items: [
+        for (var g = 0; g < noOfGroups; g++)
+          if (g != groupNo)
+            PopupMenuItem(
+              value: g,
+              child: Row(children: [
+                Icon(Icons.circle,
+                    color: PlayerCard.cardColor(g, Theme.of(context))),
+                const SizedBox(width: 12),
+                Text(context.l10n.moveToGroup(g + 1)),
+              ]),
+            ),
+        PopupMenuItem(
+          value: -1,
+          child: Row(children: [
+            const Icon(Icons.person_remove),
+            const SizedBox(width: 12),
+            Text(context.l10n.removeFromGame),
+          ]),
+        ),
+      ],
+    );
+    if (action == null) return; // cancelled
+    _changeGroups(() {
+      if (action < 0) {
+        widget.game.removePlayer(playerId);
+      } else {
+        widget.game.moveToGroup(playerId, action);
+      }
+    });
+  }
+
+  void _addPlayerDialog(List<String> missingPlayers) async {
+    final name = await showModalBottomSheet<String>(
+      context: context,
+      builder: (context) => SafeArea(
+        child: ListView(
+          shrinkWrap: true,
+          children: [
+            ListTile(title: Text(context.l10n.addPlayerToGame)),
+            for (var name in missingPlayers)
+              ListTile(
+                leading: const Icon(Icons.person_add),
+                title: Text(name),
+                onTap: () => Navigator.of(context).pop(name),
+              ),
+          ],
+        ),
+      ),
+    );
+    if (name == null) return; // cancelled
+    _changeGroups(
+        () => widget.game.addPlayer(name, widget.teamData.players[name]!));
   }
 
   void dateDialog(DateTime time) async {
