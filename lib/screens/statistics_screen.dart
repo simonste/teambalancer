@@ -7,7 +7,6 @@ import 'package:teambalancer/data/data.dart';
 import 'package:teambalancer/data/group_data.dart';
 import 'package:teambalancer/data/preference_data.dart';
 import 'package:teambalancer/data/team_key.dart';
-import 'dart:developer' as developer;
 
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen(
@@ -21,93 +20,163 @@ class StatisticsScreen extends StatefulWidget {
 
 class _StatisticsScreenState extends State<StatisticsScreen> {
   PlayerSorting sortingKind = PlayerSorting.name;
+  bool reversed = false;
 
-  Widget getPlayersTitle(PlayerSorting sortingKind) {
-    return ListTile(
-        title: Text(context.l10n.players),
-        trailing: IconButton(
-          icon: const Icon(Icons.sort_by_alpha),
-          onPressed: () {
-            final nextSortingKind = PlayerSorting
-                .values[(sortingKind.index + 1) % PlayerSorting.values.length];
-            widget.data.preferenceData.teams[widget.teamKey.key]!
-                .playerSorting = nextSortingKind;
-            setState(() {});
-          },
-        ));
+  static const _columnWidths = {
+    0: FlexColumnWidth(2.5),
+    1: FlexColumnWidth(1),
+    2: FlexColumnWidth(1),
+    3: FlexColumnWidth(1),
+    4: FlexColumnWidth(1),
+    5: FlexColumnWidth(1),
+  };
+  static const _cellPadding = EdgeInsets.symmetric(horizontal: 6);
+  static const _rowPadding = EdgeInsets.symmetric(horizontal: 10, vertical: 12);
+
+  void sortBy(PlayerSorting kind) {
+    setState(() {
+      // a second tap on the same column reverses the order
+      reversed = (kind == sortingKind) ? !reversed : false;
+      sortingKind = kind;
+    });
+  }
+
+  Widget headerCell(PlayerSorting kind, Widget label,
+      {bool numeric = true, String? tooltip}) {
+    final theme = Theme.of(context);
+    final active = kind == sortingKind;
+    final color =
+        active ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant;
+    final arrow = Icon(
+      // name sorts A-Z, numbers sort from the highest
+      (kind == PlayerSorting.name) != reversed
+          ? Icons.arrow_downward
+          : Icons.arrow_upward,
+      size: 14,
+      color: color,
+    );
+    final cell = InkWell(
+      onTap: () => sortBy(kind),
+      child: Padding(
+        padding: _cellPadding.copyWith(top: 12, bottom: 12),
+        child: Row(
+          mainAxisAlignment:
+              numeric ? MainAxisAlignment.end : MainAxisAlignment.start,
+          children: [
+            if (active && numeric) arrow,
+            Flexible(
+              child: DefaultTextStyle.merge(
+                style: theme.textTheme.labelLarge?.copyWith(
+                    color: color,
+                    fontWeight: active ? FontWeight.bold : FontWeight.w500),
+                overflow: TextOverflow.ellipsis,
+                child: label,
+              ),
+            ),
+            if (active && !numeric) arrow,
+          ],
+        ),
+      ),
+    );
+    return tooltip == null ? cell : Tooltip(message: tooltip, child: cell);
+  }
+
+  Widget numberCell(String text) {
+    return Padding(
+      padding: _cellPadding,
+      child: Text(
+        text,
+        textAlign: TextAlign.right,
+        style: const TextStyle(fontFeatures: [FontFeature.tabularFigures()]),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final team = widget.data.get().team(widget.teamKey);
     final players = team.players;
-    developer.log('build team screen ${players.length} players',
-        name: 'teambalancer data');
 
-    final sorted = players.keys.toList()
+    var sorted = players.keys.toList()
       ..sort((a, b) => sorting(sortingKind, players, a, b));
+    if (reversed) sorted = sorted.reversed.toList();
 
-    var columnHeaders = {
-      PlayerSorting.name: Text(context.l10n.name),
-      PlayerSorting.games: Text(context.l10n.total, textAlign: TextAlign.right),
-      PlayerSorting.won: Text(context.l10n.won, textAlign: TextAlign.right),
-      PlayerSorting.lost: Text(context.l10n.lost, textAlign: TextAlign.right),
-      PlayerSorting.winPercentage:
-          Text(context.l10n.winPercentage, textAlign: TextAlign.right),
-      PlayerSorting.form: getSkillIcon(
-          Skill.form, 1.8, Sport.values[team.sport],
-          color: Theme.of(context).iconTheme.color)
-    };
+    final header = Table(
+      columnWidths: _columnWidths,
+      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+      children: [
+        TableRow(children: [
+          headerCell(PlayerSorting.name, Text(context.l10n.name),
+              numeric: false),
+          headerCell(PlayerSorting.games, Text(context.l10n.playedShort),
+              tooltip: context.l10n.total),
+          headerCell(PlayerSorting.won, Text(context.l10n.wonShort),
+              tooltip: context.l10n.won),
+          headerCell(PlayerSorting.lost, Text(context.l10n.lostShort),
+              tooltip: context.l10n.lost),
+          headerCell(
+              PlayerSorting.winPercentage, Text(context.l10n.winPercentage)),
+          headerCell(
+              PlayerSorting.form,
+              // the form icon is not tinted, its size is 10 + 1.8² px
+              getSkillIcon(Skill.form, 1.8, Sport.values[team.sport],
+                  color: null)),
+        ]),
+      ],
+    );
 
-    var headers = columnHeaders.entries.map((entry) {
-      var value = entry.value;
-      if (sortingKind == entry.key) {
-        value = Row(children: [
-          Expanded(child: value),
-          Icon(
-            Icons.south,
-            size: 15.0,
-          )
-        ]);
-      }
-      return InkWell(
-          child: value, onTap: () => setState(() => sortingKind = entry.key));
-    }).toList();
-
-    List<TableRow> rows = [TableRow(children: headers)];
-
-    for (var i = 0; i < players.length; i++) {
-      final name = sorted[i];
+    Widget playerRow(String name) {
       final player = players[name]!;
-      final history = players[name]!.history;
-
+      final history = player.history;
       final won = history.where((gr) => gr == GameResult.won).length;
-      final draw = history.where((gr) => gr == GameResult.draw).length;
       final lost = history.where((gr) => gr == GameResult.lost).length;
-      final noScore = history.where((gr) => gr == GameResult.noScore).length;
-      final caps = won + draw + lost + noScore;
+      final caps = history.where((gr) => gr != GameResult.miss).length;
       final winPercentage =
-          (won + lost) > 0 ? (100 * won / (won + lost)).round() : "-";
-      final form = (player.skills[Skill.form]! * 10).roundToDouble() / 10;
+          (won + lost) > 0 ? "${(100 * won / (won + lost)).round()}" : "–";
+      final form = player.skills[Skill.form]!.toStringAsFixed(1);
 
-      List<Widget> cells = [];
-      cells.add(Text(name));
-      cells.add(Text("$caps", textAlign: TextAlign.right));
-      cells.add(Text("$won", textAlign: TextAlign.right));
-      cells.add(Text("$lost", textAlign: TextAlign.right));
-      cells.add(Text("$winPercentage", textAlign: TextAlign.right));
-      cells.add(Text("$form", textAlign: TextAlign.right));
-      rows.add(TableRow(children: cells));
+      return Padding(
+        padding: _rowPadding,
+        child: Table(
+          columnWidths: _columnWidths,
+          defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+          children: [
+            TableRow(children: [
+              Padding(
+                padding: _cellPadding,
+                child: Text(name, maxLines: 1, overflow: TextOverflow.ellipsis),
+              ),
+              numberCell("$caps"),
+              numberCell("$won"),
+              numberCell("$lost"),
+              numberCell(winPercentage),
+              numberCell(form),
+            ]),
+          ],
+        ),
+      );
     }
 
     return Scaffold(
       appBar: AppBar(
         title: Text(team.name),
       ),
-      body: Table(
-        defaultColumnWidth: FlexColumnWidth(1),
-        columnWidths: {0: FlexColumnWidth(2)},
-        children: rows,
+      body: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: _rowPadding.left),
+            child: header,
+          ),
+          const Divider(height: 1),
+          Expanded(
+            child: ListView.separated(
+              itemCount: sorted.length,
+              itemBuilder: (context, i) => playerRow(sorted[i]),
+              separatorBuilder: (context, i) =>
+                  const Divider(height: 1, indent: 16, endIndent: 16),
+            ),
+          ),
+        ],
       ),
     );
   }

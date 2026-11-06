@@ -24,9 +24,11 @@ int sorting(PlayerSorting sortingKind, Map<String, PlayerData> players,
       fun = (String s) {
         var w = players[s]!.history.where((gr) => gr == GameResult.won).length;
         var l = players[s]!.history.where((gr) => gr == GameResult.lost).length;
-        return w / (w + l);
+        // players without a decided game rank last
+        return (w + l) > 0 ? w / (w + l) : -1.0;
       };
   }
 
-  return fun(b).compareTo(fun(a));
+  final byValue = fun(b).compareTo(fun(a));
+  return byValue != 0 ? byValue : a.compareTo(b);
 }

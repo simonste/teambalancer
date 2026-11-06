@@ -54,5 +54,8 @@
     }
   },
   "removeFromGame": "Remove from game",
-  "addPlayerToGame": "Add player"
+  "addPlayerToGame": "Add player",
+  "playedShort": "Pld",
+  "wonShort": "W",
+  "lostShort": "L"
 }

@@ -33,5 +33,8 @@
   "technical": "Technisch",
   "moveToGroup": "In Gruppe {no} verschieben",
   "removeFromGame": "Aus dem Spiel entfernen",
-  "addPlayerToGame": "Spieler hinzufügen"
+  "addPlayerToGame": "Spieler hinzufügen",
+  "playedShort": "Sp",
+  "wonShort": "S",
+  "lostShort": "N"
 }
