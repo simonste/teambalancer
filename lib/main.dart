@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:teambalancer/common/localization.dart';
 import 'package:flutter/material.dart';
@@ -57,6 +58,21 @@ class MainAppState extends State<MainApp> {
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       navigatorKey: _navigatorKey,
+      builder: (context, child) {
+        final mediaQuery = MediaQuery.of(context);
+        final insets = mediaQuery.viewInsets;
+        return MediaQuery(
+          data: mediaQuery.copyWith(
+            viewInsets: EdgeInsets.fromLTRB(
+              max(0, insets.left),
+              max(0, insets.top),
+              max(0, insets.right),
+              max(0, insets.bottom),
+            ),
+          ),
+          child: child!,
+        );
+      },
       themeMode: ThemeMode.system,
       theme: ThemeData(
         colorScheme: const ColorScheme.light(
