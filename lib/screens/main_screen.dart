@@ -165,18 +165,18 @@ class _MainScreenState extends State<MainScreen> {
                       text: context.l10n.deleteForAll,
                       action: () async {
                         await data.removeTeam(defaultData.key, admin: true);
-                        setState(() {});
+                        if (mounted) setState(() {});
                       }),
                   DialogAction(
                       text: context.l10n.deleteForMe,
                       action: () async {
                         await data.removeTeam(defaultData.key);
-                        setState(() {});
+                        if (mounted) setState(() {});
                       })
                 ]);
           } else {
             await data.removeTeam(defaultData.key);
-            setState(() {});
+            if (mounted) setState(() {});
           }
         },
       );
@@ -190,6 +190,7 @@ class _MainScreenState extends State<MainScreen> {
     } else {
       await data.addTeam(input.name, input.sport);
     }
-    setState(() {});
+    // the backend may answer after the screen is gone
+    if (mounted) setState(() {});
   }
 }

@@ -43,10 +43,11 @@ extension AppHelper on WidgetTester {
   }
 
   /// Pumps while [fun] is true. Fails after [timeout] instead of hanging
-  /// the CI job, e.g. when the backend does not answer.
+  /// the CI job, e.g. when the backend does not answer. The first request
+  /// on a freshly booted simulator can take about 40 seconds.
   Future<void> waitFor(bool Function() fun,
       {required String what,
-      Duration timeout = const Duration(seconds: 30)}) async {
+      Duration timeout = const Duration(minutes: 2)}) async {
     final deadline = DateTime.now().add(timeout);
     while (fun()) {
       if (DateTime.now().isAfter(deadline)) {
