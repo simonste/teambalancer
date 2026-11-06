@@ -36,6 +36,8 @@ jobs:
         uses: streetsidesoftware/cspell-action@v9
         with:
           incremental_files_only: false
+      - name: Test
+        run: flutter test
 
   test-android:
     if: ${{ !contains(github.ref, 'ios') }}
@@ -77,8 +79,6 @@ jobs:
       - name: Generate sources
         run: flutter packages pub run build_runner build --delete-conflicting-outputs
 
-      - name: Test
-        run: flutter test
       - name: Integration test
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -89,7 +89,7 @@ jobs:
           heap-size: 600M
           profile: ${{ matrix.device }}
           script: |
-            flutter test integration_test
+            flutter test integration_test/all_tests.dart
             sed -i -e 's/driverTest = false/driverTest = true/g' integration_test/screenshot_test.dart
             flutter drive --driver=screenshot_test/driver.dart --target=integration_test/screenshot_test.dart
 
@@ -142,10 +142,8 @@ jobs:
       - name: Generate sources
         run: flutter packages pub run build_runner build --delete-conflicting-outputs
 
-      - name: Test
-        run: flutter test
       - name: Integration test
-        run: flutter test integration_test
+        run: flutter test integration_test/all_tests.dart
 
       - name: Take screenshots
         run: |
